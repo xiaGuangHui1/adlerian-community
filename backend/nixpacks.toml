@@ -1,0 +1,11 @@
+[providers]
+# Use Java provider for Maven/Spring Boot
+id = "java"
+
+[providers.java]
+# Specify Java version
+version = "17"
+
+[system]
+# Add unzip which is required by Maven wrapper
+packages = ["unzip"]
