@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>理论知识库 - 勇气工坊</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#E8A87C',
+                        secondary: '#41B3A3',
+                        warmbg: '#FFF8F0',
+                        darkbrown: '#3D2C2E',
+                    },
+                    borderRadius: {
+                        '2xl': '1.25rem',
+                        '3xl': '1.5rem',
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #FFF8F0;
+            color: #3D2C2E;
+        }
+        .glass-nav {
+            background: rgba(255, 248, 240, 0.8);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<!-- 导航栏 -->
+<nav class="fixed top-0 w-full z-50 glass-nav border-b border-orange-100">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white cursor-pointer" onclick="window.location.href='home.html'">
+<iconify-icon icon="ph:sun-dim-fill" width="24"></iconify-icon>
+</div>
+<span class="text-xl font-bold text-darkbrown tracking-tight cursor-pointer" onclick="window.location.href='home.html'">勇气工坊</span>
+</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-gray-600 hover:text-primary transition-colors" href="home.html">首页</a>
+<a class="text-gray-600 hover:text-primary transition-colors" href="forum.html">互助广场</a>
+<a class="text-primary font-medium" href="knowledge.html">知识库</a>
+<a class="text-gray-600 hover:text-primary transition-colors" href="checkin.html">勇气打卡</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-gray-600 hover:text-primary font-medium">登录</button>
+<button class="bg-primary text-white px-5 py-2 rounded-full hover:bg-opacity-90 transition-all shadow-md shadow-orange-200">
+                        订阅周报
+                    </button>
+</div>
+</div>
+</div>
+</nav>
+<!-- 头部搜索与分类 -->
+<header class="pt-28 pb-12 bg-white">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+<h1 class="text-3xl font-bold mb-4">阿德勒心理学知识库</h1>
+<p class="text-gray-500 max-w-2xl mx-auto mb-8">
+                “重要的不是被给予了什么，而是如何去利用被给予的东西。” 深入探索阿德勒的核心理论，为你的勇气之旅提供坚实的知识基石。
+            </p>
+<div class="max-w-xl mx-auto relative mb-12">
+<input class="w-full bg-warmbg border-none rounded-2xl px-12 py-4 shadow-sm focus:ring-2 focus:ring-primary/20" placeholder="搜索核心概念、引述或书籍..." type="text"/>
+<iconify-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" icon="ph:magnifying-glass" width="24"></iconify-icon>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white px-6 py-2 rounded-xl text-sm font-bold">搜索</button>
+</div>
+<div class="flex flex-wrap justify-center gap-4">
+<a class="flex flex-col items-center gap-2 group" href="#">
+<div class="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
+<iconify-icon icon="ph:brain-fill" width="32"></iconify-icon>
+</div>
+<span class="text-sm font-medium">核心概念</span>
+</a>
+<a class="flex flex-col items-center gap-2 group" href="#">
+<div class="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-white transition-all shadow-sm">
+<iconify-icon icon="ph:user-focus-fill" width="32"></iconify-icon>
+</div>
+<span class="text-sm font-medium">阿德勒生平</span>
+</a>
+<a class="flex flex-col items-center gap-2 group" href="#">
+<div class="w-16 h-16 bg-pink-50 rounded-2xl flex items-center justify-center text-pink-400 group-hover:bg-pink-400 group-hover:text-white transition-all shadow-sm">
+<iconify-icon icon="ph:quotes-fill" width="32"></iconify-icon>
+</div>
+<span class="text-sm font-medium">经典引述</span>
+</a>
+<a class="flex flex-col items-center gap-2 group" href="#">
+<div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-400 group-hover:bg-blue-400 group-hover:text-white transition-all shadow-sm">
+<iconify-icon icon="ph:books-fill" width="32"></iconify-icon>
+</div>
+<span class="text-sm font-medium">推荐阅读</span>
+</a>
+<a class="flex flex-col items-center gap-2 group" href="#">
+<div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-400 group-hover:bg-purple-400 group-hover:text-white transition-all shadow-sm">
+<iconify-icon icon="ph:pencil-circle-fill" width="32"></iconify-icon>
+</div>
+<span class="text-sm font-medium">实践指南</span>
+</a>
+</div>
+</div>
+</header>
+<!-- 知识列表 -->
+<main class="py-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col lg:flex-row gap-12">
+<!-- 文章网格 -->
+<div class="lg:w-2/3">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-2xl font-bold">精选文章</h2>
+<div class="flex gap-2">
+<button class="text-sm text-primary font-bold">最新</button>
+<span class="text-gray-300">|</span>
+<button class="text-sm text-gray-400 hover:text-primary">最热</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- 文章卡片 1 -->
+<div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-orange-50 group">
+<div class="relative aspect-video overflow-hidden">
+<img alt="Article 1" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://modao.cc/agent-py/media/generated_images/2026-05-25/59dc1392b87a43d8ab5c9f981c9879b1.jpg"/>
+<div class="absolute top-4 left-4">
+<span class="bg-primary/90 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">核心概念</span>
+</div>
+</div>
+<div class="p-6">
+<h3 class="text-lg font-bold mb-3 group-hover:text-primary transition-colors">
+                                    课题分离：人际关系的万能钥匙
+                                </h3>
+<p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-2">
+                                    如果你因为人际关系而痛苦，那么你一定是在干涉别人的课题，或者自己的课题被干涉了。学会区分职责边界...
+                                </p>
+<div class="flex items-center justify-between text-[11px] text-gray-400 uppercase font-bold tracking-widest">
+<span class="flex items-center gap-1"><iconify-icon icon="ph:clock-fill"></iconify-icon> 8 分钟阅读</span>
+<span class="flex items-center gap-1"><iconify-icon icon="ph:eye-fill"></iconify-icon> 12.5k 阅读</span>
+</div>
+</div>
+</div>
+<!-- 文章卡片 2 -->
+<div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-orange-50 group">
+<div class="relative aspect-video overflow-hidden">
+<img alt="Article 2" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://modao.cc/agent-py/media/generated_images/2026-05-25/c17a0efe11094157b7a6b252f50f5033.jpg"/>
+<div class="absolute top-4 left-4">
+<span class="bg-secondary/90 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">人生哲学</span>
+</div>
+</div>
+<div class="p-6">
+<h3 class="text-lg font-bold mb-3 group-hover:text-primary transition-colors">
+                                    目的论 vs 原因论：你的人生由谁决定？
+                                </h3>
+<p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-2">
+                                    阿德勒心理学是“勇气的心理学”。它不关注你为什么痛苦，而关注你为了什么目的而选择痛苦...
+                                </p>
+<div class="flex items-center justify-between text-[11px] text-gray-400 uppercase font-bold tracking-widest">
+<span class="flex items-center gap-1"><iconify-icon icon="ph:clock-fill"></iconify-icon> 12 分钟阅读</span>
+<span class="flex items-center gap-1"><iconify-icon icon="ph:eye-fill"></iconify-icon> 8.9k 阅读</span>
+</div>
+</div>
+</div>
+<!-- 文章卡片 3 -->
+<div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-orange-50 group">
+<div class="relative aspect-video overflow-hidden">
+<img alt="Article 3" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://modao.cc/agent-py/media/generated_images/2026-05-25/a6c03cb730144dd4a4cf76cb01405c1b.jpg"/>
+<div class="absolute top-4 left-4">
+<span class="bg-pink-400/90 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">经典引述</span>
+</div>
+</div>
+<div class="p-6">
+<h3 class="text-lg font-bold mb-3 group-hover:text-primary transition-colors">
+                                    《被讨厌的勇气》10句震撼心灵的金句
+                                </h3>
+<p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-2">
+                                    精选阿德勒心理学入门神书中的核心语录，每一句都可能是你改变人生的契机。深度解读金句背后的逻辑...
+                                </p>
+<div class="flex items-center justify-between text-[11px] text-gray-400 uppercase font-bold tracking-widest">
+<span class="flex items-center gap-1"><iconify-icon icon="ph:clock-fill"></iconify-icon> 5 分钟阅读</span>
+<span class="flex items-center gap-1"><iconify-icon icon="ph:eye-fill"></iconify-icon> 25k 阅读</span>
+</div>
+</div>
+</div>
+<!-- 文章卡片 4 -->
+<div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-orange-50 group">
+<div class="relative aspect-video overflow-hidden">
+<img alt="Article 4" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="/agent-py/static/source/images/placeholder.svg"/>
+<div class="absolute top-4 left-4">
+<span class="bg-orange-400/90 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">实践指南</span>
+</div>
+</div>
+<div class="p-6">
+<h3 class="text-lg font-bold mb-3 group-hover:text-primary transition-colors">
+                                    如何建立共同体感觉？从“对他人的贡献”开始
+                                </h3>
+<p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-2">
+                                    幸福的源泉在于对共同体的归属感。这种感觉不是索取来的，而是通过主动贡献而获得的。具体实践步骤...
+                                </p>
+<div class="flex items-center justify-between text-[11px] text-gray-400 uppercase font-bold tracking-widest">
+<span class="flex items-center gap-1"><iconify-icon icon="ph:clock-fill"></iconify-icon> 10 分钟阅读</span>
+<span class="flex items-center gap-1"><iconify-icon icon="ph:eye-fill"></iconify-icon> 6.2k 阅读</span>
+</div>
+</div>
+</div>
+<!-- 文章卡片 5 -->
+<div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-orange-50 group">
+<div class="relative aspect-video overflow-hidden">
+<img alt="Article 5" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://modao.cc/agent-py/media/generated_images/2026-05-25/bb475611c7854700abe5b74d1fe47b2d.jpg"/>
+<div class="absolute top-4 left-4">
+<span class="bg-purple-400/90 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">阿德勒生平</span>
+</div>
+</div>
+<div class="p-6">
+<h3 class="text-lg font-bold mb-3 group-hover:text-primary transition-colors">
+                                    阿尔弗雷德·阿德勒：从自卑到超越的一生
+                                </h3>
+<p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-2">
+                                    了解这位伟大的心理学家是如何克服童年的自卑，并创立个体心理学的。他的思想如何影响了后来的心理学发展...
+                                </p>
+<div class="flex items-center justify-between text-[11px] text-gray-400 uppercase font-bold tracking-widest">
+<span class="flex items-center gap-1"><iconify-icon icon="ph:clock-fill"></iconify-icon> 15 分钟阅读</span>
+<span class="flex items-center gap-1"><iconify-icon icon="ph:eye-fill"></iconify-icon> 4.8k 阅读</span>
+</div>
+</div>
+</div>
+<!-- 文章卡片 6 -->
+<div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-orange-50 group">
+<div class="relative aspect-video overflow-hidden">
+<img alt="Article 6" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://modao.cc/agent-py/media/generated_images/2026-05-25/f97f1f2435ed462c89ec0199ada11ec0.jpg"/>
+<div class="absolute top-4 left-4">
+<span class="bg-blue-400/90 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">推荐阅读</span>
+</div>
+</div>
+<div class="p-6">
+<h3 class="text-lg font-bold mb-3 group-hover:text-primary transition-colors">
+                                    阿德勒心理学进阶书单：从入门到精通
+                                </h3>
+<p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-2">
+                                    除了《被讨厌的勇气》，还有哪些值得深度研读的著作？为你整理了一份循序渐进的专业书单...
+                                </p>
+<div class="flex items-center justify-between text-[11px] text-gray-400 uppercase font-bold tracking-widest">
+<span class="flex items-center gap-1"><iconify-icon icon="ph:clock-fill"></iconify-icon> 7 分钟阅读</span>
+<span class="flex items-center gap-1"><iconify-icon icon="ph:eye-fill"></iconify-icon> 18k 阅读</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 加载更多 -->
+<div class="mt-12 text-center">
+<button class="px-8 py-3 bg-warmbg text-primary font-bold rounded-2xl border border-orange-100 hover:bg-primary hover:text-white transition-all">
+                            浏览更多知识文章
+                        </button>
+</div>
+</div>
+<!-- 右侧边栏 -->
+<aside class="lg:w-1/3 space-y-8">
+<!-- 热门文章排行 -->
+<div class="bg-white p-6 rounded-3xl shadow-sm border border-orange-50">
+<h3 class="font-bold text-lg mb-6 flex items-center gap-2">
+<iconify-icon class="text-orange-500" icon="ph:fire-fill"></iconify-icon>
+                            热门排行
+                        </h3>
+<div class="space-y-6">
+<a class="flex gap-4 group" href="#">
+<span class="text-2xl font-black text-orange-100 group-hover:text-primary transition-colors">01</span>
+<div>
+<h4 class="text-sm font-bold group-hover:text-primary transition-colors line-clamp-2">如何通过“课题分离”处理婆媳关系？</h4>
+<p class="text-[10px] text-gray-400 mt-1">12,450 人阅读</p>
+</div>
+</a>
+<a class="flex gap-4 group" href="#">
+<span class="text-2xl font-black text-orange-100 group-hover:text-primary transition-colors">02</span>
+<div>
+<h4 class="text-sm font-bold group-hover:text-primary transition-colors line-clamp-2">自卑感并不是一件坏事：如何转化它？</h4>
+<p class="text-[10px] text-gray-400 mt-1">9,820 人阅读</p>
+</div>
+</a>
+<a class="flex gap-4 group" href="#">
+<span class="text-2xl font-black text-orange-100 group-hover:text-primary transition-colors">03</span>
+<div>
+<h4 class="text-sm font-bold group-hover:text-primary transition-colors line-clamp-2">幸福的三个条件：自我接纳、他者信赖、他者贡献</h4>
+<p class="text-[10px] text-gray-400 mt-1">8,560 人阅读</p>
+</div>
+</a>
+<a class="flex gap-4 group" href="#">
+<span class="text-2xl font-black text-orange-100 group-hover:text-primary transition-colors">04</span>
+<div>
+<h4 class="text-sm font-bold group-hover:text-primary transition-colors line-clamp-2">阿德勒：所有的烦恼都来自人际关系</h4>
+<p class="text-[10px] text-gray-400 mt-1">7,230 人阅读</p>
+</div>
+</a>
+</div>
+</div>
+<!-- 推荐书单 -->
+<div class="bg-white p-6 rounded-3xl shadow-sm border border-orange-50">
+<h3 class="font-bold text-lg mb-6 flex items-center gap-2">
+<iconify-icon class="text-secondary" icon="ph:bookmark-simple-fill"></iconify-icon>
+                            必读书单
+                        </h3>
+<div class="space-y-4">
+<div class="flex gap-3 p-3 rounded-2xl hover:bg-warmbg transition-colors cursor-pointer group">
+<img alt="Book" class="w-12 h-16 rounded-md shadow-sm object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-05-25/61b1b9583cab4cc0a193b29b4e760e3d.jpg"/>
+<div>
+<h4 class="text-sm font-bold group-hover:text-primary">《被讨厌的勇气》</h4>
+<p class="text-xs text-gray-400 mt-1">岸见一郎 / 古贺史健</p>
+<div class="flex mt-1 text-orange-400">
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+</div>
+</div>
+</div>
+<div class="flex gap-3 p-3 rounded-2xl hover:bg-warmbg transition-colors cursor-pointer group">
+<img alt="Book" class="w-12 h-16 rounded-md shadow-sm object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-05-25/61b1b9583cab4cc0a193b29b4e760e3d.jpg"/>
+<div>
+<h4 class="text-sm font-bold group-hover:text-primary">《自卑与超越》</h4>
+<p class="text-xs text-gray-400 mt-1">阿尔弗雷德·阿德勒</p>
+<div class="flex mt-1 text-orange-400">
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+<iconify-icon icon="ph:star-half-fill" width="12"></iconify-icon>
+</div>
+</div>
+</div>
+<div class="flex gap-3 p-3 rounded-2xl hover:bg-warmbg transition-colors cursor-pointer group">
+<img alt="Book" class="w-12 h-16 rounded-md shadow-sm object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-05-25/61b1b9583cab4cc0a193b29b4e760e3d.jpg"/>
+<div>
+<h4 class="text-sm font-bold group-hover:text-primary">《幸福的勇气》</h4>
+<p class="text-xs text-gray-400 mt-1">岸见一郎 / 古贺史健</p>
+<div class="flex mt-1 text-orange-400">
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+<iconify-icon icon="ph:star-fill" width="12"></iconify-icon>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-2 text-xs font-bold text-gray-400 border border-dashed border-gray-200 rounded-xl hover:border-primary hover:text-primary transition-all">查看完整书单</button>
+</div>
+<!-- 每日引述 -->
+<div class="bg-secondary p-8 rounded-3xl text-white relative overflow-hidden">
+<iconify-icon class="absolute -top-4 -left-4 text-white/20" icon="ph:quotes-fill" width="80"></iconify-icon>
+<p class="text-lg italic leading-relaxed mb-6 relative z-10">
+                            “纵使被说坏话、被讨厌，也没什么好在意的，因为对方如何看你，那是对方的课题。”
+                        </p>
+<div class="flex items-center gap-3 relative z-10">
+<img alt="Adler" class="w-8 h-8 rounded-full border border-white/30" src="https://modao.cc/agent-py/media/generated_images/2026-05-25/43008b3bcfcd42b5ba88a3f88335b60a.jpg"/>
+<span class="text-sm font-bold">—— 阿尔弗雷德·阿德勒</span>
+</div>
+</div>
+</aside>
+</div>
+</div>
+</main>
+<!-- 页脚 -->
+<footer class="bg-darkbrown text-warmbg pt-20 pb-10 mt-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-2 mb-6">
+<div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
+<iconify-icon icon="ph:sun-dim-fill" width="20"></iconify-icon>
+</div>
+<span class="text-xl font-bold tracking-tight">勇气工坊</span>
+</div>
+<p class="text-gray-400 text-sm leading-relaxed">
+                        一个面向大众的阿德勒心理学实践社区。我们致力于帮助每个人找回勇气，建立共同体感觉，过上幸福自由的人生。
+                    </p>
+</div>
+<div>
+<h4 class="font-bold mb-6">快速链接</h4>
+<ul class="space-y-4 text-gray-400 text-sm">
+<li><a class="hover:text-primary transition-colors" href="home.html">社区首页</a></li>
+<li><a class="hover:text-primary transition-colors" href="forum.html">互助广场</a></li>
+<li><a class="hover:text-primary transition-colors text-primary" href="knowledge.html">理论知识库</a></li>
+<li><a class="hover:text-primary transition-colors" href="checkin.html">勇气打卡</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-6">资源</h4>
+<ul class="space-y-4 text-gray-400 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">核心概念集</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">阿德勒文库</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">心理测试</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">下载中心</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-6">订阅知识库</h4>
+<p class="text-xs text-gray-500 mb-4">每周为你推送一篇深度阿德勒心理学解析。</p>
+<div class="flex">
+<input class="bg-gray-800 border-none rounded-l-lg px-4 py-2 text-sm w-full focus:ring-1 focus:ring-primary" placeholder="您的邮箱" type="email"/>
+<button class="bg-primary px-4 py-2 rounded-r-lg hover:bg-opacity-90 transition-all text-sm font-bold">订阅</button>
+</div>
+</div>
+</div>
+<div class="border-t border-gray-800 pt-8 text-center">
+<p class="text-gray-500 text-xs">© 2026 勇气工坊. 知识库内容受版权保护，转载请注明出处.</p>
+</div>
+</div>
+</footer>
+</body>
+</html>

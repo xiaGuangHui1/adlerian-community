@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+@theme {
+  --color-peach-50: #fdf3ea;
+  --color-peach-100: #fbe7d5;
+  --color-peach-200: #f7cfab;
+  --color-peach-300: #f3b781;
+  --color-peach-400: #ef9f57;
+  --color-peach-500: #E8A87C;
+  --color-peach-600: #d48f60;
+  --color-peach-700: #b87a52;
+  --color-peach-800: #9c6544;
+  --color-peach-900: #7d5036;
+  --color-teal-50: #e8f8f5;
+  --color-teal-100: #d1f1eb;
+  --color-teal-200: #a3e3d7;
+  --color-teal-300: #75d5c3;
+  --color-teal-400: #5bc4ae;
+  --color-teal-500: #41B3A3;
+  --color-teal-600: #38998c;
+  --color-teal-700: #2f8075;
+  --color-teal-800: #26675e;
+  --color-teal-900: #1d4f48;
+  --color-warm-50: #FFF8F0;
+  --color-brown-900: #3D2C2E;
+  --color-gray-600: #6b7280;
+  --color-gray-400: #9ca3af;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: var(--color-peach-200);
+  color: var(--color-brown-900);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-peach-300);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-peach-500);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-peach-400);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--color-warm-50);
+  color: var(--color-brown-900);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 卡片通用悬浮效果 */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -8px rgba(232, 168, 124, 0.15);
+}
+
+/* 浮动动画 */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(2deg); }
+  50% { transform: translateY(-8px) rotate(1.5deg); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* 打卡按钮脉动光晕 */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(232, 168, 124, 0.4), 0 8px 24px -4px rgba(232, 168, 124, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(232, 168, 124, 0), 0 8px 32px -4px rgba(232, 168, 124, 0.5);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.35s ease;
+}
+
+.fade-in {
+  animation: fade-in 0.5s ease forwards;
+}
+
+/* 列表项逐项渐入 */
+.fade-in-list > * {
+  opacity: 0;
+  animation: fade-in-up 0.4s ease forwards;
+}
+
+.fade-in-list > *:nth-child(1) { animation-delay: 0.05s; }
+.fade-in-list > *:nth-child(2) { animation-delay: 0.1s; }
+.fade-in-list > *:nth-child(3) { animation-delay: 0.15s; }
+.fade-in-list > *:nth-child(4) { animation-delay: 0.2s; }
+.fade-in-list > *:nth-child(5) { animation-delay: 0.25s; }
+.fade-in-list > *:nth-child(6) { animation-delay: 0.3s; }
+
+/* 按钮按压反馈 */
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* 下划线悬停动画 */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: currentColor;
+  transition: width 0.25s ease;
+}
+.link-underline:hover::after {
+  width: 100%;
+}
