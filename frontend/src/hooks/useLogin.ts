@@ -1,27 +1,15 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 
-/** 翻译 Supabase 常见错误为中文 */
-function translateError(message: string): string {
-  if (message.includes('rate limit') || message.includes('only request this after') || message.includes('security purposes')) {
-    return '操作太频繁，请稍后再试';
+/** 从 Supabase 错误中提取可读信息 */
+function extractError(err: unknown): string {
+  if (!err) return '未知错误';
+  if (err instanceof Error) return err.message;
+  if (typeof err === 'object') {
+    const obj = err as Record<string, unknown>;
+    return (obj.message as string) || (obj.msg as string) || (obj.error as string) || JSON.stringify(err);
   }
-  if (message.includes('Invalid login credentials')) {
-    return '邮箱或密码错误';
-  }
-  if (message.includes('token has expired') || message.includes('expired')) {
-    return '验证码已过期，请重新获取';
-  }
-  if (message.includes('token is invalid')) {
-    return '验证码错误，请检查后重试';
-  }
-  if (message.includes('already registered') || message.includes('already exists')) {
-    return '该邮箱已注册，请直接登录';
-  }
-  if (message.includes('Email not confirmed')) {
-    return '邮箱未验证，请查收验证邮件';
-  }
-  return message;
+  return String(err);
 }
 
 export function useLogin() {
@@ -38,7 +26,7 @@ export function useLogin() {
       setLoading(false);
       return true;
     } catch (err) {
-      setError(translateError(err instanceof Error ? err.message : '发送失败'));
+      setError(extractError(err) || '发送失败');
       setLoading(false);
       return false;
     }
@@ -54,7 +42,7 @@ export function useLogin() {
       setLoading(false);
       return true;
     } catch (err) {
-      setError(translateError(err instanceof Error ? err.message : '验证失败'));
+      setError(extractError(err) || '验证失败');
       setLoading(false);
       return false;
     }
@@ -70,7 +58,7 @@ export function useLogin() {
       setLoading(false);
       return true;
     } catch (err) {
-      setError(translateError(err instanceof Error ? err.message : '登录失败'));
+      setError(extractError(err) || '登录失败');
       setLoading(false);
       return false;
     }
@@ -98,7 +86,7 @@ export function useLogin() {
       setLoading(false);
       return true;
     } catch (err) {
-      setError(translateError(err instanceof Error ? err.message : '注册失败'));
+      setError(extractError(err) || '注册失败');
       setLoading(false);
       return false;
     }
