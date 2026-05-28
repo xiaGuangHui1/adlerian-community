@@ -21,7 +21,6 @@ CREATE TABLE IF NOT EXISTS posts (
     content TEXT NOT NULL,
     category VARCHAR(50) NOT NULL,
     is_pinned BOOLEAN DEFAULT FALSE,
-    view_count INT DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -99,73 +98,6 @@ CREATE TABLE IF NOT EXISTS resources (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 每日签到表
-CREATE TABLE IF NOT EXISTS daily_checkins (
-    id BIGSERIAL PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES users(id),
-    checkin_date DATE NOT NULL,
-    content TEXT NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE (user_id, checkin_date)
-);
-
--- 名言警句表
-CREATE TABLE IF NOT EXISTS quotes (
-    id BIGSERIAL PRIMARY KEY,
-    content TEXT NOT NULL,
-    author VARCHAR(100),
-    source VARCHAR(200),
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- 挑战表
-CREATE TABLE IF NOT EXISTS challenges (
-    id BIGSERIAL PRIMARY KEY,
-    title VARCHAR(100) NOT NULL,
-    description TEXT,
-    category VARCHAR(50) NOT NULL,
-    target_count INT,
-    icon VARCHAR(20),
-    start_date TIMESTAMPTZ,
-    end_date TIMESTAMPTZ,
-    is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- 挑战参与表
-CREATE TABLE IF NOT EXISTS challenge_enrollments (
-    id BIGSERIAL PRIMARY KEY,
-    challenge_id BIGINT NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
-    user_id UUID NOT NULL REFERENCES users(id),
-    progress INT DEFAULT 0,
-    completed BOOLEAN DEFAULT FALSE,
-    enrolled_at TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE (challenge_id, user_id)
-);
-
--- 团队表
-CREATE TABLE IF NOT EXISTS teams (
-    id BIGSERIAL PRIMARY KEY,
-    invite_code VARCHAR(20) UNIQUE NOT NULL,
-    creator_id UUID NOT NULL REFERENCES users(id),
-    name VARCHAR(50) NOT NULL,
-    check_in_time VARCHAR(5) DEFAULT '20:00',
-    max_members INT DEFAULT 3,
-    status VARCHAR(10) NOT NULL DEFAULT 'PENDING',
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    activated_at TIMESTAMPTZ
-);
-
--- 团队成员表
-CREATE TABLE IF NOT EXISTS team_members (
-    id BIGSERIAL PRIMARY KEY,
-    team_id BIGINT NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
-    user_id UUID NOT NULL REFERENCES users(id),
-    joined_at TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE (team_id, user_id)
-);
-
 -- =============================================
 -- 索引
 -- =============================================
@@ -179,14 +111,6 @@ CREATE INDEX IF NOT EXISTS idx_encouragements_receiver ON encouragements(receive
 CREATE INDEX IF NOT EXISTS idx_journals_author ON journals(author_id);
 CREATE INDEX IF NOT EXISTS idx_journals_public ON journals(is_public) WHERE is_public = TRUE;
 CREATE INDEX IF NOT EXISTS idx_resources_type ON resources(type);
-CREATE INDEX IF NOT EXISTS idx_daily_checkins_user ON daily_checkins(user_id);
-CREATE INDEX IF NOT EXISTS idx_daily_checkins_date ON daily_checkins(checkin_date);
-CREATE INDEX IF NOT EXISTS idx_challenges_category ON challenges(category);
-CREATE INDEX IF NOT EXISTS idx_challenges_active ON challenges(is_active) WHERE is_active = TRUE;
-CREATE INDEX IF NOT EXISTS idx_challenge_enrollments_user ON challenge_enrollments(user_id);
-CREATE INDEX IF NOT EXISTS idx_challenge_enrollments_challenge ON challenge_enrollments(challenge_id);
-CREATE INDEX IF NOT EXISTS idx_teams_invite_code ON teams(invite_code);
-CREATE INDEX IF NOT EXISTS idx_team_members_user ON team_members(user_id);
 
 -- =============================================
 -- 初始学习资源数据（阿德勒心理学核心概念）
