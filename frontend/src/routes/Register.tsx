@@ -4,25 +4,25 @@ import { useAuth } from '../hooks/useAuth';
 import { useLogin } from '../hooks/useLogin';
 
 export default function Register() {
-  const { user, profile, registerProfile, signIn } = useAuth();
-  const { loading, error, signUp, sendOTP, clearError } = useLogin();
+  const { user, profile, registerProfile } = useAuth();
+  const { loading, error, sendOTP, signUp, clearError } = useLogin();
   const navigate = useNavigate();
 
-  const [step, setStep] = useState(1); // 1: 注册, 2: 设置昵称
+  const [step, setStep] = useState(1);
 
-  // Step 1
+  // Step 1: 注册表单
   const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [otp, setOtp] = useState('');
   const [countdown, setCountdown] = useState(0);
   const [localError, setLocalError] = useState('');
 
-  // Step 2
+  // Step 2: 昵称设置（仅 OTP 登录新用户走此路径）
   const [nickname, setNickname] = useState('');
   const [nicknameLoading, setNicknameLoading] = useState(false);
 
-  // OTP 登录的新用户已有 user 但无 profile，直接进入昵称设置
+  // 已登录但无 profile → 进入昵称设置
   useEffect(() => {
     if (user && !profile) {
       setStep(2);
@@ -30,6 +30,8 @@ export default function Register() {
       navigate('/');
     }
   }, [user, profile, navigate]);
+
+  // ── 发送验证码 ──────────────────────────────
 
   const handleSendOtp = async () => {
     setLocalError('');
@@ -48,6 +50,8 @@ export default function Register() {
       }, 1000);
     }
   };
+
+  // ── 注册 ────────────────────────────────────
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,15 +73,11 @@ export default function Register() {
 
     const success = await signUp(email, password);
     if (success) {
-      // 注册成功后自动登录，进入昵称设置
-      try {
-        await signIn(email, password);
-        setStep(2);
-      } catch {
-        setLocalError('注册成功，请前往登录');
-      }
+      navigate('/login');
     }
   };
+
+  // ── 设置昵称 ────────────────────────────────
 
   const handleSetNickname = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,6 +94,8 @@ export default function Register() {
   };
 
   const displayError = localError || error;
+
+  // ── 渲染 ────────────────────────────────────
 
   return (
     <div className="max-w-md mx-auto mt-16 px-4">
@@ -163,6 +165,9 @@ export default function Register() {
                   {countdown > 0 ? `${countdown}s` : '发送验证码'}
                 </button>
               </div>
+              {countdown > 0 && (
+                <p className="text-xs text-green-600 mt-1">验证码已发送，请查收邮箱</p>
+              )}
             </div>
 
             {/* 密码 */}
@@ -210,6 +215,7 @@ export default function Register() {
         ) : (
           <form onSubmit={handleSetNickname} className="space-y-4">
             <div>
+              <label className="block text-sm text-gray-600 mb-1">昵称</label>
               <input
                 type="text"
                 value={nickname}

@@ -28,6 +28,7 @@ export function useLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  /** 发送验证码到邮箱 */
   const sendOTP = async (email: string) => {
     setLoading(true);
     setError(null);
@@ -43,6 +44,7 @@ export function useLogin() {
     }
   };
 
+  /** 验证 OTP 验证码并登录 */
   const verifyOTP = async (email: string, token: string) => {
     setLoading(true);
     setError(null);
@@ -58,6 +60,7 @@ export function useLogin() {
     }
   };
 
+  /** 邮箱密码登录 */
   const signInWithPassword = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
@@ -73,18 +76,25 @@ export function useLogin() {
     }
   };
 
+  /** 邮箱密码注册
+   *
+   * 重复注册检测：Supabase signUp 对已注册邮箱不抛错，
+   * 返回占位 user（identities 为空数组），需前端自行判断
+   */
   const signUp = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
     try {
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
-      // Supabase 对已注册邮箱返回空 identities
+
+      // identities 为空 → 已注册邮箱
       if (data.user?.identities && data.user.identities.length === 0) {
         setError('该邮箱已注册，请直接登录');
         setLoading(false);
         return false;
       }
+
       setLoading(false);
       return true;
     } catch (err) {
