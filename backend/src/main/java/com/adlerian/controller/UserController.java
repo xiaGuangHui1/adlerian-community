@@ -77,8 +77,12 @@ public class UserController {
             User user = userService.createUser(authId, nickname);
             return ResponseEntity.ok(toProfileMap(user));
         } catch (Exception e) {
-            log.error("Failed to register user: {}", e.getMessage(), e);
-            return ResponseEntity.status(500).body(Map.of("error", "注册失败: " + e.getMessage()));
+            log.error("Failed to register user: {} ({})", e.getMessage(), e.getClass().getSimpleName(), e);
+            String msg = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+            return ResponseEntity.status(500).body(Map.of(
+                    "error", "注册失败: " + msg,
+                    "type", e.getClass().getSimpleName()
+            ));
         }
     }
 
