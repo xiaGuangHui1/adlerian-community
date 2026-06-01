@@ -139,7 +139,7 @@ export default function Invite() {
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 256 256"><path d="M128,72a56,56,0,1,0-56,56A56,56,0,0,0,128,72Z"/></svg>
             </div>
             <div>
-              <p className="text-sm font-bold text-brown-900">勇气工坊</p>
+              <p className="text-sm font-bold text-brown-900">阿德勒心理学社区</p>
               <p className="text-xs text-gray-400">邀请你加入同行打卡圈</p>
             </div>
           </div>
@@ -336,7 +336,7 @@ export default function Invite() {
                   这个邀请<span className="text-gray-400"><br />已经</span><span className="text-peach-500">过期了</span>
                 </h1>
                 <p className="text-gray-500 text-lg mb-8">
-                  但没关系，你仍然可以加入勇气工坊，发起你自己的同行小队。
+                  但没关系，你仍然可以加入阿德勒心理学社区，发起你自己的同行小队。
                 </p>
                 <Link
                   to="/register"

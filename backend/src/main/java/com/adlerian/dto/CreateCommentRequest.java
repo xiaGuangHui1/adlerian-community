@@ -10,4 +10,7 @@ public class CreateCommentRequest {
 
     /** 父评论ID，null表示顶级评论 */
     private Long parentId;
+
+    /** 评论标签，null 表示普通评论 */
+    private String tag;
 }

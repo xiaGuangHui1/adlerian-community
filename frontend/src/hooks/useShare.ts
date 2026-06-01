@@ -15,9 +15,9 @@ export function useShare() {
 
   const getShareText = useCallback(() => {
     if (profile?.nickname) {
-      return `${profile.nickname}邀请你一起练习阿德勒心理学！在这里，我们找回勇气，练习课题分离，建立横向关系。一起加入勇气工坊~`;
+      return `${profile.nickname}邀请你一起练习阿德勒心理学！在这里，我们找回勇气，练习课题分离，建立横向关系。一起加入阿德勒心理学社区~`;
     }
-    return '来陪我一起练习阿德勒心理学！在这里，我们找回勇气，练习课题分离，建立横向关系。加入我的勇气工坊之旅~';
+    return '来陪我一起练习阿德勒心理学！在这里，我们找回勇气，练习课题分离，建立横向关系。加入阿德勒心理学社区之旅~';
   }, [profile?.nickname]);
 
   const shareOrCopy = useCallback(async () => {

@@ -6,7 +6,7 @@ import api from '../lib/api';
 type AuthTab = 'password' | 'otp';
 
 export default function Login() {
-  const [activeTab, setActiveTab] = useState<AuthTab>('password');
+  const [activeTab, setActiveTab] = useState<AuthTab>('otp');
   const { loading, error, sendOTP, verifyOTP, signInWithPassword, clearError } = useLogin();
   const navigate = useNavigate();
 
@@ -80,17 +80,6 @@ export default function Login() {
         <div className="flex border-b border-peach-100 mb-6">
           <button
             type="button"
-            onClick={() => switchTab('password')}
-            className={`flex-1 pb-3 text-sm font-medium border-b-2 transition-colors bg-transparent cursor-pointer ${
-              activeTab === 'password'
-                ? 'border-peach-500 text-peach-800'
-                : 'border-transparent text-gray-400 hover:text-gray-600'
-            }`}
-          >
-            密码登录
-          </button>
-          <button
-            type="button"
             onClick={() => switchTab('otp')}
             className={`flex-1 pb-3 text-sm font-medium border-b-2 transition-colors bg-transparent cursor-pointer ${
               activeTab === 'otp'
@@ -100,46 +89,22 @@ export default function Login() {
           >
             验证码登录
           </button>
+          <button
+            type="button"
+            onClick={() => switchTab('password')}
+            className={`flex-1 pb-3 text-sm font-medium border-b-2 transition-colors bg-transparent cursor-pointer ${
+              activeTab === 'password'
+                ? 'border-peach-500 text-peach-800'
+                : 'border-transparent text-gray-400 hover:text-gray-600'
+            }`}
+          >
+            密码登录
+          </button>
         </div>
 
         {/* 错误提示 */}
         {error && (
           <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-lg">{error}</div>
-        )}
-
-        {/* 密码登录表单 */}
-        {activeTab === 'password' && (
-          <form onSubmit={handlePasswordLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">邮箱</label>
-              <input
-                type="email"
-                value={pwdEmail}
-                onChange={e => setPwdEmail(e.target.value)}
-                placeholder="your@email.com"
-                required
-                className="w-full px-3 py-2.5 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-warm-50"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">密码</label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="输入密码"
-                required
-                className="w-full px-3 py-2.5 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-warm-50"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2.5 bg-peach-500 text-white rounded-lg text-sm font-medium cursor-pointer border-0 hover:bg-peach-600 disabled:opacity-50 transition-colors"
-            >
-              {loading ? '登录中...' : '登录'}
-            </button>
-          </form>
         )}
 
         {/* 验证码登录表单 */}
@@ -193,6 +158,41 @@ export default function Login() {
             <p className="text-xs text-stone-400 text-center">
               验证码登录无需注册，新用户自动创建账号
             </p>
+          </form>
+        )}
+
+        {/* 密码登录表单 */}
+        {activeTab === 'password' && (
+          <form onSubmit={handlePasswordLogin} className="space-y-4">
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">邮箱</label>
+              <input
+                type="email"
+                value={pwdEmail}
+                onChange={e => setPwdEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                className="w-full px-3 py-2.5 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-warm-50"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">密码</label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="输入密码"
+                required
+                className="w-full px-3 py-2.5 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-warm-50"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2.5 bg-peach-500 text-white rounded-lg text-sm font-medium cursor-pointer border-0 hover:bg-peach-600 disabled:opacity-50 transition-colors"
+            >
+              {loading ? '登录中...' : '登录'}
+            </button>
           </form>
         )}
 

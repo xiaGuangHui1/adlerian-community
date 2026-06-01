@@ -29,6 +29,10 @@ public class Comment {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    /** 评论标签，null 表示普通评论。可选值：i-experienced-too, helped-me, with-you, inspires-me, i-understand */
+    @Column(length = 50)
+    private String tag;
+
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 

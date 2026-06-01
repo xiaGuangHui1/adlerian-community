@@ -32,6 +32,9 @@ export function useAuth() {
 
   const fetchProfile = async () => {
     try {
+      // 确保 token 可用后再发请求，避免 token 刷新时的时序竞争导致 403
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
       const { data } = await api.get('/users/me');
       setProfile(data);
     } catch {

@@ -1,28 +1,39 @@
 package com.adlerian.controller;
 
-import com.adlerian.dto.PostDTO;
+import com.adlerian.config.JwtKeyProvider;
 import com.adlerian.dto.UpdateUserRequest;
 import com.adlerian.entity.User;
 import com.adlerian.service.UserService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.PublicKey;
 import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
+    private final JwtKeyProvider keyProvider;
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser() {
-        User user = getCurrentAuthUser();
-        return ResponseEntity.ok(toProfileMap(user));
+        try {
+            User user = getCurrentAuthUser();
+            return ResponseEntity.ok(toProfileMap(user));
+        } catch (Exception e) {
+            log.info("User not found in local DB, profile not created yet");
+            return ResponseEntity.status(404).body(Map.of("error", "用户未注册"));
+        }
     }
 
     @PutMapping("/me")
@@ -45,15 +56,43 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
-        User authUser = getCurrentAuthUser();
-        // 检查是否已注册
-        if (userService.findByAuthId(authUser.getAuthId()).isPresent()) {
-            return ResponseEntity.ok(toProfileMap(authUser));
+    public ResponseEntity<?> register(@RequestBody Map<String, String> body,
+                                       @RequestHeader("Authorization") String authHeader) {
+        log.info("Register request received, auth header present: {}", authHeader != null);
+        // 直接解析 JWT 获取 authId，不依赖 SecurityContext（新用户还未存入本地数据库）
+        UUID authId = extractAuthId(authHeader);
+        log.info("Extracted authId: {}", authId);
+        if (authId == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "未登录"));
         }
+
+        // 检查是否已注册
+        if (userService.findByAuthId(authId).isPresent()) {
+            User existing = userService.findByAuthId(authId).get();
+            return ResponseEntity.ok(toProfileMap(existing));
+        }
+
         String nickname = body.getOrDefault("nickname", "社区成员");
-        User user = userService.createUser(authUser.getAuthId(), nickname);
+        User user = userService.createUser(authId, nickname);
         return ResponseEntity.ok(toProfileMap(user));
+    }
+
+    /** 从 Authorization header 解析 JWT 中的 sub（Supabase 用户 ID） */
+    private UUID extractAuthId(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) return null;
+        try {
+            PublicKey key = keyProvider.getPublicKey();
+            if (key == null) return null;
+            Claims claims = Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(authHeader.substring(7))
+                    .getPayload();
+            return UUID.fromString(claims.getSubject());
+        } catch (Exception e) {
+            log.warn("Failed to parse JWT: {}", e.getMessage());
+            return null;
+        }
     }
 
     private User getCurrentAuthUser() {

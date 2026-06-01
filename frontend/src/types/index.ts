@@ -34,7 +34,16 @@ export interface Comment {
   createdAt: string;
   replies: Comment[];
   encouragementCount: number;
+  tag?: string;
 }
+
+export const COMMENT_TAGS = [
+  { value: 'i-experienced-too', label: '我也经历过' },
+  { value: 'helped-me', label: '这对我有帮助' },
+  { value: 'with-you', label: '与你同在' },
+  { value: 'inspires-me', label: '你的勇气激励了我' },
+  { value: 'i-understand', label: '我理解你' },
+] as const;
 
 export interface Encouragement {
   id: number;
@@ -83,6 +92,9 @@ export interface PageResponse<T> {
 }
 
 export const CATEGORIES = [
+  { value: 'parent-child-conflict', label: '改善亲子冲突', desc: '用阿德勒心理学改善亲子沟通，化解家庭冲突' },
+  { value: 'reduce-internal-friction', label: '减少内耗', desc: '停止自我消耗，将能量用在真正重要的事情上' },
+  { value: 'enhance-connection', label: '提升关系感', desc: '培养共同体感觉，建立更深层的人际连接' },
   { value: 'life-courage', label: '生活勇气', icon: '💪', desc: '在日常中寻找勇气，面对生活的小挑战' },
   { value: 'relationships', label: '人际关系', icon: '🤝', desc: '用课题分离和横向关系重塑人际交往' },
   { value: 'self-acceptance', label: '自我接纳', icon: '💝', desc: '接纳不完美的自己，从自卑走向超越' },

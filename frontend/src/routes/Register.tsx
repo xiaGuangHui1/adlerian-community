@@ -5,7 +5,7 @@ import { useLogin } from '../hooks/useLogin';
 
 export default function Register() {
   const { user, profile, registerProfile } = useAuth();
-  const { loading, error, sendOTP, signUp, clearError } = useLogin();
+  const { loading, error, sendOTP, signUp, signInWithPassword, clearError } = useLogin();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
@@ -71,10 +71,19 @@ export default function Register() {
       return;
     }
 
+    // 1. 注册 Supabase Auth 账号
     const success = await signUp(email, password);
-    if (success) {
+    if (!success) return;
+
+    // 2. 自动登录获取 session
+    const loggedIn = await signInWithPassword(email, password);
+    if (!loggedIn) {
+      setLocalError('注册成功但自动登录失败，请手动登录');
       navigate('/login');
+      return;
     }
+
+    // 3. useEffect 检测到 user && !profile → 显示步骤 2（昵称）
   };
 
   // ── 设置昵称 ────────────────────────────────
@@ -120,7 +129,7 @@ export default function Register() {
             {step === 1 ? '创建账号' : '设置你的昵称'}
           </h1>
           <p className="text-sm text-gray-400 mt-1">
-            {step === 1 ? '加入勇气工坊，开始你的成长之旅' : '在社群中，我们都是平等的伙伴'}
+            {step === 1 ? '加入阿德勒心理学社区，开始你的成长之旅' : '在社群中，我们都是平等的伙伴'}
           </p>
         </div>
 

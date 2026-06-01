@@ -13,6 +13,9 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<List<Map<String, String>>> getCategories() {
         return ResponseEntity.ok(List.of(
+                Map.of("value", "parent-child-conflict", "label", "改善亲子冲突"),
+                Map.of("value", "reduce-internal-friction", "label", "减少内耗"),
+                Map.of("value", "enhance-connection", "label", "提升关系感"),
                 Map.of("value", "life-courage", "label", "生活勇气", "icon", "💪"),
                 Map.of("value", "relationships", "label", "人际关系", "icon", "🤝"),
                 Map.of("value", "self-acceptance", "label", "自我接纳", "icon", "💝"),

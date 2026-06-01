@@ -14,4 +14,5 @@ public class CommentDTO {
     private Instant createdAt;
     private List<CommentDTO> replies;
     private int encouragementCount;
+    private String tag;
 }

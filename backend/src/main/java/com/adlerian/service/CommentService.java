@@ -43,6 +43,7 @@ public class CommentService {
                 .post(post)
                 .author(author)
                 .content(request.getContent())
+                .tag(request.getTag())
                 .build();
 
         if (request.getParentId() != null) {
@@ -84,6 +85,7 @@ public class CommentService {
                 .createdAt(comment.getCreatedAt())
                 .replies(new ArrayList<>())
                 .encouragementCount(encourageRepository.countByTargetTypeAndTargetId("comment", comment.getId()))
+                .tag(comment.getTag())
                 .build();
     }
 }

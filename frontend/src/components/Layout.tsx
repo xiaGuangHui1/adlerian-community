@@ -136,7 +136,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <div>
               <h4 className="font-bold mb-6">关于我们</h4>
               <ul className="space-y-4 text-gray-400 text-sm list-none p-0">
-                <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">关于工坊</a></li>
+                <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">关于社区</a></li>
                 <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">加入我们</a></li>
                 <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">联系合作</a></li>
                 <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">版权声明</a></li>

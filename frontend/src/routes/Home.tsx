@@ -61,7 +61,7 @@ export default function Home() {
               被讨厌的勇气，<br /><span className="text-peach-500">从这里开始</span>
             </h1>
             <p className="text-lg text-gray-600 mb-8 max-w-lg">
-              世界极其简单，人们随时可以获得幸福。这里是阿德勒心理学的温床，让我们一起练习课题分离，找回属于自己的共同体感觉。
+              世界极其简单，人们随时可以获得幸福。这里是阿德勒心理学的社区，让我们一起练习课题分离，找回属于自己的共同体感觉。
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link
