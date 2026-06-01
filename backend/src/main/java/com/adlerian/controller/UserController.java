@@ -58,23 +58,28 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, String> body,
                                        @RequestHeader("Authorization") String authHeader) {
-        log.info("Register request received, auth header present: {}", authHeader != null);
-        // 直接解析 JWT 获取 authId，不依赖 SecurityContext（新用户还未存入本地数据库）
-        UUID authId = extractAuthId(authHeader);
-        log.info("Extracted authId: {}", authId);
-        if (authId == null) {
-            return ResponseEntity.status(401).body(Map.of("error", "未登录"));
-        }
+        try {
+            log.info("Register request received, auth header present: {}", authHeader != null);
+            // 直接解析 JWT 获取 authId，不依赖 SecurityContext（新用户还未存入本地数据库）
+            UUID authId = extractAuthId(authHeader);
+            log.info("Extracted authId: {}", authId);
+            if (authId == null) {
+                return ResponseEntity.status(401).body(Map.of("error", "未登录"));
+            }
 
-        // 检查是否已注册
-        if (userService.findByAuthId(authId).isPresent()) {
-            User existing = userService.findByAuthId(authId).get();
-            return ResponseEntity.ok(toProfileMap(existing));
-        }
+            // 检查是否已注册
+            if (userService.findByAuthId(authId).isPresent()) {
+                User existing = userService.findByAuthId(authId).get();
+                return ResponseEntity.ok(toProfileMap(existing));
+            }
 
-        String nickname = body.getOrDefault("nickname", "社区成员");
-        User user = userService.createUser(authId, nickname);
-        return ResponseEntity.ok(toProfileMap(user));
+            String nickname = body.getOrDefault("nickname", "社区成员");
+            User user = userService.createUser(authId, nickname);
+            return ResponseEntity.ok(toProfileMap(user));
+        } catch (Exception e) {
+            log.error("Failed to register user: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(Map.of("error", "注册失败: " + e.getMessage()));
+        }
     }
 
     /** 从 Authorization header 解析 JWT 中的 sub（Supabase 用户 ID） */

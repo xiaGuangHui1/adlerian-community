@@ -96,7 +96,8 @@ export default function Register() {
       await registerProfile(nickname);
       navigate('/');
     } catch (err: any) {
-      setLocalError(err.message || '设置昵称失败');
+      const msg = err?.response?.data?.error || err?.message || '设置昵称失败';
+      setLocalError(msg);
     } finally {
       setNicknameLoading(false);
     }
