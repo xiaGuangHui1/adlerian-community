@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS posts (
 
 -- 补充已有表缺失的列
 ALTER TABLE posts ADD COLUMN IF NOT EXISTS view_count INT DEFAULT 0;
-
+ALTER TABLE comments ADD COLUMN IF NOT EXISTS tag VARCHAR(50);
 -- 评论表（支持多级嵌套）
 CREATE TABLE IF NOT EXISTS comments (
     id BIGSERIAL PRIMARY KEY,
@@ -100,6 +100,73 @@ CREATE TABLE IF NOT EXISTS resources (
     cover_url TEXT,
     sort_order INT DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 每日签到表
+CREATE TABLE IF NOT EXISTS daily_checkins (
+    id BIGSERIAL PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(id),
+    checkin_date DATE NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (user_id, checkin_date)
+);
+
+-- 名言表
+CREATE TABLE IF NOT EXISTS quotes (
+    id BIGSERIAL PRIMARY KEY,
+    content TEXT NOT NULL,
+    author VARCHAR(100),
+    source VARCHAR(200),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 挑战表
+CREATE TABLE IF NOT EXISTS challenges (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    description TEXT,
+    category VARCHAR(50) NOT NULL,
+    target_count INT DEFAULT 0,
+    icon VARCHAR(20),
+    start_date TIMESTAMPTZ,
+    end_date TIMESTAMPTZ,
+    is_active BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 挑战参与表
+CREATE TABLE IF NOT EXISTS challenge_enrollments (
+    id BIGSERIAL PRIMARY KEY,
+    challenge_id BIGINT NOT NULL REFERENCES challenges(id),
+    user_id UUID NOT NULL REFERENCES users(id),
+    progress INT DEFAULT 0,
+    completed BOOLEAN DEFAULT FALSE,
+    enrolled_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (challenge_id, user_id)
+);
+
+-- 互助小队表
+CREATE TABLE IF NOT EXISTS teams (
+    id BIGSERIAL PRIMARY KEY,
+    invite_code VARCHAR(20) UNIQUE NOT NULL,
+    creator_id UUID NOT NULL REFERENCES users(id),
+    name VARCHAR(50) NOT NULL,
+    check_in_time VARCHAR(5) DEFAULT '20:00',
+    max_members INT DEFAULT 3,
+    status VARCHAR(10) NOT NULL DEFAULT 'PENDING',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    activated_at TIMESTAMPTZ
+);
+
+-- 小队成员表
+CREATE TABLE IF NOT EXISTS team_members (
+    id BIGSERIAL PRIMARY KEY,
+    team_id BIGINT NOT NULL REFERENCES teams(id),
+    user_id UUID NOT NULL REFERENCES users(id),
+    joined_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (team_id, user_id)
 );
 
 -- =============================================
@@ -266,3 +333,24 @@ INSERT INTO resources (title, description, type, content, sort_order) VALUES
 '阿德勒关于儿童教育的经典著作。探讨儿童人格的形成过程，以及如何通过正确的教育方式帮助儿童健康成长。
 
 **推荐理由**：对育儿和教育感兴趣的读者必读。', 4);
+
+-- =============================================
+-- 名言数据
+-- =============================================
+INSERT INTO quotes (content, author, source) VALUES
+('重要的不是被给予了什么，而是如何去利用被给予的东西。', '岸见一郎', '《被讨厌的勇气》'),
+('人的烦恼皆源于人际关系。', '阿尔弗雷德·阿德勒', NULL),
+('所谓自由，就是被别人讨厌。', '岸见一郎', '《被讨厌的勇气》'),
+('你不是为了满足别人的期待而活着。', '岸见一郎', '《被讨厌的勇气》'),
+('决定我们自身的不是过去的经历，而是我们自己赋予经历的意义。', '阿尔弗雷德·阿德勒', NULL),
+('人生不是由别人赋予的，而是由自己选择的。', '阿尔弗雷德·阿德勒', NULL),
+('只有拥有被讨厌的勇气，才能获得真正的自由。', '岸见一郎', '《被讨厌的勇气》'),
+('活在当下，不是过去，也不是未来。', '阿尔弗雷德·阿德勒', NULL),
+('勇气，并不是无所畏惧，而是心怀恐惧却依然前行。', '阿尔弗雷德·阿德勒', NULL),
+('对他人的贡献，才是幸福的真正源泉。', '阿尔弗雷德·阿德勒', NULL),
+('自卑感本身不是问题，问题在于你如何面对它。', '阿尔弗雷德·阿德勒', '《自卑与超越》'),
+('爱不是满足自己的需求，而是共同面对人生的课题。', '岸见一郎', '《幸福的勇气》'),
+('改变需要勇气，但不改变需要更大的勇气。', '岸见一郎', '《被讨厌的勇气》'),
+('我们并不是因为某种原因才做出了某种行动，而是为了某种目的选择了行动。', '阿尔弗雷德·阿德勒', NULL),
+('健全的自卑感不是来自与他人的比较，而是来自与理想自己的比较。', '岸见一郎', '《被讨厌的勇气》'),
+('人生最大的谎言，就是"假如"和"总有一天"。', '阿尔弗雷德·阿德勒', NULL);
