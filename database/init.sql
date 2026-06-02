@@ -21,9 +21,13 @@ CREATE TABLE IF NOT EXISTS posts (
     content TEXT NOT NULL,
     category VARCHAR(50) NOT NULL,
     is_pinned BOOLEAN DEFAULT FALSE,
+    view_count INT DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- 补充已有表缺失的列
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS view_count INT DEFAULT 0;
 
 -- 评论表（支持多级嵌套）
 CREATE TABLE IF NOT EXISTS comments (
