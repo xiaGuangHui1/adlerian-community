@@ -21,13 +21,9 @@ export default function Login() {
   const [countdown, setCountdown] = useState(0);
 
   const handleAfterLogin = async () => {
-    try {
-      await api.get('/users/me');
-      navigate('/');
-    } catch {
-      // 新用户，跳转去设置昵称
-      navigate('/register');
-    }
+    // 后台创建 profile（新用户用默认昵称，不阻塞）
+    api.post('/users/register', { nickname: '社区成员' }).catch(() => {});
+    navigate('/');
   };
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
