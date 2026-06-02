@@ -11,14 +11,6 @@ const TAG_COLORS: Record<string, string> = {
   'i-understand': 'bg-purple-50 text-purple-600 border-purple-200',
 };
 
-const TAG_DOT: Record<string, string> = {
-  'i-experienced-too': 'bg-blue-500',
-  'helped-me': 'bg-green-500',
-  'with-you': 'bg-peach-500',
-  'inspires-me': 'bg-amber-500',
-  'i-understand': 'bg-purple-500',
-};
-
 interface Props {
   comments: CommentType[];
   postId: number;
@@ -66,7 +58,7 @@ function CommentItem({ comment, postId, depth = 0, onCommentAdded }: {
         <div className="flex items-center gap-2 mb-1">
           <span className="text-sm font-medium text-brown-900">{comment.author.nickname}</span>
           {tagInfo && (
-            <span className={`text-xs px-1.5 py-0.5 rounded-full border ${TAG_COLORS[comment.tag] || ''}`}>
+            <span className={`text-xs px-1.5 py-0.5 rounded-full border ${TAG_COLORS[tagInfo.value] || ''}`}>
               {tagInfo.label}
             </span>
           )}
