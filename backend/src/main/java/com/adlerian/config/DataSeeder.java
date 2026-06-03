@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -19,6 +18,7 @@ import java.util.Optional;
 /**
  * 应用启动时自动检查并填充 mock 数据。仅当对应表为空时才写入，
  * 避免覆盖已有数据。
+ * 启动异常不阻塞应用——seeder 失败时只记录日志，不会导致启动崩溃。
  */
 @Slf4j
 @Component
@@ -30,10 +30,17 @@ public class DataSeeder implements CommandLineRunner {
     private final UserRepository userRepository;
 
     @Override
-    @Transactional
     public void run(String... args) {
-        seedResources();
-        seedPosts();
+        try {
+            seedResources();
+        } catch (Exception e) {
+            log.warn("Failed to seed resources (app will continue): {}", e.getMessage());
+        }
+        try {
+            seedPosts();
+        } catch (Exception e) {
+            log.warn("Failed to seed posts (app will continue): {}", e.getMessage());
+        }
     }
 
     private void seedResources() {

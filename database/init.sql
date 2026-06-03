@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS posts (
 
 -- 补充已有表缺失的列
 ALTER TABLE posts ADD COLUMN IF NOT EXISTS view_count INT DEFAULT 0;
-ALTER TABLE comments ADD COLUMN IF NOT EXISTS tag VARCHAR(50);
+
 -- 评论表（支持多级嵌套）
 CREATE TABLE IF NOT EXISTS comments (
     id BIGSERIAL PRIMARY KEY,
@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS comments (
     author_id UUID NOT NULL REFERENCES users(id),
     parent_id BIGINT REFERENCES comments(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
+    tag VARCHAR(50),
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
