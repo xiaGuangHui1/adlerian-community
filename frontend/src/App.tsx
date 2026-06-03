@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './hooks/useAuth';
 import Layout from './components/Layout';
 import Home from './routes/Home';
 import Login from './routes/Login';
@@ -15,21 +16,23 @@ import Profile from './routes/Profile';
 export default function App() {
   return (
     <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forum" element={<Forum />} />
-          <Route path="/forum/new" element={<NewPost />} />
-          <Route path="/forum/:id" element={<PostDetail />} />
-          <Route path="/knowledge-base" element={<KnowledgeBase />} />
-          <Route path="/checkin" element={<CheckIn />} />
-          <Route path="/groups" element={<Groups />} />
-          <Route path="/invite" element={<Invite />} />
-          <Route path="/profile/:id" element={<Profile />} />
-        </Routes>
-      </Layout>
+      <AuthProvider>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forum" element={<Forum />} />
+            <Route path="/forum/new" element={<NewPost />} />
+            <Route path="/forum/:id" element={<PostDetail />} />
+            <Route path="/knowledge-base" element={<KnowledgeBase />} />
+            <Route path="/checkin" element={<CheckIn />} />
+            <Route path="/groups" element={<Groups />} />
+            <Route path="/invite" element={<Invite />} />
+            <Route path="/profile/:id" element={<Profile />} />
+          </Routes>
+        </Layout>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
