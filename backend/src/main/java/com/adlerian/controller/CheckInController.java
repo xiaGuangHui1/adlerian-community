@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/checkins")
@@ -47,6 +48,16 @@ public class CheckInController {
         long totalDays = checkInService.getTotalCheckInDays(user.getId());
         int streak = checkInService.getCurrentStreak(user.getId());
         return ResponseEntity.ok(Map.of("totalDays", totalDays, "streak", streak));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<CheckInDTO>> getUserCheckIns(@PathVariable UUID userId) {
+        return ResponseEntity.ok(checkInService.getUserCheckIns(userId));
+    }
+
+    @GetMapping("/user/{userId}/stats")
+    public ResponseEntity<Map<String, Object>> getUserStats(@PathVariable UUID userId) {
+        return ResponseEntity.ok(checkInService.getUserStats(userId));
     }
 
     private User currentUser() {

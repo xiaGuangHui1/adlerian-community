@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { useLogin } from '../hooks/useLogin';
-import api from '../lib/api';
 
 type AuthTab = 'password' | 'otp';
 
 export default function Login() {
   const [activeTab, setActiveTab] = useState<AuthTab>('otp');
   const { loading, error, sendOTP, verifyOTP, signInWithPassword, clearError } = useLogin();
+  const { registerProfile } = useAuth();
   const navigate = useNavigate();
 
   // 密码登录
@@ -21,8 +22,8 @@ export default function Login() {
   const [countdown, setCountdown] = useState(0);
 
   const handleAfterLogin = async () => {
-    // 后台创建 profile（新用户用默认昵称，不阻塞）
-    api.post('/users/register', { nickname: '社区成员' }).catch(() => {});
+    // 确保 profile 已创建并更新到 auth 状态，再跳转首页
+    await registerProfile('社区成员');
     navigate('/');
   };
 

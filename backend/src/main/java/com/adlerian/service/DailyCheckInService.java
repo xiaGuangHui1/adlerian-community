@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -78,6 +79,19 @@ public class DailyCheckInService {
             }
         }
         return streak;
+    }
+
+    public List<CheckInDTO> getUserCheckIns(UUID userId) {
+        LocalDate since = LocalDate.now().minusDays(365);
+        return checkInRepository
+                .findByUserIdAndCheckinDateGreaterThanEqualOrderByCheckinDateDesc(userId, since)
+                .stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public Map<String, Object> getUserStats(UUID userId) {
+        long totalDays = getTotalCheckInDays(userId);
+        int streak = getCurrentStreak(userId);
+        return java.util.Map.of("totalDays", totalDays, "streak", streak);
     }
 
     private CheckInDTO toDTO(DailyCheckIn checkIn) {

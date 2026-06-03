@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -56,5 +57,10 @@ public class PostController {
     @GetMapping("/hot")
     public ResponseEntity<List<PostDTO>> getHotPosts(@RequestParam(defaultValue = "5") int limit) {
         return ResponseEntity.ok(postService.getHotPosts(limit));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Page<PostDTO>> getUserPosts(@PathVariable UUID userId, Pageable pageable) {
+        return ResponseEntity.ok(postService.getUserPosts(userId, pageable));
     }
 }

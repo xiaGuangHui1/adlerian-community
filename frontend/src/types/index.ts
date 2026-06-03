@@ -6,6 +6,11 @@ export interface UserProfile {
   createdAt: string;
 }
 
+export interface CheckInStats {
+  totalDays: number;
+  streak: number;
+}
+
 export interface Post {
   id: number;
   title: string;

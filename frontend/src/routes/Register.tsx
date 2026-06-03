@@ -67,8 +67,8 @@ export default function Register() {
       return;
     }
 
-    // 3. 后台创建 profile（不阻塞用户进入首页）
-    registerProfile('社区成员').catch(() => {});
+    // 3. 创建 profile 并确保状态更新后，再跳转首页
+    await registerProfile('社区成员');
     navigate('/');
   };
 
