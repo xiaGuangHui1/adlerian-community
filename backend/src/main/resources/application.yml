@@ -31,9 +31,9 @@ spring:
 
 # Supabase配置（生产环境请替换为真实值）
 supabase:
-  url: ${SUPABASE_URL:https://yipozzrnnzgpywgxamjm.supabase.co}
-  anon-key: ${SUPABASE_ANON_KEY:your-anon-key}
-  jwt-secret: ${SUPABASE_JWT_SECRET:DEkT1JML76w1ZcnZmLfjRki0xntNx5vK0d7lzKwef+a99hxV7nnlGIIenPFT6fJ0gdwgCqPVTcSM/BonTQ4VFw==}
+  url: ${SUPABASE_URL:}
+  anon-key: ${SUPABASE_ANON_KEY:}
+  jwt-secret: ${SUPABASE_JWT_SECRET:}
 
 # CORS配置
 app:

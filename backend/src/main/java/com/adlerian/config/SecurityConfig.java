@@ -63,7 +63,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/encouragements").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/teams/invitation/**").permitAll()
                 .requestMatchers("/api/users/register").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/users/me").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 // 其他API需要认证
                 .requestMatchers("/api/**").authenticated()

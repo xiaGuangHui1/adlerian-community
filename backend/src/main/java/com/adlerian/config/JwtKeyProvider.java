@@ -1,8 +1,11 @@
 package com.adlerian.config;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
@@ -16,18 +19,20 @@ import java.security.spec.ECParameterSpec;
 import java.security.spec.ECPoint;
 import java.security.spec.ECPublicKeySpec;
 import java.util.Base64;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 从 Supabase JWKS 端点获取 ES256 公钥，用于验证 JWT token。
- * Supabase 已迁移到 ES256 非对称签名，旧的 HMAC 密钥无法验证新 token。
+ * 支持定时刷新和按 kid 匹配密钥。
  */
 @Slf4j
 @Component
 public class JwtKeyProvider {
 
     private final String jwksUrl;
-
-    private PublicKey publicKey;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Map<String, PublicKey> keyMap = new ConcurrentHashMap<>();
 
     public JwtKeyProvider(@Value("${supabase.url}") String supabaseUrl) {
         this.jwksUrl = supabaseUrl + "/auth/v1/.well-known/jwks.json";
@@ -35,6 +40,12 @@ public class JwtKeyProvider {
 
     @PostConstruct
     public void init() {
+        refreshKeys();
+    }
+
+    /** 每小时刷新一次 JWKS，应对密钥轮换 */
+    @Scheduled(fixedDelay = 3600000)
+    public void refreshKeys() {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
@@ -48,80 +59,73 @@ public class JwtKeyProvider {
                 return;
             }
 
-            String json = response.body();
-            log.info("Fetched JWKS from Supabase successfully");
-
-            // 解析 JWKS JSON 中的 x, y 坐标（ES256 EC P-256 公钥）
-            String xStr = extractJsonValue(json, "\"x\"");
-            String yStr = extractJsonValue(json, "\"y\"");
-
-            if (xStr == null || yStr == null) {
-                log.error("Could not find x/y coordinates in JWKS response");
+            JsonNode jwks = objectMapper.readTree(response.body());
+            JsonNode keys = jwks.get("keys");
+            if (keys == null || !keys.isArray()) {
+                log.error("JWKS response has no 'keys' array");
                 return;
             }
 
-            // Base64url 解码坐标
-            byte[] xBytes = Base64.getUrlDecoder().decode(xStr);
-            byte[] yBytes = Base64.getUrlDecoder().decode(yStr);
+            Map<String, PublicKey> newKeys = new ConcurrentHashMap<>();
+            for (JsonNode keyNode : keys) {
+                String kty = keyNode.has("kty") ? keyNode.get("kty").asText() : "";
+                if (!"EC".equals(kty)) continue;
 
-            BigInteger x = new BigInteger(1, xBytes);
-            BigInteger y = new BigInteger(1, yBytes);
+                String kid = keyNode.has("kid") ? keyNode.get("kid").asText() : "default";
+                String xStr = keyNode.has("x") ? keyNode.get("x").asText() : null;
+                String yStr = keyNode.has("y") ? keyNode.get("y").asText() : null;
 
-            // 创建 EC P-256 公钥
-            KeyFactory keyFactory = KeyFactory.getInstance("EC");
-            ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("P-256");
-            ECPoint point = new ECPoint(x, y);
-            ECPublicKeySpec keySpec = new ECPublicKeySpec(point, ecSpec);
-            this.publicKey = keyFactory.generatePublic(keySpec);
+                if (xStr == null || yStr == null) continue;
 
-            log.info("JWKS public key loaded successfully");
-        } catch (Exception e) {
-            log.error("Failed to load JWKS public key: {}", e.getMessage(), e);
-        }
-    }
+                byte[] xBytes = Base64.getUrlDecoder().decode(xStr);
+                byte[] yBytes = Base64.getUrlDecoder().decode(yStr);
 
-    public PublicKey getPublicKey() {
-        return publicKey;
-    }
-
-    /** 简单的 JSON 字段提取（避免引入额外依赖） */
-    private static String extractJsonValue(String json, String key) {
-        int keyIdx = json.indexOf(key);
-        if (keyIdx == -1) return null;
-        int colonIdx = json.indexOf(':', keyIdx);
-        if (colonIdx == -1) return null;
-        int startQuote = json.indexOf('"', colonIdx);
-        if (startQuote == -1) return null;
-        int endQuote = json.indexOf('"', startQuote + 1);
-        if (endQuote == -1) return null;
-        return json.substring(startQuote + 1, endQuote);
-    }
-
-    /** 内部辅助类：EC 命名曲线查找 */
-    private static class ECNamedCurveTable {
-        static ECParameterSpec getParameterSpec(String name) throws Exception {
-            if ("P-256".equals(name) || "secp256r1".equals(name)) {
-                // P-256 / secp256r1 参数
-                BigInteger p = new BigInteger(
-                        "115792089210356248762697446949407573530086143415290314195533631308867097853951");
-                // Java EllipticCurve 不接受负系数，a = -3 需转为 p - 3
-                BigInteger a = p.subtract(BigInteger.valueOf(3));
-                return new ECParameterSpec(
-                        new java.security.spec.EllipticCurve(
-                                new java.security.spec.ECFieldFp(p),
-                                a,
-                                new BigInteger(
-                                        "5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b", 16)
-                        ),
-                        new ECPoint(
-                                new BigInteger("6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296", 16),
-                                new BigInteger("4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5", 16)
-                        ),
-                        new BigInteger("115792089210356248762697446949407573529996955224135760342422259061068512044369"),
-                        1
-                );
+                KeyFactory keyFactory = KeyFactory.getInstance("EC");
+                ECParameterSpec ecSpec = getP256Spec();
+                ECPoint point = new ECPoint(new BigInteger(1, xBytes), new BigInteger(1, yBytes));
+                ECPublicKeySpec keySpec = new ECPublicKeySpec(point, ecSpec);
+                newKeys.put(kid, keyFactory.generatePublic(keySpec));
             }
-            throw new IllegalArgumentException("Unsupported curve: " + name);
+
+            if (!newKeys.isEmpty()) {
+                keyMap.clear();
+                keyMap.putAll(newKeys);
+                log.info("JWKS refreshed: loaded {} key(s)", newKeys.size());
+            }
+        } catch (Exception e) {
+            log.error("Failed to refresh JWKS: {}", e.getMessage(), e);
         }
+    }
+
+    /** 根据 kid 获取对应公钥，不匹配则返回 null */
+    public PublicKey getPublicKey(String kid) {
+        if (kid != null && keyMap.containsKey(kid)) {
+            return keyMap.get(kid);
+        }
+        // 只有一个 key 时兜底返回
+        if (keyMap.size() == 1) {
+            return keyMap.values().iterator().next();
+        }
+        return null;
+    }
+
+    /** P-256 / secp256r1 曲线参数 */
+    private static ECParameterSpec getP256Spec() {
+        BigInteger p = new BigInteger(
+                "115792089210356248762697446949407573530086143415290314195533631308867097853951");
+        BigInteger a = p.subtract(BigInteger.valueOf(3));
+        return new ECParameterSpec(
+                new java.security.spec.EllipticCurve(
+                        new java.security.spec.ECFieldFp(p),
+                        a,
+                        new BigInteger("5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b", 16)
+                ),
+                new ECPoint(
+                        new BigInteger("6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296", 16),
+                        new BigInteger("4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5", 16)
+                ),
+                new BigInteger("115792089210356248762697446949407573529996955224135760342422259061068512044369"),
+                1
+        );
     }
 }

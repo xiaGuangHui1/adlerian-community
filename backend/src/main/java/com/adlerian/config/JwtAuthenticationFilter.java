@@ -2,6 +2,7 @@ package com.adlerian.config;
 
 import com.adlerian.repository.UserRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -42,9 +44,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             try {
-                var key = keyProvider.getPublicKey();
+                // 从 JWT header 中提取 kid（不验证签名）
+                String kid = extractKid(token);
+                var key = keyProvider.getPublicKey(kid);
                 if (key == null) {
-                    log.warn("No public key available for JWT verification");
+                    log.warn("No matching public key for kid={}", kid);
                 } else {
                     Claims claims = Jwts.parser()
                             .verifyWith(key)
@@ -67,5 +71,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /** 从未验证的 JWT header 中提取 kid 字段 */
+    private String extractKid(String token) {
+        try {
+            String[] parts = token.split("\\.");
+            if (parts.length < 2) return null;
+            String headerJson = new String(Base64.getUrlDecoder().decode(parts[0]));
+            // 简单提取 kid，避免额外解析
+            int kidIdx = headerJson.indexOf("\"kid\"");
+            if (kidIdx == -1) return null;
+            int colonIdx = headerJson.indexOf(':', kidIdx);
+            int startQuote = headerJson.indexOf('"', colonIdx);
+            int endQuote = headerJson.indexOf('"', startQuote + 1);
+            return headerJson.substring(startQuote + 1, endQuote);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
