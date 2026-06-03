@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 /**
  * 应用启动时自动检查并填充 mock 数据。仅当对应表为空时才写入，
@@ -142,13 +142,16 @@ public class DataSeeder implements CommandLineRunner {
             return;
         }
 
-        Optional<User> authorOpt = userRepository.findAll().stream().findFirst();
-        if (authorOpt.isEmpty()) {
-            log.info("No users found, skipping post seed. Posts will be created after first user registers.");
-            return;
-        }
-
-        User author = authorOpt.get();
+        User author = userRepository.findAll().stream().findFirst().orElseGet(() -> {
+            log.info("No users found, creating system user for seed data");
+            User systemUser = User.builder()
+                    .authId(UUID.fromString("a0000000-0000-0000-0000-000000000000"))
+                    .nickname("阿德勒学长")
+                    .bio("分享阿德勒心理学的思考与实践")
+                    .createdAt(Instant.now())
+                    .build();
+            return userRepository.save(systemUser);
+        });
 
         List<Post> posts = List.of(
             createPost(author, "课题分离",
