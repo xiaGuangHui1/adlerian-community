@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.PublicKey;
+import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
 
@@ -89,17 +90,36 @@ public class UserController {
     /** 从 Authorization header 解析 JWT 中的 sub（Supabase 用户 ID） */
     private UUID extractAuthId(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) return null;
+        String token = authHeader.substring(7);
         try {
-            PublicKey key = keyProvider.getPublicKey();
+            String kid = extractKid(token);
+            PublicKey key = keyProvider.getPublicKey(kid);
             if (key == null) return null;
             Claims claims = Jwts.parser()
                     .verifyWith(key)
                     .build()
-                    .parseSignedClaims(authHeader.substring(7))
+                    .parseSignedClaims(token)
                     .getPayload();
             return UUID.fromString(claims.getSubject());
         } catch (Exception e) {
             log.warn("Failed to parse JWT: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /** 从 JWT header 中提取 kid 字段 */
+    private String extractKid(String token) {
+        try {
+            String[] parts = token.split("\\.");
+            if (parts.length < 2) return null;
+            String headerJson = new String(Base64.getUrlDecoder().decode(parts[0]));
+            int kidIdx = headerJson.indexOf("\"kid\"");
+            if (kidIdx == -1) return null;
+            int colonIdx = headerJson.indexOf(':', kidIdx);
+            int startQuote = headerJson.indexOf('"', colonIdx);
+            int endQuote = headerJson.indexOf('"', startQuote + 1);
+            return headerJson.substring(startQuote + 1, endQuote);
+        } catch (Exception e) {
             return null;
         }
     }
