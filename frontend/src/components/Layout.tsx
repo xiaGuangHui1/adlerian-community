@@ -12,6 +12,7 @@ const NAV_ITEMS = [
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, profile, signOut } = useAuth();
   const location = useLocation();
+  const profileInitial = profile?.nickname?.trim().charAt(0) || '勇';
 
   return (
     <div className="min-h-screen bg-warm-50">
@@ -48,13 +49,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-3">
-            {user && profile ? (
+            {profile ? (
               <>
                 <Link
                   to={`/profile/${profile.id}`}
-                  className="text-sm text-gray-600 hover:text-peach-700 no-underline transition-colors"
+                  className="w-9 h-9 rounded-full border-2 border-peach-100 overflow-hidden bg-gradient-to-br from-peach-300 to-teal-300 text-white flex items-center justify-center text-sm font-bold no-underline hover:border-peach-300 transition-colors"
+                  aria-label={`${profile.nickname}的个人主页`}
+                  title={profile.nickname}
                 >
-                  {profile.nickname}
+                  {profile.avatarUrl ? (
+                    <img
+                      src={profile.avatarUrl}
+                      alt={profile.nickname}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    profileInitial
+                  )}
                 </Link>
                 <button
                   onClick={signOut}

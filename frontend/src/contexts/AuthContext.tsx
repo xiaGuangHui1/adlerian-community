@@ -14,15 +14,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) {
+        setUser(null);
         setProfile(null);
         return null;
       }
+      setUser(session.user);
       const { data } = await api.get('/users/me');
       setProfile(data);
       return data;
     } catch {
-      // profile might not exist yet
-      setProfile(null);
+      // The auth session can arrive before the local profile is created.
+      // Keep any profile that was just registered by the active login flow.
       return null;
     }
   };
@@ -66,6 +68,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const registerProfileFn = async (nickname: string) => {
     const { data } = await api.post('/users/register', { nickname });
+    const { data: { session } } = await supabase.auth.getSession();
+    setUser(session?.user ?? null);
     setProfile(data);
     return data;
   };
