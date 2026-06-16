@@ -71,8 +71,21 @@ export function useLogin() {
     setLoading(true);
     setError(null);
     try {
-      const { error } = await supabase.auth.verifyOtp({ email, token, type: 'email' });
+      const { data, error } = await supabase.auth.verifyOtp({ email, token, type: 'email' });
       if (error) throw error;
+
+      if (data.session) {
+        await supabase.auth.setSession({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token,
+        });
+      }
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error('登录状态建立失败，请重新输入验证码');
+      }
+
       setLoading(false);
       return true;
     } catch (err) {

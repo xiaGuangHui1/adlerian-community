@@ -10,6 +10,7 @@ export default function Login() {
   const { loading, error, sendOTP, verifyOTP, signInWithPassword, clearError } = useLogin();
   const { registerProfile } = useAuth();
   const navigate = useNavigate();
+  const [localError, setLocalError] = useState<string | null>(null);
 
   // 密码登录
   const [pwdEmail, setPwdEmail] = useState('');
@@ -22,19 +23,25 @@ export default function Login() {
   const [countdown, setCountdown] = useState(0);
 
   const handleAfterLogin = async () => {
-    // 确保 profile 已创建并更新到 auth 状态，再跳转首页
-    await registerProfile('社区成员');
-    navigate('/');
+    try {
+      // 确保 profile 已创建并更新到 auth 状态，再跳转首页
+      await registerProfile('社区成员');
+      navigate('/');
+    } catch {
+      setLocalError('已验证邮箱，但登录状态同步失败，请刷新后重试');
+    }
   };
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
     if (!pwdEmail || !password) return;
     const success = await signInWithPassword(pwdEmail, password);
     if (success) await handleAfterLogin();
   };
 
   const handleSendOtp = async () => {
+    setLocalError(null);
     if (!otpEmail || !otpEmail.includes('@')) return;
     const success = await sendOTP(otpEmail);
     if (success) {
@@ -51,6 +58,7 @@ export default function Login() {
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
     if (!otp || otp.length < 6) return;
     const success = await verifyOTP(otpEmail, otp);
     if (success) await handleAfterLogin();
@@ -58,8 +66,11 @@ export default function Login() {
 
   const switchTab = (tab: AuthTab) => {
     setActiveTab(tab);
+    setLocalError(null);
     clearError();
   };
+
+  const displayError = localError || error;
 
   return (
     <div className="max-w-md mx-auto mt-16 px-4">
@@ -100,8 +111,8 @@ export default function Login() {
         </div>
 
         {/* 错误提示 */}
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-lg">{error}</div>
+        {displayError && (
+          <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-lg">{displayError}</div>
         )}
 
         {/* 验证码登录表单 */}
@@ -139,7 +150,7 @@ export default function Login() {
                   {countdown > 0 ? `${countdown}s` : otpSent ? '重新发送' : '发送验证码'}
                 </button>
               </div>
-              {otpSent && !error && (
+              {otpSent && !displayError && (
                 <p className="text-xs text-green-600 mt-1">验证码已发送，请查收邮箱</p>
               )}
             </div>
