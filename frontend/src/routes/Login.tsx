@@ -22,14 +22,11 @@ export default function Login() {
   const [otpSent, setOtpSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
-  const handleAfterLogin = async () => {
-    try {
-      // 确保 profile 已创建并更新到 auth 状态，再跳转首页
-      await registerProfile('社区成员');
-      navigate('/');
-    } catch {
-      setLocalError('已验证邮箱，但登录状态同步失败，请刷新后重试');
-    }
+  const handleAfterLogin = () => {
+    navigate('/', { replace: true });
+    void registerProfile('社区成员').catch(() => {
+      setLocalError('已登录，但社区资料同步失败，请刷新后重试');
+    });
   };
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
@@ -37,7 +34,7 @@ export default function Login() {
     setLocalError(null);
     if (!pwdEmail || !password) return;
     const success = await signInWithPassword(pwdEmail, password);
-    if (success) await handleAfterLogin();
+    if (success) handleAfterLogin();
   };
 
   const handleSendOtp = async () => {
@@ -61,7 +58,7 @@ export default function Login() {
     setLocalError(null);
     if (!otp || otp.length < 6) return;
     const success = await verifyOTP(otpEmail, otp);
-    if (success) await handleAfterLogin();
+    if (success) handleAfterLogin();
   };
 
   const switchTab = (tab: AuthTab) => {
