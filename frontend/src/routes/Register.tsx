@@ -33,21 +33,28 @@ export default function Register() {
       return;
     }
 
-    // 1. 注册 Supabase Auth 账号
-    const success = await signUp(email, password);
-    if (!success) return;
+    // 1. 注册 Supabase Auth 账号；若邮箱已存在，尝试用当前密码登录并补全本地 profile。
+    const signUpResult = await signUp(email, password);
+    if (signUpResult === 'failed') return;
 
     // 2. 自动登录获取 session
     const loggedIn = await signInWithPassword(email, password);
     if (!loggedIn) {
-      setLocalError('注册成功但自动登录失败，请手动登录');
-      navigate('/login');
+      if (signUpResult === 'already_registered') {
+        setLocalError('该邮箱已注册。请用已有密码登录，或返回登录页使用邮箱验证码登录。');
+        return;
+      }
+      setLocalError('注册成功，请返回登录页使用邮箱验证码完成登录。');
       return;
     }
 
-    // 3. 创建 profile 并确保状态更新后，再跳转首页
-    await registerProfile('社区成员');
-    navigate('/');
+    // 3. 创建或补全 profile，并确保状态更新后再跳转首页
+    try {
+      await registerProfile('社区成员');
+      navigate('/');
+    } catch {
+      setLocalError('账号已登录，但创建社区资料失败，请稍后重试');
+    }
   };
 
   const displayError = localError || error;

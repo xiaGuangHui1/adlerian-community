@@ -36,6 +36,15 @@ function extractError(err: unknown): string {
   return String(err);
 }
 
+function isAlreadyRegisteredError(err: unknown): boolean {
+  if (!err || typeof err !== 'object') return false;
+  const obj = err as Record<string, unknown>;
+  const message = String(obj.message || obj.msg || obj.error || '');
+  return message.includes('already registered') || message.includes('already exists');
+}
+
+export type SignUpResult = 'created' | 'already_registered' | 'failed';
+
 export function useLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -96,7 +105,7 @@ export function useLogin() {
    * 重复注册检测：Supabase signUp 对已注册邮箱不抛错，
    * 返回占位 user（identities 为空数组），需前端自行判断
    */
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string): Promise<SignUpResult> => {
     setLoading(true);
     setError(null);
     try {
@@ -105,18 +114,21 @@ export function useLogin() {
 
       // identities 为空 → 已注册邮箱
       if (data.user?.identities && data.user.identities.length === 0) {
-        setError('该邮箱已注册，请直接登录');
         setLoading(false);
-        return false;
+        return 'already_registered';
       }
 
       setLoading(false);
-      return true;
+      return 'created';
     } catch (err) {
       console.error('[signUp] error:', err);
+      if (isAlreadyRegisteredError(err)) {
+        setLoading(false);
+        return 'already_registered';
+      }
       setError(extractError(err) || '注册失败');
       setLoading(false);
-      return false;
+      return 'failed';
     }
   };
 
