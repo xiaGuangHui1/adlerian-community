@@ -1,26 +1,26 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from './useAuth';
 
 export function useShare() {
   const { profile } = useAuth();
   const [copied, setCopied] = useState(false);
 
-  const getShareUrl = useCallback(() => {
+  const getShareUrl = () => {
     const base = window.location.origin;
     if (profile?.id) {
       return `${base}/invite?ref=${profile.id}`;
     }
     return `${base}/invite`;
-  }, [profile?.id]);
+  };
 
-  const getShareText = useCallback(() => {
+  const getShareText = () => {
     if (profile?.nickname) {
       return `${profile.nickname}邀请你一起练习阿德勒心理学！在这里，我们找回勇气，练习课题分离，建立横向关系。一起加入阿德勒心理学社区~`;
     }
     return '来陪我一起练习阿德勒心理学！在这里，我们找回勇气，练习课题分离，建立横向关系。加入阿德勒心理学社区之旅~';
-  }, [profile?.nickname]);
+  };
 
-  const shareOrCopy = useCallback(async () => {
+  const shareOrCopy = async () => {
     const shareUrl = getShareUrl();
     const shareText = getShareText();
 
@@ -45,9 +45,9 @@ export function useShare() {
     } catch {
       throw new Error('分享失败，请手动复制链接');
     }
-  }, [getShareUrl, getShareText]);
+  };
 
-  const shareTeam = useCallback(async (inviteCode: string, teamName: string) => {
+  const shareTeam = async (inviteCode: string, teamName: string) => {
     const base = window.location.origin;
     const shareUrl = `${base}/invite?team=${inviteCode}`;
     const shareText = profile?.nickname
@@ -75,7 +75,7 @@ export function useShare() {
     } catch {
       throw new Error('分享失败，请手动复制链接');
     }
-  }, [profile?.nickname]);
+  };
 
   return { shareUrl: getShareUrl(), shareOrCopy, copied, shareTeam };
 }

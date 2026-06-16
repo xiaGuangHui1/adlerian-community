@@ -1,10 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Icon } from '@iconify-icon/react';
+import axios from 'axios';
 import api from '../lib/api';
 import { useAuth } from '../hooks/useAuth';
 import { useShare } from '../hooks/useShare';
 import type { TeamInfo, TeamInvitation, CreateTeamResponse } from '../types';
+
+function getErrorMessage(error: unknown, fallback: string) {
+  if (axios.isAxiosError<{ message?: string }>(error)) {
+    return error.response?.data?.message || error.message || fallback;
+  }
+  return error instanceof Error ? error.message : fallback;
+}
 
 export default function Invite() {
   const { user } = useAuth();
@@ -22,12 +30,9 @@ export default function Invite() {
   const [shareTarget, setShareTarget] = useState<'default' | 'team'>('default');
   const [pendingInviteCode, setPendingInviteCode] = useState('');
 
-  useEffect(() => {
-    fetchPageData();
-  }, [user]);
-
-  const fetchPageData = async () => {
-    const promises: Promise<any>[] = [];
+  const fetchPageData = useCallback(async () => {
+    await Promise.resolve();
+    const promises: Promise<unknown>[] = [];
     if (user) {
       promises.push(
         api.get<TeamInfo>('/teams/my')
@@ -48,7 +53,14 @@ export default function Invite() {
     }
     await Promise.allSettled(promises);
     setLoading(false);
-  };
+  }, [teamCode, user]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      void fetchPageData();
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [fetchPageData]);
 
   const handleCreateTeam = async () => {
     setCreatingTeam(true);
@@ -57,8 +69,8 @@ export default function Invite() {
       setPendingInviteCode(data.inviteCode);
       setShareTarget('team');
       setShowSharePanel(true);
-    } catch (err: any) {
-      alert(err?.response?.data?.message || err?.message || '创建失败');
+    } catch (error: unknown) {
+      alert(getErrorMessage(error, '创建失败'));
     } finally {
       setCreatingTeam(false);
     }
@@ -78,8 +90,8 @@ export default function Invite() {
       }
       await api.post(`/teams/${teamCode}/join`);
       await fetchPageData();
-    } catch (err: any) {
-      setJoinError(err?.response?.data?.message || '加入失败');
+    } catch (error: unknown) {
+      setJoinError(getErrorMessage(error, '加入失败'));
     } finally {
       setJoiningTeam(false);
     }
@@ -95,6 +107,19 @@ export default function Invite() {
 
   const activeInviteCode = myTeam?.inviteCode || pendingInviteCode;
 
+  const handleShare = () => {
+    if (shareTarget === 'team' && activeInviteCode) {
+      void shareTeam(activeInviteCode, myTeam?.name || '');
+      return;
+    }
+    void shareOrCopy();
+  };
+
+  const handleConfirmShare = () => {
+    handleShare();
+    setShowSharePanel(false);
+  };
+
   const sharePanel = showSharePanel && (
     <div className="fixed inset-0 z-[100]">
       <div className="absolute inset-0 bg-black/40" onClick={() => setShowSharePanel(false)} />
@@ -105,7 +130,7 @@ export default function Invite() {
 
         <div className="flex justify-center gap-8 mb-8">
           <button
-            onClick={() => { shareTarget === 'team' && activeInviteCode ? shareTeam(activeInviteCode, myTeam?.name || '') : shareOrCopy(); }}
+            onClick={handleShare}
             className="flex flex-col items-center gap-2 cursor-pointer border-0 bg-transparent"
           >
             <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center text-green-500 shadow-sm hover:scale-105 transition-transform">
@@ -114,7 +139,7 @@ export default function Invite() {
             <span className="text-xs text-gray-600 font-medium">微信好友</span>
           </button>
           <button
-            onClick={() => { shareTarget === 'team' && activeInviteCode ? shareTeam(activeInviteCode, myTeam?.name || '') : shareOrCopy(); }}
+            onClick={handleShare}
             className="flex flex-col items-center gap-2 cursor-pointer border-0 bg-transparent"
           >
             <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center text-green-500 shadow-sm hover:scale-105 transition-transform">
@@ -123,7 +148,7 @@ export default function Invite() {
             <span className="text-xs text-gray-600 font-medium">朋友圈</span>
           </button>
           <button
-            onClick={() => { shareTarget === 'team' && activeInviteCode ? shareTeam(activeInviteCode, myTeam?.name || '') : shareOrCopy(); }}
+            onClick={handleShare}
             className="flex flex-col items-center gap-2 cursor-pointer border-0 bg-transparent"
           >
             <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-peach-500 shadow-sm hover:scale-105 transition-transform">
@@ -147,7 +172,7 @@ export default function Invite() {
         </div>
 
         <button
-          onClick={() => { shareTarget === 'team' && activeInviteCode ? shareTeam(activeInviteCode, myTeam?.name || '') : shareOrCopy(); setShowSharePanel(false); }}
+          onClick={handleConfirmShare}
           className="w-full bg-teal-500 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-teal-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer border-0"
         >
           <Icon icon="ph:check-circle-fill" width="22" />

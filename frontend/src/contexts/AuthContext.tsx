@@ -1,21 +1,9 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import api from '../lib/api';
 import { UserProfile } from '../types';
-
-interface AuthState {
-  user: User | null;
-  profile: UserProfile | null;
-  loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
-  signOut: () => Promise<void>;
-  registerProfile: (nickname: string) => Promise<UserProfile>;
-  fetchProfile: () => Promise<void>;
-}
-
-const AuthContext = createContext<AuthState | null>(null);
+import { AuthContext, type ProfileUpdate } from './auth-context';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -25,11 +13,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchProfile = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) return;
+      if (!session?.access_token) {
+        setProfile(null);
+        return null;
+      }
       const { data } = await api.get('/users/me');
       setProfile(data);
+      return data;
     } catch {
       // profile might not exist yet
+      setProfile(null);
+      return null;
     }
   };
 
@@ -76,20 +70,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return data;
   };
 
+  const updateProfileFn = async (profile: ProfileUpdate) => {
+    const { data } = await api.put('/users/me', profile);
+    setProfile(data);
+    return data;
+  };
+
   return (
     <AuthContext.Provider value={{
       user, profile, loading,
       signIn, signUp, signOut,
       registerProfile: registerProfileFn,
+      updateProfile: updateProfileFn,
       fetchProfile,
     }}>
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
-  return ctx;
 }

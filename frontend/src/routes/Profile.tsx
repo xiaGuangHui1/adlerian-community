@@ -40,51 +40,61 @@ export default function Profile() {
 
   useEffect(() => {
     if (!id) return;
-    setLoading(true);
-    setNotFound(false);
-    setActiveTab(0);
+    let active = true;
 
-    api.get<UserProfile>(`/users/${id}`)
-      .then(({ data }) => {
+    const loadProfile = async () => {
+      await Promise.resolve();
+      if (!active) return;
+
+      setLoading(true);
+      setNotFound(false);
+      setActiveTab(0);
+      setPostsLoading(true);
+      setCheckinsLoading(true);
+
+      try {
+        const { data } = await api.get<UserProfile>(`/users/${id}`);
+        if (!active) return;
         setProfile(data);
         document.title = `${data.nickname}的个人主页 - 阿德勒心理学社区`;
-        loadPosts();
-        loadCheckins();
-      })
-      .catch(() => {
-        setNotFound(true);
-        setLoading(false);
-      });
+
+        const [postsResult, checkinsResult] = await Promise.allSettled([
+          api.get<{ content?: Post[] }>(`/posts/user/${id}`, { params: { size: 20 } }),
+          Promise.all([
+            api.get<CheckIn[]>(`/checkins/user/${id}`),
+            api.get<CheckInStats>(`/checkins/user/${id}/stats`),
+          ]),
+        ]);
+        if (!active) return;
+
+        setPosts(postsResult.status === 'fulfilled' ? postsResult.value.data.content || [] : []);
+        if (checkinsResult.status === 'fulfilled') {
+          const [checkinRes, statsRes] = checkinsResult.value;
+          setCheckins(checkinRes.data || []);
+          setCheckinStats(statsRes.data);
+        } else {
+          setCheckins([]);
+          setCheckinStats({ totalDays: 0, streak: 0 });
+        }
+      } catch {
+        if (active) {
+          setNotFound(true);
+          setProfile(null);
+        }
+      } finally {
+        if (active) {
+          setPostsLoading(false);
+          setCheckinsLoading(false);
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadProfile();
+    return () => {
+      active = false;
+    };
   }, [id]);
-
-  const loadPosts = async () => {
-    setPostsLoading(true);
-    try {
-      const { data } = await api.get(`/posts/user/${id}`, { params: { size: 20 } });
-      setPosts(data.content || []);
-    } catch {
-      setPosts([]);
-    } finally {
-      setPostsLoading(false);
-    }
-  };
-
-  const loadCheckins = async () => {
-    setCheckinsLoading(true);
-    try {
-      const [checkinRes, statsRes] = await Promise.all([
-        api.get<CheckIn[]>(`/checkins/user/${id}`),
-        api.get<CheckInStats>(`/checkins/user/${id}/stats`),
-      ]);
-      setCheckins(checkinRes.data || []);
-      setCheckinStats(statsRes.data);
-    } catch {
-      // ignore
-    } finally {
-      setCheckinsLoading(false);
-      setLoading(false);
-    }
-  };
 
   // 404 state
   if (notFound) {
@@ -224,8 +234,8 @@ export default function Profile() {
                 <h3 className="text-lg font-bold mb-2 group-hover:text-peach-500 transition-colors">
                   {post.title}
                 </h3>
-                <p className="text-sm text-gray-400 mb-4 line-clamp-2">
-                  {post.content?.replace(/[#*`>\-\[\]()!]/g, '').substring(0, 120) || ''}
+                  <p className="text-sm text-gray-400 mb-4 line-clamp-2">
+                    {post.content?.replace(/[#[\]*`>()!-]/g, '').substring(0, 120) || ''}
                 </p>
                 <div className="flex items-center gap-2 text-gray-400 text-xs">
                   <Icon icon="ph:chat-circle-text" width="16" />

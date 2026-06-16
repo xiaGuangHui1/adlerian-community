@@ -38,7 +38,6 @@ export default function CheckInPage() {
   const [quote, setQuote] = useState<Quote | null>(null);
 
   useEffect(() => {
-    setLoading(true);
     Promise.all([
       api.get('/checkins/today').then(r => {
         setTodayCheckIn(r.status === 204 || !r.data ? null : r.data);

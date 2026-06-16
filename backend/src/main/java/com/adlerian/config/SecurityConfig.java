@@ -62,6 +62,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/groups", "/api/groups/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/encouragements").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/teams/invitation/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/users/me").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/users/*").permitAll()
                 .requestMatchers("/api/users/register").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 // 其他API需要认证

@@ -3,6 +3,15 @@ import { Link, useSearchParams } from 'react-router-dom';
 import api from '../lib/api';
 import { Post, CATEGORIES, PageResponse } from '../types';
 
+function timeAgo(dateStr: string) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${mins}分钟前`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}小时前`;
+  return `${Math.floor(hours / 24)}天前`;
+}
+
 export default function Forum() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [posts, setPosts] = useState<Post[]>([]);
@@ -12,35 +21,26 @@ export default function Forum() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchPosts();
-  }, [category, page]);
+    const fetchPosts = async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams({ page: String(page), size: '20' });
+        if (category) params.set('category', category);
+        const { data } = await api.get<PageResponse<Post>>(`/posts?${params}`);
+        setPosts(data.content);
+        setTotalPages(data.totalPages);
+      } catch {
+        // handle error
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchPosts = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams({ page: String(page), size: '20' });
-      if (category) params.set('category', category);
-      const { data } = await api.get<PageResponse<Post>>(`/posts?${params}`);
-      setPosts(data.content);
-      setTotalPages(data.totalPages);
-    } catch {
-      // handle error
-    } finally {
-      setLoading(false);
-    }
-  };
+    void fetchPosts();
+  }, [category, page]);
 
   const getCategoryLabel = (value: string) =>
     CATEGORIES.find((c) => c.value === value)?.label || value;
-
-  const timeAgo = (dateStr: string) => {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins}分钟前`;
-    const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}小时前`;
-    return `${Math.floor(hours / 24)}天前`;
-  };
 
   return (
     <div className="-mx-4 sm:-mx-6 lg:-mx-8">

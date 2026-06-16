@@ -63,6 +63,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   退出
                 </button>
               </>
+            ) : user ? (
+              <>
+                <Link
+                  to="/login"
+                  className="text-sm text-gray-600 hover:text-peach-700 no-underline transition-colors"
+                >
+                  完善资料
+                </Link>
+                <button
+                  onClick={signOut}
+                  className="text-sm text-gray-400 hover:text-peach-600 bg-transparent border-0 cursor-pointer transition-colors"
+                >
+                  退出
+                </button>
+              </>
             ) : (
               <Link
                 to="/login"

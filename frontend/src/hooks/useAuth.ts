@@ -1,3 +1,12 @@
-// Re-exported from AuthContext for backward compatibility.
-// All components share the same auth state via React Context.
-export { useAuth, AuthProvider } from '../contexts/AuthContext';
+import { useContext } from 'react';
+import { AuthContext } from '../contexts/auth-context';
+
+export { AuthProvider } from '../contexts/AuthContext';
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
+}

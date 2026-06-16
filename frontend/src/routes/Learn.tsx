@@ -17,21 +17,21 @@ export default function Learn() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchResources();
-  }, [tab]);
+    const fetchResources = async () => {
+      setLoading(true);
+      try {
+        const { data } = await api.get<Resource[]>(`/resources?type=${tab}`);
+        setResources(data);
+        setSelected(null);
+      } catch {
+        // handle error
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchResources = async () => {
-    setLoading(true);
-    try {
-      const { data } = await api.get<Resource[]>(`/resources?type=${tab}`);
-      setResources(data);
-      setSelected(null);
-    } catch {
-      // handle error
-    } finally {
-      setLoading(false);
-    }
-  };
+    void fetchResources();
+  }, [tab]);
 
   return (
     <div>

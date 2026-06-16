@@ -12,6 +12,7 @@ import CheckIn from './routes/CheckIn';
 import Groups from './routes/Groups';
 import Invite from './routes/Invite';
 import Profile from './routes/Profile';
+import ProfileEdit from './routes/ProfileEdit';
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
             <Route path="/checkin" element={<CheckIn />} />
             <Route path="/groups" element={<Groups />} />
             <Route path="/invite" element={<Invite />} />
+            <Route path="/profile/edit" element={<ProfileEdit />} />
             <Route path="/profile/:id" element={<Profile />} />
           </Routes>
         </Layout>

@@ -20,7 +20,6 @@ export default function KnowledgeBase() {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
     api.get<Resource[]>('/resources', { params: { ...(activeTab ? { type: activeTab } : {}) } })
       .then(r => setResources(r.data))
       .catch(() => setResources([]))

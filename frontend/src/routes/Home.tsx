@@ -3,6 +3,15 @@ import { Link } from 'react-router-dom';
 import api from '../lib/api';
 import type { Post, Resource, HomeStats } from '../types';
 
+function timeAgo(time: string) {
+  const diff = Date.now() - new Date(time).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${mins}分钟前`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}小时前`;
+  return `${Math.floor(hours / 24)}天前`;
+}
+
 export default function Home() {
   const [stats, setStats] = useState<HomeStats | null>(null);
   const [hotPosts, setHotPosts] = useState<Post[]>([]);
@@ -31,14 +40,6 @@ export default function Home() {
   }, []);
 
   const formatNumber = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
-  const timeAgo = (t: string) => {
-    const diff = Date.now() - new Date(t).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins}分钟前`;
-    const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}小时前`;
-    return `${Math.floor(hours / 24)}天前`;
-  };
 
   if (loading) {
     return (

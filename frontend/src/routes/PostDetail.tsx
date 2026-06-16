@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import api from '../lib/api';
@@ -14,11 +14,8 @@ export default function PostDetail() {
   const [encouragements, setEncouragements] = useState<Encouragement[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchData();
-  }, [id]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    await Promise.resolve();
     setLoading(true);
     try {
       const [postRes, commentsRes, encRes] = await Promise.all([
@@ -34,7 +31,14 @@ export default function PostDetail() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      void fetchData();
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [fetchData]);
 
   if (loading || !post) {
     return <div className="text-center py-12 text-gray-400">加载中...</div>;

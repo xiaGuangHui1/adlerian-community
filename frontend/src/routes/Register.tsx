@@ -5,35 +5,13 @@ import { useLogin } from '../hooks/useLogin';
 
 export default function Register() {
   const { registerProfile } = useAuth();
-  const { loading, error, sendOTP, signUp, signInWithPassword, clearError } = useLogin();
+  const { loading, error, signUp, signInWithPassword, clearError } = useLogin();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [otp, setOtp] = useState('');
-  const [countdown, setCountdown] = useState(0);
   const [localError, setLocalError] = useState('');
-
-  // ── 发送验证码 ──────────────────────────────
-
-  const handleSendOtp = async () => {
-    setLocalError('');
-    if (!email || !email.includes('@')) {
-      setLocalError('请输入有效的邮箱地址');
-      return;
-    }
-    const success = await sendOTP(email);
-    if (success) {
-      setCountdown(60);
-      const timer = setInterval(() => {
-        setCountdown(prev => {
-          if (prev <= 1) { clearInterval(timer); return 0; }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-  };
 
   // ── 注册 ────────────────────────────────────
 
@@ -116,32 +94,6 @@ export default function Register() {
                 required
                 className="w-full px-3 py-2.5 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-warm-50"
               />
-            </div>
-
-            {/* 验证码（选填） */}
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">验证码</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={e => setOtp(e.target.value)}
-                  placeholder="6 位验证码（选填）"
-                  maxLength={6}
-                  className="flex-1 px-3 py-2.5 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-warm-50"
-                />
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={loading || countdown > 0}
-                  className="px-4 py-2.5 rounded-lg text-sm border border-peach-100 text-gray-600 cursor-pointer bg-white hover:bg-peach-50 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap transition-colors"
-                >
-                  {countdown > 0 ? `${countdown}s` : '发送验证码'}
-                </button>
-              </div>
-              {countdown > 0 && (
-                <p className="text-xs text-green-600 mt-1">验证码已发送，请查收邮箱</p>
-              )}
             </div>
 
             {/* 密码 */}

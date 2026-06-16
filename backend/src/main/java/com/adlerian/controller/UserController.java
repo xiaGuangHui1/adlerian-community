@@ -8,7 +8,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,19 +29,29 @@ public class UserController {
     private final JwtKeyProvider keyProvider;
 
     @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser() {
-        try {
-            User user = getCurrentAuthUser();
+    public ResponseEntity<?> getCurrentUser(
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        User user = currentUserOrNull();
+        if (user != null) {
             return ResponseEntity.ok(toProfileMap(user));
-        } catch (Exception e) {
-            log.info("User not found in local DB, profile not created yet");
-            return ResponseEntity.status(404).body(Map.of("error", "用户未注册"));
         }
+
+        UUID authId = extractAuthId(authHeader);
+        if (authId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "未登录"));
+        }
+
+        return userService.findByAuthId(authId)
+                .<ResponseEntity<?>>map(existing -> ResponseEntity.ok(toProfileMap(existing)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "用户未注册")));
     }
 
     @PutMapping("/me")
     public ResponseEntity<?> updateProfile(@RequestBody UpdateUserRequest request) {
-        User user = getCurrentAuthUser();
+        User user = currentUserOrNull();
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "未登录"));
+        }
         User updated = userService.updateUser(user.getId(), request);
         return ResponseEntity.ok(toProfileMap(updated));
     }
@@ -52,7 +64,8 @@ public class UserController {
                 "id", user.getId(),
                 "nickname", user.getNickname(),
                 "avatarUrl", user.getAvatarUrl() != null ? user.getAvatarUrl() : "",
-                "bio", user.getBio() != null ? user.getBio() : ""
+                "bio", user.getBio() != null ? user.getBio() : "",
+                "createdAt", user.getCreatedAt().toString()
         ));
     }
 
@@ -124,8 +137,12 @@ public class UserController {
         }
     }
 
-    private User getCurrentAuthUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    private User currentUserOrNull() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof User user)) {
+            return null;
+        }
+        return user;
     }
 
     private Map<String, Object> toProfileMap(User user) {
