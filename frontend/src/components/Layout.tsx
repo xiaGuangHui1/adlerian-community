@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { Icon } from '@iconify-icon/react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
@@ -12,9 +10,8 @@ const NAV_ITEMS = [
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile } = useAuth();
   const location = useLocation();
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const userMetadata = user?.user_metadata as Record<string, unknown> | undefined;
   const userAvatarUrl = typeof userMetadata?.avatar_url === 'string'
     ? userMetadata.avatar_url
@@ -25,11 +22,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const displayName = profile?.nickname || user?.email?.split('@')[0] || '社区成员';
   const profileInitial = displayName.trim().charAt(0) || '勇';
   const profilePath = profile ? `/profile/${profile.id}` : '/profile/edit';
-
-  const handleSignOut = async () => {
-    setProfileMenuOpen(false);
-    await signOut();
-  };
 
   return (
     <div className="min-h-screen bg-warm-50">
@@ -67,73 +59,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <div className="flex items-center gap-3">
             {user ? (
-              <div className="relative flex items-center gap-1.5">
-                <Link
-                  to={profilePath}
-                  className="w-9 h-9 rounded-full border-2 border-peach-100 overflow-hidden bg-gradient-to-br from-peach-300 to-teal-300 text-white flex items-center justify-center text-sm font-bold hover:border-peach-300 transition-colors no-underline"
-                  aria-label={profile ? `${displayName}的个人主页` : '完善资料'}
-                  title={displayName}
-                >
-                  {avatarUrl ? (
-                    <img
-                      src={avatarUrl}
-                      alt={displayName}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    profileInitial
-                  )}
-                </Link>
-
-                <button
-                  type="button"
-                  onClick={() => setProfileMenuOpen(open => !open)}
-                  className="w-7 h-7 rounded-full border border-peach-100 bg-white text-gray-400 flex items-center justify-center hover:bg-peach-50 hover:text-peach-600 transition-colors cursor-pointer p-0"
-                  aria-label="账号更多操作"
-                  aria-expanded={profileMenuOpen}
-                  title="账号更多操作"
-                >
-                  <Icon icon="ph:dots-three-bold" width="18" />
-                </button>
-
-                {profileMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-36 rounded-xl border border-peach-100 bg-white shadow-lg py-2 z-50">
-                    {profile ? (
-                      <>
-                        <Link
-                          to={`/profile/${profile.id}`}
-                          onClick={() => setProfileMenuOpen(false)}
-                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-peach-50 hover:text-peach-700 no-underline"
-                        >
-                          个人主页
-                        </Link>
-                        <Link
-                          to="/profile/edit"
-                          onClick={() => setProfileMenuOpen(false)}
-                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-peach-50 hover:text-peach-700 no-underline"
-                        >
-                          编辑资料
-                        </Link>
-                      </>
-                    ) : (
-                      <Link
-                        to="/profile/edit"
-                        onClick={() => setProfileMenuOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-600 hover:bg-peach-50 hover:text-peach-700 no-underline"
-                      >
-                        完善资料
-                      </Link>
-                    )}
-                    <button
-                      type="button"
-                      onClick={handleSignOut}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-400 hover:bg-peach-50 hover:text-peach-600 bg-transparent border-0 cursor-pointer"
-                    >
-                      退出登录
-                    </button>
-                  </div>
+              <Link
+                to={profilePath}
+                className="w-9 h-9 rounded-full border-2 border-peach-100 overflow-hidden bg-gradient-to-br from-peach-300 to-teal-300 text-white flex items-center justify-center text-sm font-bold hover:border-peach-300 transition-colors no-underline"
+                aria-label={profile ? `${displayName}的个人主页` : '完善资料'}
+                title={displayName}
+              >
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt={displayName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  profileInitial
                 )}
-              </div>
+              </Link>
             ) : (
               <Link
                 to="/login"
