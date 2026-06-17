@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
@@ -12,7 +13,21 @@ const NAV_ITEMS = [
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, profile, signOut } = useAuth();
   const location = useLocation();
-  const profileInitial = profile?.nickname?.trim().charAt(0) || '勇';
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const userMetadata = user?.user_metadata as Record<string, unknown> | undefined;
+  const userAvatarUrl = typeof userMetadata?.avatar_url === 'string'
+    ? userMetadata.avatar_url
+    : typeof userMetadata?.picture === 'string'
+      ? userMetadata.picture
+      : undefined;
+  const avatarUrl = profile?.avatarUrl || userAvatarUrl;
+  const displayName = profile?.nickname || user?.email?.split('@')[0] || '社区成员';
+  const profileInitial = displayName.trim().charAt(0) || '勇';
+
+  const handleSignOut = async () => {
+    setProfileMenuOpen(false);
+    await signOut();
+  };
 
   return (
     <div className="min-h-screen bg-warm-50">
@@ -49,46 +64,65 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-3">
-            {profile ? (
-              <>
-                <Link
-                  to={`/profile/${profile.id}`}
-                  className="w-9 h-9 rounded-full border-2 border-peach-100 overflow-hidden bg-gradient-to-br from-peach-300 to-teal-300 text-white flex items-center justify-center text-sm font-bold no-underline hover:border-peach-300 transition-colors"
-                  aria-label={`${profile.nickname}的个人主页`}
-                  title={profile.nickname}
+            {user ? (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setProfileMenuOpen(open => !open)}
+                  className="w-9 h-9 rounded-full border-2 border-peach-100 overflow-hidden bg-gradient-to-br from-peach-300 to-teal-300 text-white flex items-center justify-center text-sm font-bold hover:border-peach-300 transition-colors cursor-pointer p-0"
+                  aria-label={`${displayName}的账号菜单`}
+                  aria-expanded={profileMenuOpen}
+                  title={displayName}
                 >
-                  {profile.avatarUrl ? (
+                  {avatarUrl ? (
                     <img
-                      src={profile.avatarUrl}
-                      alt={profile.nickname}
+                      src={avatarUrl}
+                      alt={displayName}
                       className="w-full h-full object-cover"
                     />
                   ) : (
                     profileInitial
                   )}
-                </Link>
-                <button
-                  onClick={signOut}
-                  className="text-sm text-gray-400 hover:text-peach-600 bg-transparent border-0 cursor-pointer transition-colors"
-                >
-                  退出
                 </button>
-              </>
-            ) : user ? (
-              <>
-                <Link
-                  to="/profile/edit"
-                  className="text-sm text-gray-600 hover:text-peach-700 no-underline transition-colors"
-                >
-                  完善资料
-                </Link>
-                <button
-                  onClick={signOut}
-                  className="text-sm text-gray-400 hover:text-peach-600 bg-transparent border-0 cursor-pointer transition-colors"
-                >
-                  退出
-                </button>
-              </>
+
+                {profileMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-36 rounded-xl border border-peach-100 bg-white shadow-lg py-2 z-50">
+                    {profile ? (
+                      <>
+                        <Link
+                          to={`/profile/${profile.id}`}
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-peach-50 hover:text-peach-700 no-underline"
+                        >
+                          个人主页
+                        </Link>
+                        <Link
+                          to="/profile/edit"
+                          onClick={() => setProfileMenuOpen(false)}
+                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-peach-50 hover:text-peach-700 no-underline"
+                        >
+                          编辑资料
+                        </Link>
+                      </>
+                    ) : (
+                      <Link
+                        to="/profile/edit"
+                        onClick={() => setProfileMenuOpen(false)}
+                        className="block px-4 py-2 text-sm text-gray-600 hover:bg-peach-50 hover:text-peach-700 no-underline"
+                      >
+                        完善资料
+                      </Link>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleSignOut}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-400 hover:bg-peach-50 hover:text-peach-600 bg-transparent border-0 cursor-pointer"
+                    >
+                      退出登录
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <Link
                 to="/login"
