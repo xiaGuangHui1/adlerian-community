@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Icon } from '@iconify-icon/react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
@@ -23,6 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const avatarUrl = profile?.avatarUrl || userAvatarUrl;
   const displayName = profile?.nickname || user?.email?.split('@')[0] || '社区成员';
   const profileInitial = displayName.trim().charAt(0) || '勇';
+  const profilePath = profile ? `/profile/${profile.id}` : '/profile/edit';
 
   const handleSignOut = async () => {
     setProfileMenuOpen(false);
@@ -65,13 +67,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <div className="flex items-center gap-3">
             {user ? (
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setProfileMenuOpen(open => !open)}
-                  className="w-9 h-9 rounded-full border-2 border-peach-100 overflow-hidden bg-gradient-to-br from-peach-300 to-teal-300 text-white flex items-center justify-center text-sm font-bold hover:border-peach-300 transition-colors cursor-pointer p-0"
-                  aria-label={`${displayName}的账号菜单`}
-                  aria-expanded={profileMenuOpen}
+              <div className="relative flex items-center gap-1.5">
+                <Link
+                  to={profilePath}
+                  className="w-9 h-9 rounded-full border-2 border-peach-100 overflow-hidden bg-gradient-to-br from-peach-300 to-teal-300 text-white flex items-center justify-center text-sm font-bold hover:border-peach-300 transition-colors no-underline"
+                  aria-label={profile ? `${displayName}的个人主页` : '完善资料'}
                   title={displayName}
                 >
                   {avatarUrl ? (
@@ -83,6 +83,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   ) : (
                     profileInitial
                   )}
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => setProfileMenuOpen(open => !open)}
+                  className="w-7 h-7 rounded-full border border-peach-100 bg-white text-gray-400 flex items-center justify-center hover:bg-peach-50 hover:text-peach-600 transition-colors cursor-pointer p-0"
+                  aria-label="账号更多操作"
+                  aria-expanded={profileMenuOpen}
+                  title="账号更多操作"
+                >
+                  <Icon icon="ph:dots-three-bold" width="18" />
                 </button>
 
                 {profileMenuOpen && (
