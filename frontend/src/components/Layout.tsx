@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const NAV_ITEMS = [
@@ -10,9 +10,8 @@ const NAV_ITEMS = [
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { user, profile, registerProfile } = useAuth();
+  const { user, profile } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
   const userMetadata = user?.user_metadata as Record<string, unknown> | undefined;
   const userAvatarUrl = typeof userMetadata?.avatar_url === 'string'
     ? userMetadata.avatar_url
@@ -22,20 +21,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const avatarUrl = profile?.avatarUrl || userAvatarUrl;
   const displayName = profile?.nickname || user?.email?.split('@')[0] || '社区成员';
   const profileInitial = displayName.trim().charAt(0) || '勇';
-
-  const handleAvatarClick = async () => {
-    if (profile) {
-      navigate(`/profile/${profile.id}`);
-      return;
-    }
-
-    try {
-      const created = await registerProfile(displayName);
-      navigate(`/profile/${created.id}`);
-    } catch {
-      navigate('/');
-    }
-  };
+  const profilePath = profile ? `/profile/${profile.id}` : '/profile/me';
 
   return (
     <div className="min-h-screen bg-warm-50">
@@ -73,9 +59,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <div className="flex items-center gap-3">
             {user ? (
-              <button
-                type="button"
-                onClick={handleAvatarClick}
+              <Link
+                to={profilePath}
                 className="w-9 h-9 rounded-full border-2 border-peach-100 overflow-hidden bg-gradient-to-br from-peach-300 to-teal-300 text-white flex items-center justify-center text-sm font-bold hover:border-peach-300 transition-colors no-underline"
                 aria-label={`${displayName}的个人主页`}
                 title={displayName}
@@ -89,7 +74,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 ) : (
                   profileInitial
                 )}
-              </button>
+              </Link>
             ) : (
               <Link
                 to="/login"

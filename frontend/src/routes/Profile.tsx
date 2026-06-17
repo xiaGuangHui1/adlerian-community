@@ -45,8 +45,15 @@ function getCheckinTheme(content: string): string {
 export default function Profile() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const auth = useAuth();
-  const isOwnProfile = auth.profile?.id === id;
+  const {
+    user: authUser,
+    profile: authProfile,
+    loading: authLoading,
+    fetchProfile,
+    registerProfile,
+    updateProfile,
+  } = useAuth();
+  const isOwnProfile = authProfile?.id === id;
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -65,7 +72,44 @@ export default function Profile() {
   const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
-    if (!id) return;
+    if (id !== 'me') return;
+    if (authLoading) return;
+
+    let active = true;
+    const openMyProfile = async () => {
+      if (!authUser) {
+        navigate('/login', { replace: true });
+        return;
+      }
+
+      try {
+        const existing = authProfile || await fetchProfile();
+        if (!active) return;
+        if (existing) {
+          navigate(`/profile/${existing.id}`, { replace: true });
+          return;
+        }
+
+        const fallbackName = authUser.email?.split('@')[0] || '社区成员';
+        const created = await registerProfile(fallbackName);
+        if (active) {
+          navigate(`/profile/${created.id}`, { replace: true });
+        }
+      } catch {
+        if (active) {
+          setNotFound(true);
+        }
+      }
+    };
+
+    void openMyProfile();
+    return () => {
+      active = false;
+    };
+  }, [authLoading, authProfile, authUser, fetchProfile, id, navigate, registerProfile]);
+
+  useEffect(() => {
+    if (!id || id === 'me') return;
     let active = true;
 
     const loadProfile = async () => {
@@ -149,7 +193,7 @@ export default function Profile() {
     setSaving(true);
     setSaveError('');
     try {
-      const updated = await auth.updateProfile({
+      const updated = await updateProfile({
         nickname: trimmedNickname,
         avatarUrl: avatarUrl.trim(),
         bio: bio.trim(),
