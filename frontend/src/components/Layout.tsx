@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const NAV_ITEMS = [
@@ -10,8 +10,9 @@ const NAV_ITEMS = [
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { user, profile } = useAuth();
+  const { user, profile, registerProfile } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const userMetadata = user?.user_metadata as Record<string, unknown> | undefined;
   const userAvatarUrl = typeof userMetadata?.avatar_url === 'string'
     ? userMetadata.avatar_url
@@ -21,7 +22,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const avatarUrl = profile?.avatarUrl || userAvatarUrl;
   const displayName = profile?.nickname || user?.email?.split('@')[0] || '社区成员';
   const profileInitial = displayName.trim().charAt(0) || '勇';
-  const profilePath = profile ? `/profile/${profile.id}` : '/profile/edit';
+
+  const handleAvatarClick = async () => {
+    if (profile) {
+      navigate(`/profile/${profile.id}`);
+      return;
+    }
+
+    try {
+      const created = await registerProfile(displayName);
+      navigate(`/profile/${created.id}`);
+    } catch {
+      navigate('/profile/edit');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-warm-50">
@@ -59,10 +73,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <div className="flex items-center gap-3">
             {user ? (
-              <Link
-                to={profilePath}
+              <button
+                type="button"
+                onClick={handleAvatarClick}
                 className="w-9 h-9 rounded-full border-2 border-peach-100 overflow-hidden bg-gradient-to-br from-peach-300 to-teal-300 text-white flex items-center justify-center text-sm font-bold hover:border-peach-300 transition-colors no-underline"
-                aria-label={profile ? `${displayName}的个人主页` : '完善资料'}
+                aria-label={`${displayName}的个人主页`}
                 title={displayName}
               >
                 {avatarUrl ? (
@@ -74,7 +89,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 ) : (
                   profileInitial
                 )}
-              </Link>
+              </button>
             ) : (
               <Link
                 to="/login"
