@@ -33,7 +33,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       const created = await registerProfile(displayName);
       navigate(`/profile/${created.id}`);
     } catch {
-      navigate('/profile/edit');
+      navigate('/');
     }
   };
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify-icon/react';
 import api from '../lib/api';
@@ -57,6 +57,12 @@ export default function Profile() {
   const [postsLoading, setPostsLoading] = useState(false);
   const [checkinsLoading, setCheckinsLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [nickname, setNickname] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [bio, setBio] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
     if (!id) return;
@@ -76,6 +82,8 @@ export default function Profile() {
         const { data } = await api.get<UserProfile>(`/users/${id}`);
         if (!active) return;
         setProfile(data);
+        setEditing(false);
+        setSaveError('');
         document.title = `${data.nickname}的个人主页 - 阿德勒心理学社区`;
 
         const [postsResult, checkinsResult] = await Promise.allSettled([
@@ -115,6 +123,45 @@ export default function Profile() {
       active = false;
     };
   }, [id]);
+
+  const startEditing = () => {
+    if (!profile) return;
+    setNickname(profile.nickname);
+    setAvatarUrl(profile.avatarUrl || '');
+    setBio(profile.bio || '');
+    setSaveError('');
+    setEditing(true);
+  };
+
+  const cancelEditing = () => {
+    setEditing(false);
+    setSaveError('');
+  };
+
+  const handleSaveProfile = async (e: FormEvent) => {
+    e.preventDefault();
+    const trimmedNickname = nickname.trim();
+    if (!trimmedNickname) {
+      setSaveError('昵称不能为空');
+      return;
+    }
+
+    setSaving(true);
+    setSaveError('');
+    try {
+      const updated = await auth.updateProfile({
+        nickname: trimmedNickname,
+        avatarUrl: avatarUrl.trim(),
+        bio: bio.trim(),
+      });
+      setProfile(updated);
+      setEditing(false);
+    } catch {
+      setSaveError('保存失败，请稍后重试');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   // 404 state
   if (notFound) {
@@ -177,13 +224,14 @@ export default function Profile() {
               勇气工坊 · 个人主页
             </span>
             {isOwnProfile && (
-              <Link
-                to="/profile/edit"
+              <button
+                type="button"
+                onClick={editing ? cancelEditing : startEditing}
                 className="inline-flex items-center gap-1.5 px-3 py-2 bg-white/85 text-peach-600 rounded-xl text-xs font-bold hover:bg-white transition-colors no-underline shadow-sm"
               >
-                <Icon icon="ph:pencil-simple" width="15" />
-                编辑资料
-              </Link>
+                <Icon icon={editing ? 'ph:x' : 'ph:pencil-simple'} width="15" />
+                {editing ? '取消编辑' : '编辑资料'}
+              </button>
             )}
           </div>
           <div className="absolute -bottom-16 left-6 sm:left-8">
@@ -230,6 +278,69 @@ export default function Profile() {
               </div>
             </div>
           </div>
+
+          {isOwnProfile && editing && (
+            <form
+              onSubmit={handleSaveProfile}
+              className="mt-7 rounded-2xl border border-peach-100 bg-warm-50/70 p-5 space-y-4"
+            >
+              {saveError && (
+                <div className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
+                  {saveError}
+                </div>
+              )}
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">昵称</label>
+                <input
+                  type="text"
+                  value={nickname}
+                  onChange={e => setNickname(e.target.value)}
+                  maxLength={50}
+                  required
+                  className="w-full px-3 py-2.5 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">头像 URL</label>
+                <input
+                  type="url"
+                  value={avatarUrl}
+                  onChange={e => setAvatarUrl(e.target.value)}
+                  placeholder="https://example.com/avatar.jpg"
+                  className="w-full px-3 py-2.5 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">个人简介</label>
+                <textarea
+                  value={bio}
+                  onChange={e => setBio(e.target.value)}
+                  rows={4}
+                  maxLength={300}
+                  placeholder="写一点你想让伙伴们了解的内容"
+                  className="w-full px-3 py-2.5 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-white resize-none"
+                />
+                <p className="text-xs text-gray-400 mt-1">{bio.length}/300</p>
+              </div>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={cancelEditing}
+                  className="px-4 py-2.5 text-sm text-gray-500 hover:text-gray-700 bg-transparent border-0 cursor-pointer transition-colors"
+                >
+                  取消
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-peach-500 text-white rounded-lg text-sm font-medium border-0 cursor-pointer hover:bg-peach-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <Icon icon={saving ? 'ph:circle-notch' : 'ph:check'} width="16" />
+                  {saving ? '保存中...' : '保存资料'}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </section>
 
