@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 export default function ProfileEdit() {
-  const { user, profile, loading, updateProfile } = useAuth();
+  const { user, profile, loading, registerProfile, updateProfile } = useAuth();
   const navigate = useNavigate();
 
   const [nickname, setNickname] = useState('');
@@ -20,7 +20,15 @@ export default function ProfileEdit() {
   }, [loading, navigate, user]);
 
   useEffect(() => {
-    if (!profile) return;
+    if (!profile) {
+      if (!loading && user) {
+        const fallbackName = user.email?.split('@')[0] || '社区成员';
+        Promise.resolve().then(() => {
+          setNickname(prev => prev || fallbackName);
+        });
+      }
+      return;
+    }
     let active = true;
     Promise.resolve().then(() => {
       if (!active) return;
@@ -31,7 +39,7 @@ export default function ProfileEdit() {
     return () => {
       active = false;
     };
-  }, [profile]);
+  }, [loading, profile, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,11 +55,23 @@ export default function ProfileEdit() {
     setSaving(true);
     setError('');
     try {
-      const updated = await updateProfile({
-        nickname: trimmedNickname,
-        avatarUrl: trimmedAvatarUrl,
-        bio: trimmedBio,
-      });
+      let updated = profile;
+      if (profile) {
+        updated = await updateProfile({
+          nickname: trimmedNickname,
+          avatarUrl: trimmedAvatarUrl,
+          bio: trimmedBio,
+        });
+      } else {
+        updated = await registerProfile(trimmedNickname);
+        if (trimmedAvatarUrl || trimmedBio) {
+          updated = await updateProfile({
+            nickname: trimmedNickname,
+            avatarUrl: trimmedAvatarUrl,
+            bio: trimmedBio,
+          });
+        }
+      }
       navigate(`/profile/${updated.id}`);
     } catch {
       setError('保存失败，请稍后重试');
@@ -60,26 +80,38 @@ export default function ProfileEdit() {
     }
   };
 
-  if (loading || !profile) {
+  if (loading) {
     return <div className="text-center py-24 text-gray-400">加载中...</div>;
   }
+
+  if (!user) {
+    return null;
+  }
+
+  const isCompletingProfile = !profile;
+  const profileInitial = (nickname || profile?.nickname || '勇').charAt(0);
+  const returnPath = profile ? `/profile/${profile.id}` : '/';
 
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6">
         <Link
-          to={`/profile/${profile.id}`}
+          to={returnPath}
           className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-peach-600 no-underline transition-colors"
         >
           <Icon icon="ph:arrow-left" width="16" />
-          返回个人主页
+          {profile ? '返回个人主页' : '返回首页'}
         </Link>
       </div>
 
       <div className="bg-white rounded-3xl border border-peach-100 shadow-sm overflow-hidden">
         <div className="px-8 py-6 border-b border-peach-50">
-          <h1 className="text-2xl font-bold text-brown-900">编辑资料</h1>
-          <p className="text-sm text-gray-400 mt-1">更新你在社区中的公开信息</p>
+          <h1 className="text-2xl font-bold text-brown-900">
+            {isCompletingProfile ? '完善资料' : '编辑资料'}
+          </h1>
+          <p className="text-sm text-gray-400 mt-1">
+            {isCompletingProfile ? '创建你在社区中的公开身份' : '更新你在社区中的公开信息'}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="px-8 py-8 space-y-6">
@@ -91,12 +123,12 @@ export default function ProfileEdit() {
             {avatarUrl ? (
               <img
                 src={avatarUrl}
-                alt={nickname || profile.nickname}
+                alt={nickname || profile?.nickname || '社区成员'}
                 className="w-20 h-20 rounded-full object-cover border-4 border-peach-50"
               />
             ) : (
               <div className="w-20 h-20 rounded-full bg-gradient-to-br from-peach-300 to-teal-300 flex items-center justify-center text-2xl text-white border-4 border-peach-50">
-                {(nickname || profile.nickname).charAt(0)}
+                {profileInitial}
               </div>
             )}
             <div>
@@ -143,7 +175,7 @@ export default function ProfileEdit() {
 
           <div className="flex justify-end gap-3 pt-2">
             <Link
-              to={`/profile/${profile.id}`}
+              to={returnPath}
               className="px-4 py-2.5 text-sm text-gray-500 hover:text-gray-700 no-underline transition-colors"
             >
               取消

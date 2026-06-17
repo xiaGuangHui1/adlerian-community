@@ -77,7 +77,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             ) : user ? (
               <>
                 <Link
-                  to="/login"
+                  to="/profile/edit"
                   className="text-sm text-gray-600 hover:text-peach-700 no-underline transition-colors"
                 >
                   完善资料
