@@ -22,6 +22,26 @@ function formatCheckinDate(dateStr: string): string {
   return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
+function cleanPostContent(content: string): string {
+  return content?.replace(/[#[\]*`>()!-]/g, '').substring(0, 140) || '';
+}
+
+function getCheckinTheme(content: string): string {
+  if (content.includes('课题') || content.includes('阿德勒') || content.includes('共同体')) {
+    return '阿德勒实践';
+  }
+  if (content.includes('运动') || content.includes('跑') || content.includes('瑜伽')) {
+    return '身体行动';
+  }
+  if (content.includes('阅读') || content.includes('书')) {
+    return '阅读反思';
+  }
+  if (content.includes('早起') || content.includes('清晨')) {
+    return '生活节律';
+  }
+  return '勇气打卡';
+}
+
 export default function Profile() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -128,12 +148,45 @@ export default function Profile() {
     return cat && 'icon' in cat ? cat.icon : '';
   };
 
+  const profileInitial = profile.nickname.trim().charAt(0) || '勇';
+  const joinTime = profile.createdAt
+    ? `${new Date(profile.createdAt).getFullYear()}年加入勇气工坊`
+    : '加入时间未知';
+  const aboutParagraphs = profile.bio
+    ? profile.bio.split(/\n+/).map(item => item.trim()).filter(Boolean)
+    : [];
+  const interestTags = Array.from(new Set([
+    ...posts.map(post => categoryLabel(post.category)).filter(Boolean),
+    ...checkins.map(checkin => getCheckinTheme(checkin.content)),
+    '课题分离',
+    '共同体感觉',
+  ])).slice(0, 8);
+  const tabs = [
+    { index: 0, label: '我的帖子', count: posts.length },
+    { index: 1, label: '我的打卡', count: checkinStats.totalDays || checkins.length },
+    { index: 2, label: '关于我' },
+  ];
+
   return (
     <div className="max-w-3xl mx-auto">
       {/* 个人信息卡片 */}
-      <div className="bg-white rounded-3xl shadow-sm border border-peach-100 overflow-hidden mb-8">
-        <div className="bg-gradient-to-r from-peach-200/40 to-teal-200/40 h-32 relative">
-          <div className="absolute -bottom-16 left-8">
+      <section className="bg-white rounded-3xl shadow-sm border border-peach-100 overflow-hidden mb-8">
+        <div className="bg-gradient-to-r from-peach-500/12 via-warm-50 to-teal-500/12 h-32 relative">
+          <div className="absolute inset-x-8 top-6 flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-peach-500">
+              勇气工坊 · 个人主页
+            </span>
+            {isOwnProfile && (
+              <Link
+                to="/profile/edit"
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-white/85 text-peach-600 rounded-xl text-xs font-bold hover:bg-white transition-colors no-underline shadow-sm"
+              >
+                <Icon icon="ph:pencil-simple" width="15" />
+                编辑资料
+              </Link>
+            )}
+          </div>
+          <div className="absolute -bottom-16 left-6 sm:left-8">
             {profile.avatarUrl ? (
               <img
                 src={profile.avatarUrl}
@@ -142,70 +195,67 @@ export default function Profile() {
               />
             ) : (
               <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-peach-300 to-teal-300 flex items-center justify-center text-4xl text-white">
-                {profile.nickname.charAt(0)}
+                {profileInitial}
               </div>
             )}
           </div>
         </div>
         <div className="pt-20 pb-8 px-8">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <div>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+              <div>
               <h1 className="text-3xl font-bold text-brown-900">{profile.nickname}</h1>
-              <p className="text-gray-400 mt-2 text-lg">{profile.bio || '这个人很神秘，什么都没写'}</p>
-              <div className="flex items-center gap-2 mt-4">
+                <p className="text-gray-500 mt-2 text-lg leading-relaxed">
+                  {profile.bio || '在勇气工坊慢慢寻找自己的节奏'}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-400">
                 <Icon icon="ph:calendar-check-fill" width="18" className="text-peach-500" />
-                <span className="text-sm text-gray-400">
-                  {profile.createdAt
-                    ? `${new Date(profile.createdAt).getFullYear()}年加入勇气工坊`
-                    : '加入时间未知'}
-                </span>
+                <span>{joinTime}</span>
               </div>
             </div>
-            {isOwnProfile && (
-              <Link
-                to="/profile/edit"
-                className="flex items-center gap-1.5 px-4 py-2 bg-peach-50 text-peach-600 rounded-xl text-sm font-medium hover:bg-peach-100 transition-colors no-underline"
-              >
-                <Icon icon="ph:pencil-simple" width="16" />
-                编辑资料
-              </Link>
-            )}
+
+            <div className="grid grid-cols-3 gap-3">
+              <div className="rounded-2xl bg-warm-50 border border-peach-100/60 px-4 py-3">
+                <p className="text-2xl font-black text-brown-900">{posts.length}</p>
+                <p className="text-xs text-gray-400 mt-0.5">发布帖子</p>
+              </div>
+              <div className="rounded-2xl bg-warm-50 border border-peach-100/60 px-4 py-3">
+                <p className="text-2xl font-black text-peach-500">{checkinStats.totalDays}</p>
+                <p className="text-xs text-gray-400 mt-0.5">累计打卡</p>
+              </div>
+              <div className="rounded-2xl bg-warm-50 border border-peach-100/60 px-4 py-3">
+                <p className="text-2xl font-black text-teal-500">{checkinStats.streak}</p>
+                <p className="text-xs text-gray-400 mt-0.5">连续天数</p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Tab 切换栏 */}
-      <div className="flex border-b border-peach-100 mb-8">
-        <button
-          className={`px-6 py-4 text-sm font-bold transition-colors border-b-2 -mb-px ${
-            activeTab === 0
-              ? 'text-peach-500 border-peach-500'
-              : 'text-gray-400 border-transparent hover:text-peach-500'
-          }`}
-          onClick={() => setActiveTab(0)}
-        >
-          我的帖子
-        </button>
-        <button
-          className={`px-6 py-4 text-sm font-bold transition-colors border-b-2 -mb-px ${
-            activeTab === 1
-              ? 'text-peach-500 border-peach-500'
-              : 'text-gray-400 border-transparent hover:text-peach-500'
-          }`}
-          onClick={() => setActiveTab(1)}
-        >
-          我的打卡
-        </button>
-        <button
-          className={`px-6 py-4 text-sm font-bold transition-colors border-b-2 -mb-px ${
-            activeTab === 2
-              ? 'text-peach-500 border-peach-500'
-              : 'text-gray-400 border-transparent hover:text-peach-500'
-          }`}
-          onClick={() => setActiveTab(2)}
-        >
-          关于我
-        </button>
+      <div className="flex border-b border-peach-100 mb-8 overflow-x-auto">
+        {tabs.map(tab => (
+          <button
+            key={tab.index}
+            type="button"
+            className={`px-5 sm:px-6 py-4 text-sm font-bold transition-colors border-b-2 -mb-px whitespace-nowrap cursor-pointer bg-transparent ${
+              activeTab === tab.index
+                ? 'text-peach-500 border-peach-500'
+                : 'text-gray-400 border-transparent hover:text-peach-500'
+            }`}
+            onClick={() => setActiveTab(tab.index)}
+          >
+            <span>{tab.label}</span>
+            {typeof tab.count === 'number' && (
+              <span className={`ml-2 rounded-full px-2 py-0.5 text-xs ${
+                activeTab === tab.index ? 'bg-peach-100 text-peach-700' : 'bg-white text-gray-400'
+              }`}>
+                {tab.count}
+              </span>
+            )}
+          </button>
+        ))}
       </div>
 
       {/* Tab 1：我的帖子 */}
@@ -234,12 +284,18 @@ export default function Profile() {
                 <h3 className="text-lg font-bold mb-2 group-hover:text-peach-500 transition-colors">
                   {post.title}
                 </h3>
-                  <p className="text-sm text-gray-400 mb-4 line-clamp-2">
-                    {post.content?.replace(/[#[\]*`>()!-]/g, '').substring(0, 120) || ''}
+                <p className="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed">
+                  {cleanPostContent(post.content)}
                 </p>
-                <div className="flex items-center gap-2 text-gray-400 text-xs">
-                  <Icon icon="ph:chat-circle-text" width="16" />
-                  <span>{post.commentCount} 条评论</span>
+                <div className="flex items-center gap-5 text-gray-400 text-xs">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Icon icon="ph:chat-circle-text" width="16" />
+                    {post.commentCount} 条评论
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <Icon icon="ph:heart" width="16" />
+                    {post.encouragementCount} 个鼓励
+                  </span>
                 </div>
               </article>
             ))
@@ -258,6 +314,10 @@ export default function Profile() {
             <div>
               <p className="text-2xl font-black text-peach-500">{checkinStats.streak}</p>
               <p className="text-xs text-gray-400">连续打卡天数</p>
+            </div>
+            <div className="ml-auto text-right">
+              <p className="text-lg font-black text-brown-900">{checkinStats.totalDays}</p>
+              <p className="text-xs text-gray-400">累计实践</p>
             </div>
           </div>
 
@@ -281,7 +341,9 @@ export default function Profile() {
                     </div>
                     <div className={`flex-grow bg-white rounded-2xl p-5 shadow-sm border border-peach-50 ${isLast ? 'mb-0' : 'mb-4'}`}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-bold text-teal-600">勇气打卡</span>
+                        <span className="text-xs font-bold text-teal-600">
+                          {getCheckinTheme(checkin.content)}
+                        </span>
                         <span className="text-xs text-gray-400">{formatCheckinDate(checkin.checkinDate)}</span>
                       </div>
                       <p className="text-sm text-gray-600 leading-relaxed">{checkin.content}</p>
@@ -305,11 +367,35 @@ export default function Profile() {
                 <span>个人简介</span>
               </h3>
               <div className="text-gray-600 leading-relaxed space-y-4">
-                {profile.bio ? (
-                  <p>{profile.bio}</p>
+                {aboutParagraphs.length > 0 ? (
+                  aboutParagraphs.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))
                 ) : (
-                  <p className="text-gray-400">这个人很神秘，还没有写个人简介。</p>
+                  <p className="text-gray-400">
+                    这个人还没有写个人简介。也许正在用行动慢慢说明自己。
+                  </p>
                 )}
+              </div>
+            </div>
+          </div>
+
+          {/* 感兴趣的主题 */}
+          <div className="bg-white rounded-3xl shadow-sm border border-peach-50 overflow-hidden mb-6">
+            <div className="px-8 py-8">
+              <h3 className="font-bold text-xl mb-6 flex items-center gap-2">
+                <Icon icon="ph:target-fill" width="22" className="text-teal-500" />
+                <span>感兴趣的打卡主题</span>
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {interestTags.map(tag => (
+                  <span
+                    key={tag}
+                    className="px-4 py-2 bg-peach-50 text-peach-600 rounded-xl text-sm font-medium"
+                  >
+                    # {tag}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
