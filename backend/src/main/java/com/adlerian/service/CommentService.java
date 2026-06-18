@@ -11,6 +11,8 @@ import com.adlerian.repository.EncourageRepository;
 import com.adlerian.repository.PostRepository;
 import com.adlerian.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +29,9 @@ public class CommentService {
     private final UserRepository userRepository;
     private final EncourageRepository encourageRepository;
 
-    public List<CommentDTO> getCommentsByPostId(Long postId) {
-        List<Comment> topLevel = commentRepository.findByPostIdAndParentIsNullOrderByCreatedAtAsc(postId);
-        return topLevel.stream().map(this::toDTOWithReplies).toList();
+    public Page<CommentDTO> getCommentsByPostId(Long postId, Pageable pageable) {
+        Page<Comment> topLevel = commentRepository.findByPostIdAndParentIsNullOrderByCreatedAtAsc(postId, pageable);
+        return topLevel.map(this::toDTOWithReplies);
     }
 
     @Transactional

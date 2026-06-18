@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface ResourceRepository extends JpaRepository<Resource, Long> {
     List<Resource> findByTypeOrderBySortOrderAsc(String type);
+    Page<Resource> findByTypeOrderBySortOrderAsc(String type, Pageable pageable);
     Page<Resource> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

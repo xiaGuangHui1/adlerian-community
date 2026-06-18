@@ -4,9 +4,9 @@ import com.adlerian.dto.QuoteDTO;
 import com.adlerian.entity.Quote;
 import com.adlerian.repository.QuoteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,9 +20,8 @@ public class QuoteService {
         return toDTO(quote);
     }
 
-    public List<QuoteDTO> getAllQuotes() {
-        return quoteRepository.findAll()
-                .stream().map(this::toDTO).toList();
+    public Page<QuoteDTO> getAllQuotes(Pageable pageable) {
+        return quoteRepository.findAll(pageable).map(this::toDTO);
     }
 
     private QuoteDTO toDTO(Quote q) {

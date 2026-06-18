@@ -84,7 +84,7 @@ public class PostService {
     }
 
     public List<PostDTO> getHotPosts(int limit) {
-        Page<Post> page = postRepository.findHotPosts(PageRequest.of(0, limit));
+        Page<Post> page = postRepository.findHotPosts(PageRequest.of(0, Math.min(limit, 100)));
         return page.getContent().stream().map(this::toDTO).toList();
     }
 

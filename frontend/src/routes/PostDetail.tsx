@@ -20,11 +20,11 @@ export default function PostDetail() {
     try {
       const [postRes, commentsRes, encRes] = await Promise.all([
         api.get<Post>(`/posts/${id}`),
-        api.get<CommentType[]>(`/posts/${id}/comments`),
+        api.get<{ content: CommentType[] }>(`/posts/${id}/comments`),
         api.get<Encouragement[]>(`/encouragements?targetType=post&targetId=${id}`),
       ]);
       setPost(postRes.data);
-      setComments(commentsRes.data);
+      setComments(commentsRes.data.content);
       setEncouragements(encRes.data);
     } catch {
       navigate('/forum');

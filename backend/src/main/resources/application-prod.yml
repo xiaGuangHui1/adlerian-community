@@ -1,5 +1,11 @@
 server:
   port: ${PORT:8080}
+  tomcat:
+    threads:
+      max: 50
+      min-spare: 5
+    max-connections: 500
+    accept-count: 50
   error:
     include-message: always
     include-exception: true
@@ -16,6 +22,12 @@ spring:
     hikari:
       connection-timeout: 30000
       maximum-pool-size: 5
+
+  data:
+    web:
+      pageable:
+        max-page-size: 100
+        default-page-size: 20
 
   jpa:
     hibernate:

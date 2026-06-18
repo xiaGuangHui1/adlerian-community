@@ -33,10 +33,12 @@ public class HomeService {
     }
 
     public List<ActivityItemDTO> getActivity(int limit) {
+        // 限制最大加载量，防止内存溢出
+        int safeLimit = Math.min(limit, 50);
         List<ActivityItemDTO> activities = new ArrayList<>();
 
         // 最近帖子
-        postRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, limit)).forEach(post -> {
+        postRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, safeLimit)).forEach(post -> {
             activities.add(ActivityItemDTO.builder()
                     .type("post")
                     .description(post.getAuthor().getNickname() + " 发表了帖子")

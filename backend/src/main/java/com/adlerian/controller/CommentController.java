@@ -6,11 +6,11 @@ import com.adlerian.entity.User;
 import com.adlerian.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts/{postId}/comments")
@@ -20,8 +20,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping
-    public ResponseEntity<List<CommentDTO>> getComments(@PathVariable Long postId) {
-        return ResponseEntity.ok(commentService.getCommentsByPostId(postId));
+    public ResponseEntity<Page<CommentDTO>> getComments(@PathVariable Long postId, Pageable pageable) {
+        return ResponseEntity.ok(commentService.getCommentsByPostId(postId, pageable));
     }
 
     @PostMapping

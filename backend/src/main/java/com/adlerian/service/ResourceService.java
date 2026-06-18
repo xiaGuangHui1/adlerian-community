@@ -4,7 +4,9 @@ import com.adlerian.dto.ResourceDTO;
 import com.adlerian.entity.Resource;
 import com.adlerian.repository.ResourceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +17,8 @@ public class ResourceService {
 
     private final ResourceRepository resourceRepository;
 
-    public List<ResourceDTO> getResourcesByType(String type) {
-        return resourceRepository.findByTypeOrderBySortOrderAsc(type)
-                .stream().map(this::toDTO).toList();
+    public Page<ResourceDTO> getResourcesByType(String type, Pageable pageable) {
+        return resourceRepository.findByTypeOrderBySortOrderAsc(type, pageable).map(this::toDTO);
     }
 
     public ResourceDTO getResourceById(Long id) {
@@ -27,7 +28,7 @@ public class ResourceService {
     }
 
     public List<ResourceDTO> getHotResources(int limit) {
-        return resourceRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, limit))
+        return resourceRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, Math.min(limit, 100)))
                 .getContent().stream().map(this::toDTO).toList();
     }
 

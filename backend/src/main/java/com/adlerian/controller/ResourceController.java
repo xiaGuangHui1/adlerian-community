@@ -3,6 +3,8 @@ package com.adlerian.controller;
 import com.adlerian.dto.ResourceDTO;
 import com.adlerian.service.ResourceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +18,9 @@ public class ResourceController {
     private final ResourceService resourceService;
 
     @GetMapping
-    public ResponseEntity<List<ResourceDTO>> getResources(@RequestParam(required = false) String type) {
+    public ResponseEntity<?> getResources(@RequestParam(required = false) String type, Pageable pageable) {
         if (type != null && !type.isBlank()) {
-            return ResponseEntity.ok(resourceService.getResourcesByType(type));
+            return ResponseEntity.ok(resourceService.getResourcesByType(type, pageable));
         }
         return ResponseEntity.ok(resourceService.getHotResources(20));
     }

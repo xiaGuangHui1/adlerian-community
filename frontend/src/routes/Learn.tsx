@@ -20,8 +20,8 @@ export default function Learn() {
     const fetchResources = async () => {
       setLoading(true);
       try {
-        const { data } = await api.get<Resource[]>(`/resources?type=${tab}`);
-        setResources(data);
+        const { data } = await api.get<{ content: Resource[] }>(`/resources?type=${tab}`);
+        setResources(data.content || []);
         setSelected(null);
       } catch {
         // handle error
