@@ -49,7 +49,7 @@ export default function Forum() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
-              <h1 className="text-3xl font-bold mb-2">互助广场</h1>
+              <h1 className="text-3xl font-bold mb-2">同行广场</h1>
               <p className="text-gray-500">在这里，每一个声音都值得被聆听，每一份勇气都值得被鼓励。</p>
             </div>
             <div className="flex items-center gap-4 w-full md:w-auto">
