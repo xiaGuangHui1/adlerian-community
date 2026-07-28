@@ -204,3 +204,27 @@ export interface CreateTeamResponse {
   inviteCode: string;
   shareUrl: string;
 }
+
+export interface InterestCircle {
+  id: number;
+  name: string;
+  description?: string;
+  icon?: string;
+  coverUrl?: string;
+  sortOrder: number;
+  memberCount: number;
+  postCount: number;
+  createdAt: string;
+  joined: boolean;
+}
+
+export interface CirclePost {
+  id: number;
+  title: string;
+  content: string;
+  author: Author;
+  viewCount: number;
+  commentCount: number;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -34,6 +34,8 @@ const isPublicGet = (method: string | undefined, url?: string) => {
     path === '/categories' ||
     path === '/journals/public' ||
     path === '/groups' ||
+    path === '/circles' ||
+    path.startsWith('/circles/') ||
     path === '/encouragements' ||
     path.startsWith('/teams/invitation/') ||
     (path.startsWith('/users/') && path !== '/users/me')

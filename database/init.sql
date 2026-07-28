@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS resources (
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     description TEXT,
-    type VARCHAR(50) NOT NULL CHECK (type IN ('book', 'article', 'concept', 'path')),
+    type VARCHAR(50) NOT NULL CHECK (type IN ('book', 'article', 'concept', 'path', 'bio', 'quote', 'practice')),
     content TEXT,
     cover_url TEXT,
     sort_order INT DEFAULT 0,
@@ -171,6 +171,49 @@ CREATE TABLE IF NOT EXISTS team_members (
 );
 
 -- =============================================
+-- 兴趣圈子表
+-- =============================================
+CREATE TABLE IF NOT EXISTS interest_circles (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    icon VARCHAR(10),
+    cover_url TEXT,
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 圈子成员表
+CREATE TABLE IF NOT EXISTS circle_members (
+    circle_id BIGINT NOT NULL REFERENCES interest_circles(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id),
+    joined_at TIMESTAMPTZ DEFAULT NOW(),
+    PRIMARY KEY (circle_id, user_id)
+);
+
+-- 圈子帖子表
+CREATE TABLE IF NOT EXISTS circle_posts (
+    id BIGSERIAL PRIMARY KEY,
+    circle_id BIGINT NOT NULL REFERENCES interest_circles(id) ON DELETE CASCADE,
+    author_id UUID NOT NULL REFERENCES users(id),
+    title VARCHAR(200) NOT NULL,
+    content TEXT NOT NULL,
+    view_count INT DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 圈子评论表（支持多级嵌套）
+CREATE TABLE IF NOT EXISTS circle_comments (
+    id BIGSERIAL PRIMARY KEY,
+    post_id BIGINT NOT NULL REFERENCES circle_posts(id) ON DELETE CASCADE,
+    author_id UUID NOT NULL REFERENCES users(id),
+    content TEXT NOT NULL,
+    parent_id BIGINT REFERENCES circle_comments(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- =============================================
 -- 索引
 -- =============================================
 CREATE INDEX IF NOT EXISTS idx_posts_category ON posts(category);
@@ -183,6 +226,38 @@ CREATE INDEX IF NOT EXISTS idx_encouragements_receiver ON encouragements(receive
 CREATE INDEX IF NOT EXISTS idx_journals_author ON journals(author_id);
 CREATE INDEX IF NOT EXISTS idx_journals_public ON journals(is_public) WHERE is_public = TRUE;
 CREATE INDEX IF NOT EXISTS idx_resources_type ON resources(type);
+CREATE INDEX IF NOT EXISTS idx_circle_posts_circle ON circle_posts(circle_id);
+CREATE INDEX IF NOT EXISTS idx_circle_posts_author ON circle_posts(author_id);
+CREATE INDEX IF NOT EXISTS idx_circle_posts_created ON circle_posts(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_circle_comments_post ON circle_comments(post_id);
+CREATE INDEX IF NOT EXISTS idx_circle_comments_parent ON circle_comments(parent_id);
+
+-- =============================================
+-- 兴趣圈子种子数据
+-- =============================================
+INSERT INTO interest_circles (name, description, icon, sort_order) VALUES
+('阅读分享', '分享读书心得、推荐好书，在阅读中成长', '📚', 1),
+('运动健身', '一起打卡运动，互相鼓励保持健康', '💪', 2),
+('音乐艺术', '分享音乐、绘画、艺术创作的美好', '🎵', 3),
+('编程技术', '交流编程技能、分享技术经验', '💻', 4),
+('亲子育儿', '探讨育儿经验，陪伴孩子一起成长', '👶', 5),
+('美食烹饪', '分享美食制作、交流烹饪技巧', '🍳', 6),
+('旅行摄影', '分享旅行见闻和摄影作品', '📷', 7),
+('电影动漫', '聊聊电影、动漫，分享观影心得', '🎬', 8),
+('心理健康', '情绪管理、自我关怀、心理成长', '🧠', 9),
+('成长日记', '记录个人成长、反思与进步的点滴', '✍️', 10),
+('宠物陪伴', '分享养宠物的快乐与经验', '🐾', 11),
+('职场成长', '交流职场经验、职业发展与工作心得', '💼', 12),
+('环保生活', '分享可持续生活方式与环保理念', '🌱', 13),
+('公益志愿', '分享志愿活动、社会贡献与善意传递', '🤝', 14),
+('手工制作', '分享手工、DIY 与手作的乐趣', '🧶', 15),
+('园艺花卉', '养花种草、阳台园艺与自然之美', '🌸', 16),
+('茶语咖啡', '品茶论道、咖啡文化与慢生活', '☕', 17),
+('极简生活', '断舍离、极简主义与整理收纳', '🏠', 18),
+('语言学习', '学习外语、文化交流与表达成长', '🌍', 19),
+('冥想修行', '冥想正念、身心修养与灵性成长', '🧘', 20),
+('投资理财', '理财规划、投资心得与财务自由', '💰', 21),
+('游戏电竞', '游戏交流、电竞讨论与娱乐放松', '🎮', 22);
 
 -- =============================================
 -- 初始学习资源数据（阿德勒心理学核心概念）

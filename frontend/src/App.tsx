@@ -10,6 +10,8 @@ import NewPost from './routes/NewPost';
 import KnowledgeBase from './routes/KnowledgeBase';
 import CheckIn from './routes/CheckIn';
 import Groups from './routes/Groups';
+import InterestCircles from './routes/InterestCircles';
+import CircleDetail from './routes/CircleDetail';
 import Invite from './routes/Invite';
 import Profile from './routes/Profile';
 
@@ -28,6 +30,8 @@ export default function App() {
             <Route path="/knowledge-base" element={<KnowledgeBase />} />
             <Route path="/checkin" element={<CheckIn />} />
             <Route path="/groups" element={<Groups />} />
+            <Route path="/circles" element={<InterestCircles />} />
+            <Route path="/circles/:id" element={<CircleDetail />} />
             <Route path="/invite" element={<Invite />} />
             <Route path="/profile/:id" element={<Profile />} />
           </Routes>
