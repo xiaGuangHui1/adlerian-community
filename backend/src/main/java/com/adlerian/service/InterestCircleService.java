@@ -10,7 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,8 +28,25 @@ public class InterestCircleService {
     private final UserRepository userRepository;
 
     public List<InterestCircleDTO> getAllCircles(UUID userId) {
-        return circleRepository.findAllByOrderBySortOrderAsc().stream()
-                .map(c -> toCircleDTO(c, userId))
+        List<InterestCircle> circles = circleRepository.findAllByOrderBySortOrderAsc();
+        if (circles.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Long, Integer> memberCounts = memberRepository.countGroupByCircle().stream()
+                .collect(Collectors.toMap(
+                        r -> ((Number) r[0]).longValue(),
+                        r -> ((Number) r[1]).intValue()));
+        Map<Long, Integer> postCounts = postRepository.countGroupByCircle().stream()
+                .collect(Collectors.toMap(
+                        r -> ((Number) r[0]).longValue(),
+                        r -> ((Number) r[1]).intValue()));
+        Set<Long> joinedCircleIds = userId == null
+                ? Set.of()
+                : new HashSet<>(memberRepository.findCircleIdsByUserId(userId));
+
+        return circles.stream()
+                .map(c -> toCircleDTO(c, userId, memberCounts, postCounts, joinedCircleIds))
                 .collect(Collectors.toList());
     }
 
@@ -136,6 +156,24 @@ public class InterestCircleService {
                 .postCount(postRepository.countByCircleId(circle.getId()))
                 .createdAt(circle.getCreatedAt())
                 .joined(userId != null && memberRepository.existsByCircleIdAndUserId(circle.getId(), userId))
+                .build();
+    }
+
+    private InterestCircleDTO toCircleDTO(InterestCircle circle, UUID userId,
+                                          Map<Long, Integer> memberCounts,
+                                          Map<Long, Integer> postCounts,
+                                          Set<Long> joinedCircleIds) {
+        return InterestCircleDTO.builder()
+                .id(circle.getId())
+                .name(circle.getName())
+                .description(circle.getDescription())
+                .icon(circle.getIcon())
+                .coverUrl(circle.getCoverUrl())
+                .sortOrder(circle.getSortOrder())
+                .memberCount(memberCounts.getOrDefault(circle.getId(), 0))
+                .postCount(postCounts.getOrDefault(circle.getId(), 0))
+                .createdAt(circle.getCreatedAt())
+                .joined(userId != null && joinedCircleIds.contains(circle.getId()))
                 .build();
     }
 

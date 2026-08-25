@@ -3,6 +3,7 @@ package com.adlerian.service;
 import com.adlerian.dto.ActivityItemDTO;
 import com.adlerian.dto.HomeStatsDTO;
 import com.adlerian.repository.*;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -16,19 +17,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HomeService {
 
-    private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
-    private final EncourageRepository encourageRepository;
-    private final DailyCheckInRepository checkInRepository;
+    private final EntityManager entityManager;
 
     public HomeStatsDTO getStats() {
+        Object[] row = (Object[]) entityManager.createNativeQuery(
+                "SELECT " +
+                        "(SELECT COUNT(*) FROM users), " +
+                        "(SELECT COUNT(*) FROM posts), " +
+                        "(SELECT COUNT(*) FROM comments), " +
+                        "(SELECT COUNT(*) FROM encouragements), " +
+                        "(SELECT COUNT(*) FROM daily_checkins WHERE checkin_date = :today)"
+        ).setParameter("today", LocalDate.now()).getSingleResult();
+
         return HomeStatsDTO.builder()
-                .totalUsers(userRepository.count())
-                .totalPosts(postRepository.count())
-                .totalComments(commentRepository.count())
-                .totalEncouragements(encourageRepository.count())
-                .todayCheckIns(checkInRepository.countByCheckinDate(LocalDate.now()))
+                .totalUsers(((Number) row[0]).longValue())
+                .totalPosts(((Number) row[1]).longValue())
+                .totalComments(((Number) row[2]).longValue())
+                .totalEncouragements(((Number) row[3]).longValue())
+                .todayCheckIns(((Number) row[4]).longValue())
                 .build();
     }
 
