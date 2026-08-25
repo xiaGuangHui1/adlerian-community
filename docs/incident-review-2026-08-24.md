@@ -140,3 +140,29 @@ relation "interest_circles" does not exist
 
 - `/api/circles` → HTTP 200，返回 22 个圈子，每个含示例帖子。
 - 前端反代 `www.adlerian.com.cn/api/circles` → HTTP 200。
+
+## 十一、性能优化（N+1 查询，2026-08-25）
+
+用户反馈页面刷新慢。实测定位到两处 N+1 查询导致接口耗时异常：
+
+| 接口 | 优化前 | 优化后 |
+|---|---|---|
+| `/api/circles`（社会兴趣） | 9.7–10.1s | 1.6–2.5s |
+| `/api/home/stats`（首页统计） | 2.7–2.8s | 1.1–1.6s |
+| `/api/home/activity`（首页动态） | 1.6–2.5s | 1.5–1.9s |
+
+### 根因
+
+1. `InterestCircleService.getAllCircles` 先查 22 个圈子，再对每个圈子单独查成员数、帖子数 → 共 45 次查询。
+2. `HomeService.getStats` 一口气做 5 个 count + 1 个打卡 count = 6 次查询。
+3. `HomeService.getActivity` 查帖子/评论后懒加载 author/post，触发 N+1。
+
+### 修复（commit `474ceba`）
+
+1. circles：新增 `countGroupByCircle` 聚合查询（GROUP BY），45 次 → 3 次。
+2. stats：合并为 1 条原生 SQL（子查询）。
+3. activity：给帖子/评论查询加 `@EntityGraph` 预取 author/post。
+
+### 遗留：架构性延迟
+
+优化后所有接口仍剩 ~1–1.5s「起步价」，这是中美网络往返（Railway us-west2 + Supabase 美国 + 用户在国内）造成的，代码层面无法再优化。根治需迁移基础设施到离中国更近的区（新加坡/香港/国内云）。

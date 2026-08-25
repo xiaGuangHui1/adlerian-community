@@ -3,6 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import type { Quote, Resource } from '../types';
 
+const COVER_STYLES: Record<string, { gradient: string; emoji: string }> = {
+  concept: { gradient: 'from-orange-100 via-peach-200 to-amber-200', emoji: '🧠' },
+  book: { gradient: 'from-teal-100 via-emerald-100 to-cyan-200', emoji: '📖' },
+  article: { gradient: 'from-violet-100 via-purple-100 to-pink-200', emoji: '📝' },
+  practice: { gradient: 'from-sky-100 via-indigo-100 to-violet-200', emoji: '🧭' },
+  quote: { gradient: 'from-rose-100 via-pink-100 to-orange-200', emoji: '💬' },
+  bio: { gradient: 'from-amber-100 via-orange-100 to-rose-200', emoji: '👤' },
+};
+const DEFAULT_COVER = { gradient: 'from-stone-100 via-orange-100 to-peach-200', emoji: '📚' };
+
+function getCover(type: string) {
+  return COVER_STYLES[type] || DEFAULT_COVER;
+}
+
 export default function KnowledgeBase() {
   const navigate = useNavigate();
   const [quote, setQuote] = useState<Quote | null>(null);
@@ -137,8 +151,10 @@ export default function KnowledgeBase() {
                         {r.coverUrl ? (
                           <img alt={r.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src={r.coverUrl} />
                         ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-peach-200 to-teal-200 flex items-center justify-center text-4xl">
-                            {r.type === 'book' ? '📖' : r.type === 'concept' ? '🧠' : r.type === 'article' ? '📄' : '📚'}
+                          <div className={`w-full h-full bg-gradient-to-br ${getCover(r.type).gradient} flex items-center justify-center`}>
+                            <div className="w-20 h-20 rounded-full bg-white/70 backdrop-blur-sm shadow-sm flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-300">
+                              {getCover(r.type).emoji}
+                            </div>
                           </div>
                         )}
                         <div className="absolute top-4 left-4">
