@@ -8,6 +8,7 @@ import Forum from './routes/Forum';
 import PostDetail from './routes/PostDetail';
 import NewPost from './routes/NewPost';
 import KnowledgeBase from './routes/KnowledgeBase';
+import ResourceDetail from './routes/ResourceDetail';
 import CheckIn from './routes/CheckIn';
 import Groups from './routes/Groups';
 import InterestCircles from './routes/InterestCircles';
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/forum/new" element={<NewPost />} />
             <Route path="/forum/:id" element={<PostDetail />} />
             <Route path="/knowledge-base" element={<KnowledgeBase />} />
+            <Route path="/knowledge-base/:id" element={<ResourceDetail />} />
             <Route path="/checkin" element={<CheckIn />} />
             <Route path="/groups" element={<Groups />} />
             <Route path="/circles" element={<InterestCircles />} />

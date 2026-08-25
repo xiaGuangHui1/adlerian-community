@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import type { Quote, Resource } from '../types';
 
 export default function KnowledgeBase() {
+  const navigate = useNavigate();
   const [quote, setQuote] = useState<Quote | null>(null);
   const [activeTab, setActiveTab] = useState('');
   const [resources, setResources] = useState<Resource[]>([]);
@@ -126,7 +128,11 @@ export default function KnowledgeBase() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {displayedResources.map((r) => (
-                    <div key={r.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-orange-50 group">
+                    <div
+                      key={r.id}
+                      onClick={() => navigate(`/knowledge-base/${r.id}`)}
+                      className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-orange-50 group cursor-pointer"
+                    >
                       <div className="relative aspect-video overflow-hidden">
                         {r.coverUrl ? (
                           <img alt={r.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src={r.coverUrl} />
@@ -194,7 +200,12 @@ export default function KnowledgeBase() {
                 </h3>
                 <div className="space-y-6">
                   {hotResources.slice(0, 4).map((r, i) => (
-                    <a key={r.id} href="#" className="flex gap-4 group no-underline" onClick={(e) => e.preventDefault()}>
+                    <a
+                      key={r.id}
+                      href="#"
+                      className="flex gap-4 group no-underline cursor-pointer"
+                      onClick={(e) => { e.preventDefault(); navigate(`/knowledge-base/${r.id}`); }}
+                    >
                       <span className="text-2xl font-black text-orange-100 group-hover:text-peach-500 transition-colors flex-shrink-0">
                         {String(i + 1).padStart(2, '0')}
                       </span>
