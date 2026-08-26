@@ -3,10 +3,10 @@ import { useAuth } from '../hooks/useAuth';
 
 const NAV_ITEMS = [
   { path: '/', label: '首页' },
+  { path: '/checkin', label: '实践打卡' },
   { path: '/knowledge-base', label: '理论探索' },
   { path: '/forum', label: '同行广场' },
   { path: '/circles', label: '社会兴趣' },
-  { path: '/checkin', label: '实践打卡' },
   { path: '/invite', label: '结伴同行' },
 ];
 
@@ -138,9 +138,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <h4 className="font-bold mb-6">快速链接</h4>
               <ul className="space-y-4 text-gray-400 text-sm list-none p-0">
                 <li><Link to="/" className="hover:text-peach-500 transition-colors no-underline">社区首页</Link></li>
+                <li><Link to="/checkin" className="hover:text-peach-500 transition-colors no-underline">实践打卡</Link></li>
                 <li><Link to="/knowledge-base" className="hover:text-peach-500 transition-colors no-underline">理论探索</Link></li>
                 <li><Link to="/forum" className="hover:text-peach-500 transition-colors no-underline">同行广场</Link></li>
-                <li><Link to="/checkin" className="hover:text-peach-500 transition-colors no-underline">实践打卡</Link></li>
                 <li><Link to="/circles" className="hover:text-peach-500 transition-colors no-underline">社会兴趣</Link></li>
                 <li><Link to="/invite" className="hover:text-peach-500 transition-colors no-underline">结伴同行</Link></li>
               </ul>
