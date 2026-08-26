@@ -17,6 +17,20 @@ function getCover(type: string) {
   return COVER_STYLES[type] || DEFAULT_COVER;
 }
 
+const COVER_IMAGES: Record<string, string[]> = {
+  concept: ['/covers/concept-1.jpg', '/covers/concept-2.jpg', '/covers/concept-3.jpg', '/covers/concept-4.jpg'],
+  book: ['/covers/book-1.jpg', '/covers/book-2.jpg', '/covers/book-3.jpg'],
+  bio: ['/covers/bio-1.jpg', '/covers/bio-2.jpg'],
+  practice: ['/covers/practice-1.jpg', '/covers/practice-2.jpg'],
+  article: ['/covers/practice-1.jpg', '/covers/practice-2.jpg'],
+  quote: ['/covers/concept-1.jpg', '/covers/concept-3.jpg'],
+};
+
+function getCoverImage(r: Resource): string {
+  const list = COVER_IMAGES[r.type] || COVER_IMAGES.concept;
+  return list[r.id % list.length];
+}
+
 export default function KnowledgeBase() {
   const navigate = useNavigate();
   const [quote, setQuote] = useState<Quote | null>(null);
@@ -148,15 +162,17 @@ export default function KnowledgeBase() {
                       className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-orange-50 group cursor-pointer"
                     >
                       <div className="relative aspect-video overflow-hidden">
-                        {r.coverUrl ? (
-                          <img alt={r.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src={r.coverUrl} />
-                        ) : (
-                          <div className={`w-full h-full bg-gradient-to-br ${getCover(r.type).gradient} flex items-center justify-center`}>
-                            <div className="w-20 h-20 rounded-full bg-white/70 backdrop-blur-sm shadow-sm flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-300">
-                              {getCover(r.type).emoji}
-                            </div>
+                        <div className={`absolute inset-0 bg-gradient-to-br ${getCover(r.type).gradient} flex items-center justify-center`}>
+                          <div className="w-20 h-20 rounded-full bg-white/70 backdrop-blur-sm shadow-sm flex items-center justify-center text-4xl">
+                            {getCover(r.type).emoji}
                           </div>
-                        )}
+                        </div>
+                        <img
+                          alt={r.title}
+                          src={r.coverUrl || getCoverImage(r)}
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
                         <div className="absolute top-4 left-4">
                           <span className={`backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
                             r.type === 'concept' ? 'bg-peach-500/90' :
