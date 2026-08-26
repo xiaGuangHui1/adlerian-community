@@ -22,6 +22,11 @@ spring:
     hikari:
       connection-timeout: 30000
       maximum-pool-size: 5
+      minimum-idle: 1
+      max-lifetime: 300000
+      keepalive-time: 60000
+      validation-timeout: 5000
+      connection-test-query: SELECT 1
 
   data:
     web:
