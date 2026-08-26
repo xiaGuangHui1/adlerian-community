@@ -1,20 +1,51 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import api from '../lib/api';
 import type { Encouragement } from '../types';
 
 interface Props {
-  targetType: 'post' | 'comment';
+  targetType: 'post' | 'comment' | 'checkin';
   targetId: number;
-  encouragements: Encouragement[];
+  /** 已加载好的鼓励列表（帖子/评论场景传入） */
+  encouragements?: Encouragement[];
+  /** 已知数量（打卡动态流场景传入，列表按需加载） */
+  initialCount?: number;
   onNewEncouragement?: (e: Encouragement) => void;
 }
 
-export default function EncourageButton({ targetType, targetId, encouragements, onNewEncouragement }: Props) {
+export default function EncourageButton({
+  targetType,
+  targetId,
+  encouragements,
+  initialCount = 0,
+  onNewEncouragement,
+}: Props) {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [anonymous, setAnonymous] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showList, setShowList] = useState(false);
+
+  const [list, setList] = useState<Encouragement[]>(encouragements || []);
+  const [loaded, setLoaded] = useState(encouragements !== undefined);
+  const [count, setCount] = useState(encouragements ? encouragements.length : initialCount);
+
+  const loadList = useCallback(async () => {
+    try {
+      const { data } = await api.get<Encouragement[]>(
+        `/encouragements?targetType=${targetType}&targetId=${targetId}`
+      );
+      setList(data);
+      setCount(data.length);
+      setLoaded(true);
+    } catch {
+      setLoaded(true);
+    }
+  }, [targetType, targetId]);
+
+  const toggleList = async () => {
+    if (!showList && !loaded) await loadList();
+    setShowList((s) => !s);
+  };
 
   const handleSubmit = async () => {
     if (!message.trim()) return;
@@ -24,6 +55,9 @@ export default function EncourageButton({ targetType, targetId, encouragements, 
         `/encouragements?targetType=${targetType}&targetId=${targetId}`,
         { message, anonymous }
       );
+      setList((prev) => [...prev, data]);
+      setCount((c) => c + 1);
+      setLoaded(true);
       onNewEncouragement?.(data);
       setMessage('');
       setOpen(false);
@@ -43,12 +77,12 @@ export default function EncourageButton({ targetType, targetId, encouragements, 
         >
           给予鼓励
         </button>
-        {encouragements.length > 0 && (
+        {count > 0 && (
           <button
-            onClick={() => setShowList(!showList)}
+            onClick={toggleList}
             className="text-xs text-gray-400 hover:text-peach-700 bg-transparent border-0 cursor-pointer"
           >
-            {encouragements.length}条鼓励
+            {count}条鼓励
           </button>
         )}
       </div>
@@ -96,9 +130,9 @@ export default function EncourageButton({ targetType, targetId, encouragements, 
       )}
 
       {/* 鼓励列表 */}
-      {showList && encouragements.length > 0 && (
+      {showList && list.length > 0 && (
         <div className="mt-2 space-y-2">
-          {encouragements.map((e) => (
+          {list.map((e) => (
             <div key={e.id} className="p-2 bg-peach-50 rounded text-sm">
               <p className="text-brown-900">{e.message}</p>
               <p className="text-xs text-gray-400 mt-1">

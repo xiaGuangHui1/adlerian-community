@@ -1,12 +1,16 @@
 package com.adlerian.service;
 
 import com.adlerian.dto.CheckInDTO;
+import com.adlerian.dto.CheckInFeedDTO;
 import com.adlerian.dto.CreateCheckInRequest;
+import com.adlerian.dto.PostDTO;
 import com.adlerian.entity.DailyCheckIn;
 import com.adlerian.entity.User;
 import com.adlerian.repository.DailyCheckInRepository;
+import com.adlerian.repository.EncourageRepository;
 import com.adlerian.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +27,7 @@ public class DailyCheckInService {
 
     private final DailyCheckInRepository checkInRepository;
     private final UserRepository userRepository;
+    private final EncourageRepository encourageRepository;
 
     public Optional<CheckInDTO> getTodayCheckIn(UUID userId) {
         return checkInRepository.findByUserIdAndCheckinDate(userId, LocalDate.now())
@@ -92,6 +97,43 @@ public class DailyCheckInService {
         long totalDays = getTotalCheckInDays(userId);
         int streak = getCurrentStreak(userId);
         return java.util.Map.of("totalDays", totalDays, "streak", streak);
+    }
+
+    public List<CheckInFeedDTO> getFeed(int limit) {
+        int safeLimit = Math.min(Math.max(limit, 1), 50);
+        List<DailyCheckIn> checkIns = checkInRepository
+                .findAllByOrderByCreatedAtDesc(PageRequest.of(0, safeLimit))
+                .getContent();
+        if (checkIns.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> ids = checkIns.stream().map(DailyCheckIn::getId).toList();
+        Map<Long, Integer> counts = encourageRepository
+                .countByTargetTypeAndTargetIdIn("checkin", ids).stream()
+                .collect(Collectors.toMap(
+                        r -> ((Number) r[0]).longValue(),
+                        r -> ((Number) r[1]).intValue()));
+
+        return checkIns.stream()
+                .map(c -> toFeedDTO(c, counts.getOrDefault(c.getId(), 0)))
+                .toList();
+    }
+
+    private CheckInFeedDTO toFeedDTO(DailyCheckIn checkIn, int encouragementCount) {
+        User author = checkIn.getUser();
+        return CheckInFeedDTO.builder()
+                .id(checkIn.getId())
+                .checkinDate(checkIn.getCheckinDate())
+                .content(checkIn.getContent())
+                .createdAt(checkIn.getCreatedAt())
+                .author(PostDTO.AuthorDTO.builder()
+                        .id(author.getId())
+                        .nickname(author.getNickname())
+                        .avatarUrl(author.getAvatarUrl())
+                        .build())
+                .encouragementCount(encouragementCount)
+                .build();
     }
 
     private CheckInDTO toDTO(DailyCheckIn checkIn) {

@@ -66,6 +66,15 @@ export interface CheckIn {
   updatedAt: string;
 }
 
+export interface CheckInFeedItem {
+  id: number;
+  checkinDate: string;
+  content: string;
+  createdAt: string;
+  author: Author;
+  encouragementCount: number;
+}
+
 export interface StudyGroup {
   id: number;
   name: string;

@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '@iconify-icon/react';
 import api from '../lib/api';
-import type { CheckIn, Challenge, Quote } from '../types';
+import type { CheckIn, Challenge, Quote, CheckInFeedItem } from '../types';
 import CheckInForm from '../components/CheckInForm';
 import CheckInCalendar from '../components/CheckInCalendar';
+import EncourageButton from '../components/EncourageButton';
 
 const MOCK_PRACTICE_TOPIC = {
   theme: '接纳不完美的自己',
@@ -16,12 +17,6 @@ const MOCK_CHECKINS = [
   { date: '2026-05-24', mood: '😊', theme: '课题分离', content: '今天同事又在抱怨老板，我以前总是会被她的情绪带走，跟着一起郁闷。今天我尝试了课题分离：她的情绪是她的课题，我不需要为此负责。我礼貌地听了一会儿就去做自己的事了，心情非常平静。' },
   { date: '2026-05-23', mood: '💪', theme: '面对困难的勇气', content: '终于在开会的时候提出了自己的建议。虽然心跳很快，手也在抖，但我告诉自己，被反驳也没关系，重要的是我表达了自己。结果大家居然觉得我的建议很有参考价值！这种感觉太棒了。' },
   { date: '2026-05-22', mood: '🍃', theme: '活在当下', content: '下班路上没有玩手机，而是观察了路边的花草和夕阳。意识到生命就是由这些微小的瞬间组成的，过去不重要，未来还没到，只有现在是最真实的。' },
-];
-
-const MOCK_ACTIVITIES = [
-  { user: '林间漫步', action: '完成了打卡', content: '"今天对自己说了一句辛苦了，感觉很温柔。"', time: '刚刚' },
-  { user: '自由之翼', action: '获得了勋章', badge: '达成 30 天连续打卡', time: '15分钟前' },
-  { user: '阿木', action: '发表了感悟', content: '"拒绝别人的时候，心跳还是很快，但我不后悔。"', time: '1小时前' },
 ];
 
 export default function CheckInPage() {
@@ -36,6 +31,7 @@ export default function CheckInPage() {
   const [selectedDay, setSelectedDay] = useState<CheckIn | null>(null);
   const [myChallenges, setMyChallenges] = useState<Challenge[]>([]);
   const [quote, setQuote] = useState<Quote | null>(null);
+  const [feed, setFeed] = useState<CheckInFeedItem[]>([]);
 
   useEffect(() => {
     Promise.all([
@@ -48,6 +44,7 @@ export default function CheckInPage() {
       }).catch(() => {}),
       api.get<Challenge[]>('/challenges/my').then(r => setMyChallenges(r.data)).catch(() => {}),
       api.get<Quote>('/quotes/daily').then(r => setQuote(r.data)).catch(() => {}),
+      api.get<CheckInFeedItem[]>('/checkins/feed', { params: { limit: 10 } }).then(r => setFeed(r.data)).catch(() => {}),
     ]).finally(() => setLoading(false));
   }, []);
 
@@ -265,29 +262,28 @@ export default function CheckInPage() {
                   同路人动态
                 </h3>
                 <div className="space-y-6">
-                  {MOCK_ACTIVITIES.map((act, i) => (
-                    <div key={i} className="flex gap-3">
+                  {feed.map((item) => (
+                    <div key={item.id} className="flex gap-3">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-peach-300 to-teal-300 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                        {act.user.charAt(0)}
+                        {item.author.nickname.charAt(0)}
                       </div>
                       <div className="flex-grow">
                         <p className="text-xs">
-                          <span className="font-bold">{act.user}</span>
-                          <span className="text-gray-400 font-normal"> {act.action}</span>
+                          <span className="font-bold">{item.author.nickname}</span>
+                          <span className="text-gray-400 font-normal"> 完成了打卡</span>
                         </p>
-                        {act.content && (
-                          <p className="text-[11px] text-gray-500 mt-1 bg-warm-50 p-2 rounded-lg">{act.content}</p>
-                        )}
-                        {act.badge && (
-                          <div className="flex items-center gap-1 mt-1">
-                            <svg className="w-4 h-4 text-orange-400" fill="currentColor" viewBox="0 0 256 256"><path d="M219.55,56.45a96,96,0,1,0-163.1,0A96,96,0,0,0,219.55,56.45ZM96,64V224L52.7,199.69A80,80,0,0,1,96,64Zm64,0a80,80,0,0,1,43.3,135.69L160,224V64Z"/></svg>
-                            <span className="text-[10px] font-bold text-orange-400">{act.badge}</span>
-                          </div>
-                        )}
-                        <p className="text-[9px] text-gray-300 mt-1">{act.time}</p>
+                        <p className="text-[11px] text-gray-500 mt-1 bg-warm-50 p-2 rounded-lg whitespace-pre-wrap line-clamp-3">
+                          {item.content}
+                        </p>
+                        <div className="mt-2">
+                          <EncourageButton targetType="checkin" targetId={item.id} initialCount={item.encouragementCount} />
+                        </div>
                       </div>
                     </div>
                   ))}
+                  {feed.length === 0 && (
+                    <p className="text-xs text-gray-400 text-center py-4">还没有同路人动态，去完成今天的打卡吧</p>
+                  )}
                 </div>
               </div>
 

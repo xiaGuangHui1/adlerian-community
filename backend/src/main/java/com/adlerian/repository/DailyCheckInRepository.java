@@ -1,6 +1,9 @@
 package com.adlerian.repository;
 
 import com.adlerian.entity.DailyCheckIn;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,4 +26,7 @@ public interface DailyCheckInRepository extends JpaRepository<DailyCheckIn, Long
 
     List<DailyCheckIn> findByUserIdInAndCheckinDateGreaterThanEqualOrderByCreatedAtDesc(
         List<UUID> userIds, LocalDate since);
+
+    @EntityGraph(attributePaths = "user")
+    Page<DailyCheckIn> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

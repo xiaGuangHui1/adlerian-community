@@ -1,6 +1,7 @@
 package com.adlerian.controller;
 
 import com.adlerian.dto.CheckInDTO;
+import com.adlerian.dto.CheckInFeedDTO;
 import com.adlerian.dto.CreateCheckInRequest;
 import com.adlerian.entity.User;
 import com.adlerian.service.DailyCheckInService;
@@ -34,6 +35,12 @@ public class CheckInController {
             @RequestParam int year, @RequestParam int month) {
         User user = currentUser();
         return ResponseEntity.ok(checkInService.getMonthlyCheckIns(user.getId(), year, month));
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<List<CheckInFeedDTO>> getFeed(
+            @RequestParam(defaultValue = "20") int limit) {
+        return ResponseEntity.ok(checkInService.getFeed(limit));
     }
 
     @PostMapping

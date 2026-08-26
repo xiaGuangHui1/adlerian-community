@@ -4,6 +4,7 @@ import com.adlerian.dto.CreateEncouragementRequest;
 import com.adlerian.dto.EncouragementDTO;
 import com.adlerian.dto.PostDTO;
 import com.adlerian.entity.Comment;
+import com.adlerian.entity.DailyCheckIn;
 import com.adlerian.entity.Encouragement;
 import com.adlerian.entity.Post;
 import com.adlerian.entity.User;
@@ -23,6 +24,7 @@ public class EncourageService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final DailyCheckInRepository checkInRepository;
 
     public List<EncouragementDTO> getEncouragements(String targetType, Long targetId) {
         return encourageRepository.findByTargetTypeAndTargetIdOrderByCreatedAtDesc(targetType, targetId)
@@ -45,6 +47,10 @@ public class EncourageService {
             Comment comment = commentRepository.findById(targetId)
                     .orElseThrow(() -> new RuntimeException("评论不存在"));
             receiver = comment.getAuthor();
+        } else if ("checkin".equals(targetType)) {
+            DailyCheckIn checkIn = checkInRepository.findById(targetId)
+                    .orElseThrow(() -> new RuntimeException("打卡不存在"));
+            receiver = checkIn.getUser();
         } else {
             receiver = userRepository.findById(UUID.fromString(targetId.toString()))
                     .orElseThrow(() -> new RuntimeException("用户不存在"));
