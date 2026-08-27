@@ -31,7 +31,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2 text-xl font-bold text-brown-900 no-underline active:scale-95 transition-transform">
-              <span className="w-8 h-8 bg-gradient-to-br from-peach-500 to-peach-600 rounded-full flex items-center justify-center text-white text-sm shadow-sm shadow-orange-200">勇</span>
+              <span className="w-8 h-8 bg-gradient-to-br from-peach-500 to-peach-600 rounded-full flex items-center justify-center text-white shadow-sm shadow-orange-200">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="12" r="4.5" fill="currentColor" />
+                  <g stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                    <path d="M12 3.5v2.5" />
+                    <path d="M12 18v2.5" />
+                    <path d="M3.5 12h2.5" />
+                    <path d="M18 12h2.5" />
+                    <path d="M6 6l1.8 1.8" />
+                    <path d="M18 6l-1.8 1.8" />
+                    <path d="M6 18l1.8-1.8" />
+                    <path d="M18 18l-1.8-1.8" />
+                  </g>
+                </svg>
+              </span>
               阿德勒心理学社区
             </Link>
             <div className="hidden md:flex gap-1">
