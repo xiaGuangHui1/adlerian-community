@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
+import { getResourceCover } from '../lib/covers';
 import type { Quote, Resource } from '../types';
 
 const COVER_STYLES: Record<string, { gradient: string; emoji: string }> = {
@@ -15,20 +16,6 @@ const DEFAULT_COVER = { gradient: 'from-stone-100 via-orange-100 to-peach-200', 
 
 function getCover(type: string) {
   return COVER_STYLES[type] || DEFAULT_COVER;
-}
-
-const COVER_IMAGES: Record<string, string[]> = {
-  concept: ['/covers/concept-1.jpg', '/covers/concept-2.jpg', '/covers/concept-3.jpg', '/covers/concept-4.jpg'],
-  book: ['/covers/book-1.jpg', '/covers/book-2.jpg', '/covers/book-3.jpg'],
-  bio: ['/covers/bio-1.jpg', '/covers/bio-2.jpg'],
-  practice: ['/covers/practice-1.jpg', '/covers/practice-2.jpg'],
-  article: ['/covers/practice-1.jpg', '/covers/practice-2.jpg'],
-  quote: ['/covers/concept-1.jpg', '/covers/concept-3.jpg'],
-};
-
-function getCoverImage(r: Resource): string {
-  const list = COVER_IMAGES[r.type] || COVER_IMAGES.concept;
-  return list[r.id % list.length];
 }
 
 export default function KnowledgeBase() {
@@ -169,7 +156,7 @@ export default function KnowledgeBase() {
                         </div>
                         <img
                           alt={r.title}
-                          src={r.coverUrl || getCoverImage(r)}
+                          src={r.coverUrl || getResourceCover(r)}
                           className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           onError={(e) => { e.currentTarget.style.display = 'none'; }}
                         />
