@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const NAV_ITEMS = [
-  { path: '/', label: '社区首页' },
+  { path: '/', label: '社区介绍' },
   { path: '/checkin', label: '实践打卡' },
   { path: '/knowledge-base', label: '理论探索' },
   { path: '/forum', label: '同行广场' },
