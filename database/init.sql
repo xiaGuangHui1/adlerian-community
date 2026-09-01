@@ -109,6 +109,7 @@ CREATE TABLE IF NOT EXISTS daily_checkins (
     user_id UUID NOT NULL REFERENCES users(id),
     checkin_date DATE NOT NULL,
     content TEXT NOT NULL,
+    post_id BIGINT,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE (user_id, checkin_date)

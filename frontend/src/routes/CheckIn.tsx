@@ -62,6 +62,9 @@ export default function CheckInPage() {
       setTotalDays(prev => prev + 1);
       setStreak(prev => prev + 1);
     }
+    if (checkIn.postId) {
+      alert('已同步到同行广场');
+    }
     api.get<CheckIn[]>(`/checkins/monthly?year=${year}&month=${month}`)
       .then(r => setMonthlyCheckIns(r.data))
       .catch(() => {});

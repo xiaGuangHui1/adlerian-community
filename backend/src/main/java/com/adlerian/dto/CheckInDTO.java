@@ -9,6 +9,7 @@ public class CheckInDTO {
     private Long id;
     private LocalDate checkinDate;
     private String content;
+    private Long postId;
     private Instant createdAt;
     private Instant updatedAt;
 }

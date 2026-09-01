@@ -3,6 +3,7 @@ package com.adlerian.service;
 import com.adlerian.dto.CheckInDTO;
 import com.adlerian.dto.CheckInFeedDTO;
 import com.adlerian.dto.CreateCheckInRequest;
+import com.adlerian.dto.CreatePostRequest;
 import com.adlerian.dto.PostDTO;
 import com.adlerian.entity.DailyCheckIn;
 import com.adlerian.entity.User;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +30,7 @@ public class DailyCheckInService {
     private final DailyCheckInRepository checkInRepository;
     private final UserRepository userRepository;
     private final EncourageRepository encourageRepository;
+    private final PostService postService;
 
     public Optional<CheckInDTO> getTodayCheckIn(UUID userId) {
         return checkInRepository.findByUserIdAndCheckinDate(userId, LocalDate.now())
@@ -55,8 +58,33 @@ public class DailyCheckInService {
                         .build());
 
         checkIn.setContent(request.getContent());
+        checkIn = checkInRepository.save(checkIn);
 
-        return toDTO(checkInRepository.save(checkIn));
+        if (request.isSyncToForum()) {
+            syncToForum(checkIn, user, request);
+        }
+
+        return toDTO(checkIn);
+    }
+
+    private void syncToForum(DailyCheckIn checkIn, User user, CreateCheckInRequest request) {
+        String title = request.getForumTitle();
+        if (title == null || title.isBlank()) {
+            title = "我的实践分享 · " + LocalDate.now().format(DateTimeFormatter.ofPattern("M月d日"));
+        }
+        String category = request.getForumCategory();
+        if (category == null || category.isBlank()) {
+            category = "life-courage";
+        }
+        CreatePostRequest postRequest = new CreatePostRequest(title, request.getContent(), category);
+
+        if (checkIn.getPostId() == null) {
+            PostDTO post = postService.createPost(user.getId(), postRequest);
+            checkIn.setPostId(post.getId());
+            checkInRepository.save(checkIn);
+        } else {
+            postService.updatePost(checkIn.getPostId(), user.getId(), postRequest);
+        }
     }
 
     public long getTotalCheckInDays(UUID userId) {
@@ -141,6 +169,7 @@ public class DailyCheckInService {
                 .id(checkIn.getId())
                 .checkinDate(checkIn.getCheckinDate())
                 .content(checkIn.getContent())
+                .postId(checkIn.getPostId())
                 .createdAt(checkIn.getCreatedAt())
                 .updatedAt(checkIn.getUpdatedAt())
                 .build();

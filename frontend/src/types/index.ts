@@ -62,6 +62,7 @@ export interface CheckIn {
   id: number;
   checkinDate: string;
   content: string;
+  postId?: number;
   createdAt: string;
   updatedAt: string;
 }

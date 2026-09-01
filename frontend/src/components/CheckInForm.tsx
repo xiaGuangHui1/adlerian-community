@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import api from '../lib/api';
-import { CheckIn } from '../types';
+import { CheckIn, CATEGORIES } from '../types';
 
 const CHECKIN_TEMPLATE = `【幸福】今天让我感到幸福的事：
 
@@ -11,6 +11,11 @@ const CHECKIN_TEMPLATE = `【幸福】今天让我感到幸福的事：
 【爱他人】今天我这样关心了他人：
 `;
 
+function defaultForumTitle() {
+  const d = new Date();
+  return `我的实践分享 · ${d.getMonth() + 1}月${d.getDate()}日`;
+}
+
 interface CheckInFormProps {
   initialData?: CheckIn | null;
   onSuccess: (checkIn: CheckIn) => void;
@@ -20,6 +25,9 @@ interface CheckInFormProps {
 export default function CheckInForm({ initialData, onSuccess, onCancel }: CheckInFormProps) {
   const [content, setContent] = useState(initialData?.content || CHECKIN_TEMPLATE);
   const [submitting, setSubmitting] = useState(false);
+  const [syncToForum, setSyncToForum] = useState(false);
+  const [forumTitle, setForumTitle] = useState('');
+  const [forumCategory, setForumCategory] = useState('life-courage');
 
   const isBlank = content.trim() === '' || content.trim() === CHECKIN_TEMPLATE.trim();
 
@@ -27,7 +35,12 @@ export default function CheckInForm({ initialData, onSuccess, onCancel }: CheckI
     if (isBlank) return;
     setSubmitting(true);
     try {
-      const { data } = await api.post<CheckIn>('/checkins', { content });
+      const { data } = await api.post<CheckIn>('/checkins', {
+        content,
+        syncToForum,
+        forumTitle,
+        forumCategory,
+      });
       onSuccess(data);
     } catch {
       alert('打卡失败，请稍后重试');
@@ -52,6 +65,45 @@ export default function CheckInForm({ initialData, onSuccess, onCancel }: CheckI
         maxLength={2000}
         className="w-full px-3 py-2.5 border border-peach-100 rounded-lg text-sm leading-relaxed resize-y focus:outline-none focus:border-peach-400 bg-warm-50"
       />
+
+      {/* 同步到同行广场 */}
+      <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={syncToForum}
+          onChange={e => setSyncToForum(e.target.checked)}
+          className="w-4 h-4 accent-peach-500"
+        />
+        <span className="text-sm text-gray-600">同步到同行广场</span>
+      </label>
+
+      {syncToForum && (
+        <div className="mt-3 p-3 bg-warm-50 rounded-lg space-y-3">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">帖子标题（留空自动生成）</label>
+            <input
+              type="text"
+              value={forumTitle}
+              onChange={e => setForumTitle(e.target.value)}
+              maxLength={200}
+              placeholder={defaultForumTitle()}
+              className="w-full px-3 py-2 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-white"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">话题分类</label>
+            <select
+              value={forumCategory}
+              onChange={e => setForumCategory(e.target.value)}
+              className="w-full px-3 py-2 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-white"
+            >
+              {CATEGORIES.map(c => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-3 mt-3">
         <button
