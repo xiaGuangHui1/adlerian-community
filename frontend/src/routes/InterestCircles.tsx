@@ -58,7 +58,7 @@ export default function InterestCircles() {
   };
 
   return (
-    <div>
+    <div className="relative">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-stone-800">社会兴趣</h1>
       </div>
@@ -135,6 +135,23 @@ export default function InterestCircles() {
           )}
         </div>
       )}
+
+      {/* 蒙层：敬请期待 */}
+      <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70 backdrop-blur-sm">
+        <div className="text-center max-w-md px-8 py-12 bg-white/90 rounded-3xl shadow-lg border border-orange-100">
+          <div className="text-4xl mb-4">✨</div>
+          <h2 className="text-2xl font-bold text-brown-900 mb-3">敬请期待</h2>
+          <p className="text-gray-500 leading-relaxed mb-6">
+            社会兴趣正在打磨中，后续迭代上线。届时你可以加入感兴趣的话题圈子，与志同道合的朋友一起成长。
+          </p>
+          <button
+            onClick={() => navigate('/checkin')}
+            className="bg-peach-500 text-white px-6 py-3 rounded-2xl font-bold hover:bg-peach-600 transition-colors border-0 cursor-pointer"
+          >
+            先去实践打卡
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
