@@ -2,6 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify-icon/react';
 import api from '../lib/api';
+import Skeleton from '../components/Skeleton';
 import { useAuth } from '../hooks/useAuth';
 import { Post, CheckIn, UserProfile, CheckInStats, CATEGORIES } from '../types';
 
@@ -226,7 +227,21 @@ export default function Profile() {
 
   // loading state
   if (loading || !profile) {
-    return <div className="text-center py-24 text-gray-400">加载中...</div>;
+    return (
+      <div className="max-w-3xl mx-auto animate-pulse">
+        <div className="bg-white rounded-3xl p-8 border border-orange-50 mb-6 flex items-center gap-6">
+          <Skeleton className="w-20 h-20 rounded-full" />
+          <div className="flex-1 space-y-3">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-4 w-64" />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <Skeleton className="h-20 rounded-2xl" />
+          <Skeleton className="h-20 rounded-2xl" />
+        </div>
+      </div>
+    );
   }
 
   const categoryLabel = (catVal: string) => {

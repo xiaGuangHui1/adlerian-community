@@ -2,6 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import api from '../lib/api';
+import Skeleton from '../components/Skeleton';
 import { Post, Comment as CommentType, Encouragement, CATEGORIES } from '../types';
 import CommentTree from '../components/CommentTree';
 import EncourageButton from '../components/EncourageButton';
@@ -41,7 +42,19 @@ export default function PostDetail() {
   }, [fetchData]);
 
   if (loading || !post) {
-    return <div className="text-center py-12 text-gray-400">加载中...</div>;
+    return (
+      <div className="max-w-3xl mx-auto animate-pulse">
+        <Skeleton className="h-4 w-24 mb-4" />
+        <div className="bg-white p-6 rounded-xl border border-peach-100">
+          <Skeleton className="h-5 w-20 mb-4" />
+          <Skeleton className="h-7 w-3/4 mb-3" />
+          <Skeleton className="h-4 w-1/3 mb-6" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-2/3" />
+        </div>
+      </div>
+    );
   }
 
   const getCategoryLabel = (value: string) =>

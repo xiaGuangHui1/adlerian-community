@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Icon } from '@iconify-icon/react';
 import axios from 'axios';
 import api from '../lib/api';
+import Skeleton from '../components/Skeleton';
 import { useAuth } from '../hooks/useAuth';
 import { useShare } from '../hooks/useShare';
 import type { TeamInfo, TeamInvitation, CreateTeamResponse } from '../types';
@@ -99,8 +100,15 @@ export default function Invite() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-24">
-        <div className="text-gray-400 animate-pulse">加载中...</div>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 animate-pulse">
+        <Skeleton className="h-8 w-48 mb-4" />
+        <Skeleton className="h-5 w-72 mb-8" />
+        <div className="bg-white rounded-3xl p-8 border border-orange-50 space-y-4">
+          <Skeleton className="h-5 w-1/3" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6" />
+          <Skeleton className="h-12 w-40" />
+        </div>
       </div>
     );
   }

@@ -2,6 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import api from '../lib/api';
+import Skeleton from '../components/Skeleton';
 import { InterestCircle } from '../types';
 import { useAuth } from '../hooks/useAuth';
 
@@ -67,7 +68,17 @@ export default function InterestCircles() {
       </p>
 
       {loading ? (
-        <div className="text-center py-12 text-stone-400">加载中...</div>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-xl border border-stone-200 p-5 animate-pulse">
+              <div className="flex items-center gap-3 mb-3">
+                <Skeleton className="w-10 h-10 rounded-full" />
+                <Skeleton className="h-4 flex-1" />
+              </div>
+              <Skeleton className="h-3 w-full" />
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {circles.map((circle) => (

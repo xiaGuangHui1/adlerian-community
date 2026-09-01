@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
+import Skeleton from '../components/Skeleton';
 import { getResourceCover } from '../lib/covers';
 import type { Quote, Resource } from '../types';
 
@@ -139,7 +140,15 @@ export default function KnowledgeBase() {
               </div>
 
               {loading ? (
-                <div className="text-center py-16 text-gray-400">加载中...</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <Skeleton className="aspect-video rounded-3xl mb-6" />
+                      <Skeleton className="h-6 w-2/3 mb-2" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {displayedResources.map((r) => (

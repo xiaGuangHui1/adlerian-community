@@ -2,6 +2,7 @@ import { useCallback, useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import api from '../lib/api';
+import Skeleton from '../components/Skeleton';
 import { InterestCircle, CirclePost, Author, PageResponse } from '../types';
 import { useAuth } from '../hooks/useAuth';
 
@@ -261,7 +262,17 @@ export default function CircleDetail() {
   };
 
   if (loading) {
-    return <div className="text-center py-12 text-stone-400">加载中...</div>;
+    return (
+      <div className="max-w-3xl mx-auto animate-pulse">
+        <Skeleton className="h-4 w-24 mb-4" />
+        <div className="bg-white p-6 rounded-xl border border-orange-50 space-y-4">
+          <Skeleton className="h-8 w-1/2" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-2/3" />
+        </div>
+      </div>
+    );
   }
 
   if (!circle) {

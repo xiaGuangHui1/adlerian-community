@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import api from '../lib/api';
+import Skeleton from '../components/Skeleton';
 import type { Resource } from '../types';
 
 const TYPE_LABEL: Record<string, string> = {
@@ -47,7 +48,18 @@ export default function ResourceDetail() {
   }, [fetchResource]);
 
   if (loading) {
-    return <div className="text-center py-16 text-gray-400">加载中...</div>;
+    return (
+      <div className="max-w-3xl mx-auto animate-pulse">
+        <Skeleton className="h-4 w-24 mb-4" />
+        <div className="bg-white p-8 rounded-3xl border border-orange-50">
+          <Skeleton className="h-5 w-20 mb-4" />
+          <Skeleton className="h-8 w-3/4 mb-4" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-5/6" />
+        </div>
+      </div>
+    );
   }
 
   if (error || !resource) {

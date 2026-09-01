@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import api from '../lib/api';
+import Skeleton from '../components/Skeleton';
 import { Post, CATEGORIES, PageResponse } from '../types';
 
 function timeAgo(dateStr: string) {
@@ -102,7 +103,20 @@ export default function Forum() {
             {/* 左侧帖子列表 */}
             <div className="lg:w-2/3 space-y-4 fade-in-list">
               {loading ? (
-                <div className="text-center py-12 text-gray-400">加载中...</div>
+                Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="bg-white p-6 rounded-3xl border border-orange-50 animate-pulse">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Skeleton className="w-12 h-12 rounded-full" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-1/3" />
+                        <Skeleton className="h-3 w-1/4" />
+                      </div>
+                    </div>
+                    <Skeleton className="h-6 w-2/3 mb-3" />
+                    <Skeleton className="h-4 w-full mb-2" />
+                    <Skeleton className="h-4 w-5/6" />
+                  </div>
+                ))
               ) : (
                 <>
                   {posts.map((post) => (

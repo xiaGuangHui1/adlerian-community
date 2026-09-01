@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '@iconify-icon/react';
 import api from '../lib/api';
+import Skeleton from '../components/Skeleton';
 import type { CheckIn, Challenge, Quote, CheckInFeedItem } from '../types';
 import CheckInForm from '../components/CheckInForm';
 import CheckInCalendar from '../components/CheckInCalendar';
@@ -71,7 +72,22 @@ export default function CheckInPage() {
   };
 
   if (loading) {
-    return <div className="text-center py-12 text-gray-400">加载中...</div>;
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 animate-pulse">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-orange-50">
+            <Skeleton className="h-5 w-40 mb-4" />
+            <Skeleton className="h-9 w-64 mb-8" />
+            <Skeleton className="h-40 w-full rounded-2xl mb-6" />
+            <Skeleton className="h-16 w-full rounded-2xl" />
+          </div>
+          <div className="bg-white rounded-3xl p-6 border border-orange-50">
+            <Skeleton className="h-6 w-24 mb-6" />
+            <Skeleton className="h-64 w-full" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const todayDate = new Date();
