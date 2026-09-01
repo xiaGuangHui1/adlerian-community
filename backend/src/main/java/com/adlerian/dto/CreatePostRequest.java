@@ -15,4 +15,6 @@ public class CreatePostRequest {
 
     @NotBlank(message = "请选择话题分类")
     private String category;
+
+    private String source;
 }

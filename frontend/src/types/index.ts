@@ -16,6 +16,7 @@ export interface Post {
   title: string;
   content: string;
   category: string;
+  source?: string;
   pinned: boolean;
   author: Author;
   createdAt: string;

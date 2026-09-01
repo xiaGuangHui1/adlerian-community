@@ -118,8 +118,11 @@ export default function Forum() {
                           </div>
                           <div>
                             <h4 className="font-bold text-gray-800">{post.author.nickname}</h4>
-                            <p className="text-xs text-gray-400">
-                              {timeAgo(post.createdAt)} · <span className="text-teal-500 font-medium">{getCategoryLabel(post.category)}</span>
+                            <p className="text-xs text-gray-400 flex items-center gap-1.5 flex-wrap">
+                              <span>{timeAgo(post.createdAt)} · <span className="text-teal-500 font-medium">{getCategoryLabel(post.category)}</span></span>
+                              {post.source === 'checkin' && (
+                                <span className="text-[10px] bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full font-medium">实践打卡</span>
+                              )}
                             </p>
                           </div>
                         </div>

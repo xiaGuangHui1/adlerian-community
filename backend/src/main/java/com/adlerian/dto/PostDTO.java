@@ -10,6 +10,7 @@ public class PostDTO {
     private String title;
     private String content;
     private String category;
+    private String source;
     private boolean pinned;
     private AuthorDTO author;
     private Instant createdAt;

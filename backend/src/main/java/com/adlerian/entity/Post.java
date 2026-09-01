@@ -27,6 +27,9 @@ public class Post {
     @Column(nullable = false, length = 50)
     private String category;
 
+    @Column(name = "source", length = 20)
+    private String source;
+
     @Column(name = "is_pinned")
     private boolean pinned;
 

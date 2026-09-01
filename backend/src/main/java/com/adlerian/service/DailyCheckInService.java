@@ -76,7 +76,7 @@ public class DailyCheckInService {
         if (category == null || category.isBlank()) {
             category = "life-courage";
         }
-        CreatePostRequest postRequest = new CreatePostRequest(title, request.getContent(), category);
+        CreatePostRequest postRequest = new CreatePostRequest(title, request.getContent(), category, "checkin");
 
         if (checkIn.getPostId() == null) {
             PostDTO post = postService.createPost(user.getId(), postRequest);

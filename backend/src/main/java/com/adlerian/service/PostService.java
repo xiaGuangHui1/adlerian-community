@@ -52,6 +52,7 @@ public class PostService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .category(request.getCategory())
+                .source(request.getSource())
                 .build();
         return toDTO(postRepository.save(post));
     }
@@ -103,6 +104,7 @@ public class PostService {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .category(post.getCategory())
+                .source(post.getSource())
                 .pinned(post.isPinned())
                 .author(PostDTO.AuthorDTO.builder()
                         .id(post.getAuthor().getId())

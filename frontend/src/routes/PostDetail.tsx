@@ -62,6 +62,9 @@ export default function PostDetail() {
           <span className="text-xs bg-peach-50 text-gray-400 px-2 py-0.5 rounded">
             {getCategoryLabel(post.category)}
           </span>
+          {post.source === 'checkin' && (
+            <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">实践打卡</span>
+          )}
         </div>
         <h1 className="text-2xl font-semibold text-brown-900 mb-3">{post.title}</h1>
         <div className="flex items-center gap-3 mb-6 text-sm text-gray-400">
