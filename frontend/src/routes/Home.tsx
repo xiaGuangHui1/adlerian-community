@@ -13,6 +13,29 @@ function timeAgo(time: string) {
   return `${Math.floor(hours / 24)}天前`;
 }
 
+function PostSkeleton() {
+  return (
+    <div className="bg-white rounded-2xl overflow-hidden border border-orange-50 animate-pulse">
+      <div className="aspect-video bg-gray-100" />
+      <div className="p-6 space-y-3">
+        <div className="h-4 bg-gray-100 rounded w-1/3" />
+        <div className="h-5 bg-gray-100 rounded w-2/3" />
+        <div className="h-4 bg-gray-100 rounded w-full" />
+      </div>
+    </div>
+  );
+}
+
+function ResourceSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <div className="aspect-video bg-gray-100 rounded-3xl mb-6" />
+      <div className="h-6 bg-gray-100 rounded w-3/4 mb-2" />
+      <div className="h-4 bg-gray-100 rounded w-full" />
+    </div>
+  );
+}
+
 export default function Home() {
   const [stats, setStats] = useState<HomeStats | null>(null);
   const [hotPosts, setHotPosts] = useState<Post[]>([]);
@@ -41,14 +64,6 @@ export default function Home() {
   }, []);
 
   const formatNumber = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-24">
-        <div className="text-gray-400 animate-pulse">加载中...</div>
-      </div>
-    );
-  }
 
   const totalUsers = stats?.totalUsers ?? 0;
   const displayUsers = totalUsers > 0 ? formatNumber(totalUsers) : '12,480';
@@ -154,7 +169,7 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 fade-in-list">
-            {hotPosts.slice(0, 4).map((post) => (
+            {loading ? Array.from({ length: 4 }).map((_, i) => <PostSkeleton key={i} />) : hotPosts.slice(0, 4).map((post) => (
               <Link
                 key={post.id}
                 to={`/forum/${post.id}`}
@@ -199,7 +214,7 @@ export default function Home() {
                 </div>
               </Link>
             ))}
-            {hotPosts.length === 0 && (
+            {!loading && hotPosts.length === 0 && (
               <div className="text-center py-12 text-gray-400 col-span-2">
                 暂无讨论，去发表第一个话题吧
               </div>
@@ -216,7 +231,7 @@ export default function Home() {
             <p className="text-gray-500">深入浅出，系统掌握阿德勒心理学核心概念</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 fade-in-list">
-            {hotResources.slice(0, 3).map((r) => (
+            {loading ? Array.from({ length: 3 }).map((_, i) => <ResourceSkeleton key={i} />) : hotResources.slice(0, 3).map((r) => (
               <Link key={r.id} to="/knowledge-base" className="group cursor-pointer no-underline block hover:-translate-y-1 transition-all duration-300">
                 <div className="relative rounded-3xl overflow-hidden mb-6 aspect-video">
                   <div className="absolute inset-0 bg-gradient-to-br from-peach-200 to-teal-200 flex items-center justify-center text-4xl">
@@ -245,7 +260,7 @@ export default function Home() {
                 )}
               </Link>
             ))}
-            {hotResources.length === 0 && (
+            {!loading && hotResources.length === 0 && (
               <div className="text-center py-12 text-gray-400 col-span-3">知识库建设中</div>
             )}
           </div>
