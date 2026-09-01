@@ -137,7 +137,7 @@ export default function InterestCircles() {
       )}
 
       {/* 蒙层：敬请期待 */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70 backdrop-blur-sm">
+      <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/40 backdrop-blur-sm">
         <div className="text-center max-w-md px-8 py-12 bg-white/90 rounded-3xl shadow-lg border border-orange-100">
           <div className="text-4xl mb-4">✨</div>
           <h2 className="text-2xl font-bold text-brown-900 mb-3">敬请期待</h2>
