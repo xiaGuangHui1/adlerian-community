@@ -219,7 +219,7 @@ export default function Profile() {
           to="/forum"
           className="inline-block bg-peach-500 text-white px-6 py-3 rounded-2xl font-bold hover:bg-peach-600 transition-all no-underline"
         >
-          前往同行广场
+          前往交流广场
         </Link>
       </div>
     );

@@ -27,7 +27,7 @@ export function useShare() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: '与我结伴同行 | 阿德勒心理学社区',
+          title: '和我组队打卡 | 阿德勒心理学社区',
           text: shareText,
           url: shareUrl,
         });

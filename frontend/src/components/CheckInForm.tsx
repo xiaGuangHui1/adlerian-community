@@ -66,7 +66,7 @@ export default function CheckInForm({ initialData, onSuccess, onCancel }: CheckI
         className="w-full px-3 py-2.5 border border-peach-100 rounded-lg text-sm leading-relaxed resize-y focus:outline-none focus:border-peach-400 bg-warm-50"
       />
 
-      {/* 同步到同行广场 */}
+      {/* 同步到交流广场 */}
       <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
         <input
           type="checkbox"
@@ -74,7 +74,7 @@ export default function CheckInForm({ initialData, onSuccess, onCancel }: CheckI
           onChange={e => setSyncToForum(e.target.checked)}
           className="w-4 h-4 accent-peach-500"
         />
-        <span className="text-sm text-gray-600">同步到同行广场</span>
+        <span className="text-sm text-gray-600">同步到交流广场</span>
       </label>
 
       {syncToForum && (
