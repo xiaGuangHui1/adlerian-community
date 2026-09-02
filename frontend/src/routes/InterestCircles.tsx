@@ -58,10 +58,20 @@ export default function InterestCircles() {
   };
 
   return (
-    <div className="relative">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-stone-800">社会兴趣</h1>
+    <div>
+      {/* 开发中横幅 */}
+      <div className="mb-6 bg-amber-50 border border-amber-200 text-amber-700 rounded-2xl px-4 py-3 flex items-center gap-3">
+        <span className="text-xl">🚧</span>
+        <div>
+          <p className="font-bold text-sm">社会兴趣功能正在开发中</p>
+          <p className="text-xs opacity-80">当前仅作预览，暂不可参与，敬请期待后续迭代上线</p>
+        </div>
       </div>
+
+      <div className="pointer-events-none select-none opacity-90">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-semibold text-stone-800">社会兴趣</h1>
+        </div>
 
       <p className="text-sm text-stone-500 mb-6">
         加入你感兴趣的话题圈子，与志同道合的朋友分享交流。每个人都可以在多个圈子中自由参与。
@@ -135,22 +145,6 @@ export default function InterestCircles() {
           )}
         </div>
       )}
-
-      {/* 蒙层：敬请期待 */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/40 backdrop-blur-sm">
-        <div className="text-center max-w-md px-8 py-12 bg-white/90 rounded-3xl shadow-lg border border-orange-100">
-          <div className="text-4xl mb-4">✨</div>
-          <h2 className="text-2xl font-bold text-brown-900 mb-3">敬请期待</h2>
-          <p className="text-gray-500 leading-relaxed mb-6">
-            社会兴趣正在打磨中，后续迭代上线。届时你可以加入感兴趣的话题圈子，与志同道合的朋友一起成长。
-          </p>
-          <button
-            onClick={() => navigate('/checkin')}
-            className="bg-peach-500 text-white px-6 py-3 rounded-2xl font-bold hover:bg-peach-600 transition-colors border-0 cursor-pointer"
-          >
-            先去实践打卡
-          </button>
-        </div>
       </div>
     </div>
   );
