@@ -30,6 +30,7 @@ export default function Invite() {
   const [showSharePanel, setShowSharePanel] = useState(false);
   const [shareTarget, setShareTarget] = useState<'default' | 'team'>('default');
   const [pendingInviteCode, setPendingInviteCode] = useState('');
+  const [teamName, setTeamName] = useState('');
 
   const fetchPageData = useCallback(async () => {
     await Promise.resolve();
@@ -66,7 +67,7 @@ export default function Invite() {
   const handleCreateTeam = async () => {
     setCreatingTeam(true);
     try {
-      const { data } = await api.post<CreateTeamResponse>('/teams');
+      const { data } = await api.post<CreateTeamResponse>('/teams', { name: teamName });
       setPendingInviteCode(data.inviteCode);
       setShareTarget('team');
       setShowSharePanel(true);
@@ -133,7 +134,7 @@ export default function Invite() {
       <div className="absolute inset-0 bg-black/40" onClick={() => setShowSharePanel(false)} />
       <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl px-6 pt-6 pb-10 max-w-lg mx-auto animate-slide-up">
         <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-6" />
-        <h3 className="text-lg font-bold text-center mb-2">邀请同行伙伴</h3>
+        <h3 className="text-lg font-bold text-center mb-2">邀请组队伙伴</h3>
         <p className="text-xs text-gray-400 text-center mb-6">选择一种方式分享邀请</p>
 
         <div className="flex justify-center gap-8 mb-8">
@@ -173,10 +174,10 @@ export default function Invite() {
             </div>
             <div>
               <p className="text-sm font-bold text-brown-900">阿德勒心理学社区</p>
-              <p className="text-xs text-gray-400">邀请你加入同行打卡圈</p>
+              <p className="text-xs text-gray-400">邀请你加入组队打卡</p>
             </div>
           </div>
-          <p className="text-xs text-gray-500 leading-relaxed ml-11">「约个伙伴一起打卡吧，互相鼓励走得更远」</p>
+          <p className="text-xs text-gray-500 leading-relaxed ml-11">「组队打卡，互相鼓励走得更远」</p>
         </div>
 
         <button
@@ -189,12 +190,12 @@ export default function Invite() {
         {copied && (
           <p className="text-xs text-teal-500 text-center mt-3 font-medium">链接已复制！</p>
         )}
-        <p className="text-xs text-gray-400 text-center mt-3">分享后伙伴可凭链接加入你的同行小队</p>
+        <p className="text-xs text-gray-400 text-center mt-3">分享后伙伴可凭链接加入你的队伍</p>
       </div>
     </div>
   );
 
-  // ========== 状态: 已登录 + 有活跃小队 ==========
+  // ========== 状态: 已登录 + 有活跃队伍 ==========
   if (user && myTeam && myTeam.status === 'ACTIVE') {
     const checkedCount = myTeam.members.filter(m => m.todayCheckedIn).length;
 
@@ -209,11 +210,11 @@ export default function Invite() {
                 className="text-xs text-gray-400 hover:text-peach-500 transition-colors flex items-center gap-1 mx-auto cursor-pointer border-0 bg-transparent"
               >
                 <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></svg>
-                回到邀请页
+                回到组队广场
               </button>
             </div>
 
-            {/* 小队卡片 */}
+            {/* 队伍卡片 */}
             <div className="bg-white rounded-3xl p-7 shadow-sm border border-orange-50">
               {/* 顶部 */}
               <div className="flex items-center justify-between mb-6">
@@ -228,7 +229,7 @@ export default function Invite() {
                 </div>
                 <span className="text-xs bg-peach-500/10 text-peach-500 font-bold px-3 py-1.5 rounded-full whitespace-nowrap flex items-center gap-1">
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 256 256"><path d="M225.9,106.65l-88-48.18a20.36,20.36,0,0,0-19.8,0l-88,48.18A20,20,0,0,0,20,122.12v19.81a8,8,0,0,0,16,0v-14L120,165.87v49.21l-17.57,7.84a8,8,0,0,0,0,14.16l24,10.72a8,8,0,0,0,7.14,0l24-10.72a8,8,0,0,0,0-14.16L140,215.08V165.87l84-37.94v14a8,8,0,0,0,16,0V122.12A20,20,0,0,0,225.9,106.65Z"/></svg>
-                  已同行 {myTeam.togetherDays || 1} 天
+                  已组队 {myTeam.togetherDays || 1} 天
                 </span>
               </div>
 
@@ -261,7 +262,7 @@ export default function Invite() {
                 <div className="flex items-center justify-center gap-8 text-sm">
                   <div className="text-center">
                     <p className="text-2xl font-bold text-peach-500">{myTeam.togetherDays || 1}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">已同行天数</p>
+                    <p className="text-xs text-gray-500 mt-0.5">已组队天数</p>
                   </div>
                   <div className="w-px h-10 bg-orange-100" />
                   <div className="text-center">
@@ -316,7 +317,7 @@ export default function Invite() {
 
             {/* 底部引用 */}
             <p className="text-xs text-gray-400 text-center mt-8 leading-relaxed">
-              「同行不是竞赛，是彼此照亮前路的光」
+              「组队不是竞赛，是彼此照亮前路的光」
             </p>
           </div>
         </section>
@@ -325,7 +326,7 @@ export default function Invite() {
     );
   }
 
-  // ========== 状态: 未登录 + teamCode 小队邀请着陆页 ==========
+  // ========== 状态: 未登录 + teamCode 队伍邀请着陆页 ==========
   if (!user && teamCode && teamInvitation) {
     const isPending = teamInvitation.status === 'PENDING';
     const isExpired = teamInvitation.status === 'EXPIRED' || teamInvitation.status === 'DISBANDED';
@@ -341,7 +342,7 @@ export default function Invite() {
             {isPending ? (
               <>
                 <h1 className="text-3xl font-bold text-brown-900 mb-4 leading-snug">
-                  <span className="text-peach-500">{teamInvitation.creatorNickname}</span> 邀请你<br />加入同行小队
+                  <span className="text-peach-500">{teamInvitation.creatorNickname}</span> 邀请你<br />加入队伍
                 </h1>
                 <p className="text-gray-500 text-lg mb-8">每天 20:00 前打卡，互相见证彼此的成长。</p>
                 <div className="flex flex-col gap-3 max-w-xs mx-auto">
@@ -350,7 +351,7 @@ export default function Invite() {
                     disabled={joiningTeam}
                     className="bg-peach-500 text-white px-8 py-4 rounded-2xl text-lg font-bold hover:scale-105 transition-transform shadow-lg shadow-orange-200 cursor-pointer border-0 disabled:opacity-60"
                   >
-                    {joiningTeam ? '加入中...' : '加入同行'}
+                    {joiningTeam ? '加入中...' : '加入队伍'}
                   </button>
                   <Link
                     to="/login"
@@ -369,7 +370,7 @@ export default function Invite() {
                   这个邀请<span className="text-gray-400"><br />已经</span><span className="text-peach-500">过期了</span>
                 </h1>
                 <p className="text-gray-500 text-lg mb-8">
-                  但没关系，你仍然可以加入阿德勒心理学社区，发起你自己的同行小队。
+                  但没关系，你仍然可以加入阿德勒心理学社区，发起你自己的队伍。
                 </p>
                 <Link
                   to="/register"
@@ -381,10 +382,10 @@ export default function Invite() {
             ) : (
               <>
                 <h1 className="text-3xl font-bold text-brown-900 mb-4 leading-snug">
-                  <span className="text-peach-500">{teamInvitation.creatorNickname}</span> 的<br />同行小队
+                  <span className="text-peach-500">{teamInvitation.creatorNickname}</span> 的<br />队伍
                 </h1>
                 <p className="text-gray-500 text-lg mb-8">
-                  该小队已有 {teamInvitation.memberCount}/{teamInvitation.maxMembers} 人，正在同行中。
+                  该队伍已有 {teamInvitation.memberCount}/{teamInvitation.maxMembers} 人，正在组队中。
                 </p>
               </>
             )}
@@ -393,7 +394,7 @@ export default function Invite() {
     );
   }
 
-  // ========== 状态: 默认邀请页 (没有小队) ==========
+  // ========== 状态: 默认邀请页 (没有队伍) ==========
   return (
     <>
       <section className="min-h-[calc(100vh-10rem)] flex items-center justify-center py-8">
@@ -404,7 +405,7 @@ export default function Invite() {
           </div>
 
           {/* 邀请语 */}
-          <h1 className="text-3xl font-bold text-brown-900 mb-4 leading-snug">约个伙伴一起打卡吧</h1>
+          <h1 className="text-3xl font-bold text-brown-900 mb-4 leading-snug">组队打卡，和伙伴互相鼓励</h1>
           <p className="text-gray-500 text-lg mb-2 leading-relaxed">互相鼓励走得更远</p>
 
           {/* 装饰分隔线 */}
@@ -414,6 +415,20 @@ export default function Invite() {
             <span className="h-px w-12 bg-peach-500/30"></span>
           </div>
 
+          {/* 队伍名称输入 */}
+          {user && (
+            <div className="max-w-sm mx-auto mb-4">
+              <input
+                type="text"
+                value={teamName}
+                onChange={(e) => setTeamName(e.target.value)}
+                maxLength={20}
+                placeholder="给队伍起个名字（可选）"
+                className="w-full px-4 py-3 border border-peach-100 rounded-2xl text-sm text-center focus:outline-none focus:border-peach-400 bg-white"
+              />
+            </div>
+          )}
+
           {/* 邀请按钮 */}
           {user ? (
             <button
@@ -422,7 +437,7 @@ export default function Invite() {
               className="bg-peach-500 text-white px-12 py-5 rounded-2xl text-lg font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-200 flex items-center justify-center gap-3 mx-auto w-full max-w-sm cursor-pointer border-0 disabled:opacity-60"
             >
               <Icon icon="ph:share-network-fill" width="24" />
-              {creatingTeam ? '创建中...' : '邀请同行伙伴'}
+              {creatingTeam ? '创建中...' : '邀请组队伙伴'}
             </button>
           ) : (
             <Link
@@ -430,7 +445,7 @@ export default function Invite() {
               className="bg-peach-500 text-white px-12 py-5 rounded-2xl text-lg font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-200 flex items-center justify-center gap-3 mx-auto w-full max-w-sm cursor-pointer no-underline"
             >
               <Icon icon="ph:sign-in-fill" width="24" />
-              登录后发起同行
+              登录后发起组队
             </Link>
           )}
 

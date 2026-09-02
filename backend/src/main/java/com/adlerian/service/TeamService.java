@@ -31,13 +31,13 @@ public class TeamService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Map<String, String> createInvitation(UUID creatorId) {
+    public Map<String, String> createInvitation(UUID creatorId, String name) {
         User creator = userRepository.findById(creatorId)
                 .orElseThrow(() -> new RuntimeException("用户不存在"));
 
-        // 检查用户是否已有活跃小队
+        // 检查用户是否已有活跃队伍
         teamRepository.findActiveTeamByUserId(creatorId).ifPresent(t -> {
-            throw new RuntimeException("你已在同行小队中，请先退出当前小队");
+            throw new RuntimeException("你已在队伍中，请先退出当前队伍");
         });
 
         // 清理旧的 PENDING 邀请
@@ -48,12 +48,14 @@ public class TeamService {
         }
 
         String inviteCode = generateInviteCode();
-        String name = creator.getNickname() + "的同行小队";
+        String teamName = (name != null && !name.isBlank())
+                ? name.trim()
+                : (creator.getNickname() + "的队伍");
 
         Team team = Team.builder()
                 .inviteCode(inviteCode)
                 .creator(creator)
-                .name(name)
+                .name(teamName)
                 .status(TeamStatus.PENDING)
                 .build();
 
@@ -85,9 +87,9 @@ public class TeamService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("用户不存在"));
 
-        // 检查用户是否已有活跃小队
+        // 检查用户是否已有活跃队伍
         teamRepository.findActiveTeamByUserId(userId).ifPresent(t -> {
-            throw new RuntimeException("你已在同行小队中，请先退出当前小队");
+            throw new RuntimeException("你已在队伍中，请先退出当前队伍");
         });
 
         Team team = teamRepository.findByInviteCode(inviteCode)
@@ -99,12 +101,12 @@ public class TeamService {
 
         // 检查是否已在队伍中
         teamMemberRepository.findByTeamIdAndUserId(team.getId(), userId).ifPresent(m -> {
-            throw new RuntimeException("你已经在该小队中");
+            throw new RuntimeException("你已经在该队伍中");
         });
 
         long currentCount = teamMemberRepository.countByTeamId(team.getId());
         if (currentCount >= team.getMaxMembers()) {
-            throw new RuntimeException("小队已满员");
+            throw new RuntimeException("队伍已满员");
         }
 
         // 创建者不能加入自己的队伍（创建者是自动成员）
@@ -118,7 +120,7 @@ public class TeamService {
                 .build();
         teamMemberRepository.save(member);
 
-        // 第一个接受者加入时激活小队
+        // 第一个接受者加入时激活队伍
         if (team.getStatus() == TeamStatus.PENDING) {
             // 将创建者也加入为成员
             TeamMember creatorMember = TeamMember.builder()
@@ -143,13 +145,13 @@ public class TeamService {
 
     public TeamDTO getTeamDetail(Long teamId, UUID userId) {
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new RuntimeException("小队不存在"));
+                .orElseThrow(() -> new RuntimeException("队伍不存在"));
 
         // 检查是否为成员
         boolean isMember = team.getCreator().getId().equals(userId) ||
                 teamMemberRepository.findByTeamIdAndUserId(teamId, userId).isPresent();
         if (!isMember) {
-            throw new RuntimeException("你不是该小队的成员");
+            throw new RuntimeException("你不是该队伍的成员");
         }
 
         return buildTeamDTO(team, userId);
@@ -188,7 +190,7 @@ public class TeamService {
 
         boolean allCheckedIn = memberDTOs.stream().allMatch(TeamMemberDTO::isTodayCheckedIn);
 
-        // 计算同行天数
+        // 计算组队天数
         long togetherDays = 0;
         if (team.getActivatedAt() != null) {
             togetherDays = java.time.temporal.ChronoUnit.DAYS.between(

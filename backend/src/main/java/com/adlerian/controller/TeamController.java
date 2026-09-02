@@ -1,5 +1,6 @@
 package com.adlerian.controller;
 
+import com.adlerian.dto.CreateTeamRequest;
 import com.adlerian.dto.TeamDTO;
 import com.adlerian.entity.User;
 import com.adlerian.service.TeamService;
@@ -18,9 +19,11 @@ public class TeamController {
     private final TeamService teamService;
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> createInvitation() {
+    public ResponseEntity<Map<String, String>> createInvitation(
+            @RequestBody(required = false) CreateTeamRequest request) {
         User user = currentUser();
-        return ResponseEntity.ok(teamService.createInvitation(user.getId()));
+        return ResponseEntity.ok(teamService.createInvitation(
+                user.getId(), request != null ? request.getName() : null));
     }
 
     @GetMapping("/invitation/{code}")
