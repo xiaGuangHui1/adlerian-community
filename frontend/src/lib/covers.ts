@@ -14,18 +14,20 @@ export function getResourceCover(resource: Resource): string {
   return list[resource.id % list.length];
 }
 
-const CATEGORY_COVERS: Record<string, string> = {
-  'parent-child-conflict': '/covers/concept-2.jpg',
-  'reduce-internal-friction': '/covers/concept-1.jpg',
-  'enhance-connection': '/covers/concept-3.jpg',
-  'life-courage': '/covers/concept-1.jpg',
-  'relationships': '/covers/concept-3.jpg',
-  'self-acceptance': '/covers/concept-4.jpg',
-  'work-meaning': '/covers/concept-2.jpg',
-  'emotional-confusion': '/covers/concept-4.jpg',
-  'other': '/covers/concept-1.jpg',
+const CATEGORY_THEMES: Record<string, { gradient: string; emoji: string }> = {
+  'parent-child-conflict': { gradient: 'from-orange-100 to-rose-100', emoji: '👨‍👩‍👧' },
+  'reduce-internal-friction': { gradient: 'from-emerald-100 to-teal-100', emoji: '🍃' },
+  'enhance-connection': { gradient: 'from-sky-100 to-indigo-100', emoji: '🤝' },
+  'life-courage': { gradient: 'from-amber-100 to-orange-100', emoji: '💪' },
+  'relationships': { gradient: 'from-pink-100 to-rose-100', emoji: '👥' },
+  'self-acceptance': { gradient: 'from-purple-100 to-pink-100', emoji: '💝' },
+  'work-meaning': { gradient: 'from-slate-100 to-blue-100', emoji: '💼' },
+  'emotional-confusion': { gradient: 'from-violet-100 to-purple-100', emoji: '💭' },
+  'other': { gradient: 'from-stone-100 to-orange-100', emoji: '💬' },
 };
 
-export function getPostCover(category: string): string {
-  return CATEGORY_COVERS[category] || '/covers/concept-1.jpg';
+const DEFAULT_THEME = { gradient: 'from-stone-100 to-peach-100', emoji: '💬' };
+
+export function getCategoryTheme(category: string) {
+  return CATEGORY_THEMES[category] || DEFAULT_THEME;
 }

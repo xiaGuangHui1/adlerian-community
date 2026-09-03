@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../lib/api';
 import { CATEGORIES, type Post, type Resource, type HomeStats } from '../types';
-import { getResourceCover, getPostCover } from '../lib/covers';
+import { getResourceCover, getCategoryTheme } from '../lib/covers';
 
 function timeAgo(time: string) {
   const diff = Date.now() - new Date(time).getTime();
@@ -175,12 +175,8 @@ export default function Home() {
                 to={`/forum/${post.id}`}
                 className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 border border-orange-50 no-underline block"
               >
-                <div className="relative aspect-video overflow-hidden">
-                  <img
-                    alt={post.title}
-                    src={getPostCover(post.category)}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                  />
+                <div className={`relative aspect-video overflow-hidden bg-gradient-to-br ${getCategoryTheme(post.category).gradient} flex items-center justify-center`}>
+                  <span className="text-5xl drop-shadow-sm">{getCategoryTheme(post.category).emoji}</span>
                   <span className="absolute top-3 left-3 bg-white/85 backdrop-blur-sm text-peach-700 text-xs font-bold px-3 py-1 rounded-full">
                     {CATEGORIES.find((c) => c.value === post.category)?.label || post.category}
                   </span>
