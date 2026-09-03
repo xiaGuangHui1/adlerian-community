@@ -101,8 +101,9 @@ export default function CheckInPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* 顶部概览 */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            {/* 今日打卡卡片 */}
-            <div className="lg:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-orange-50 relative overflow-hidden">
+            {/* 今日打卡卡片 + 表单（移动端表单位于日历上方） */}
+            <div className="lg:col-span-2 space-y-6">
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-orange-50 relative overflow-hidden">
               <div className="absolute -right-20 -top-20 w-64 h-64 bg-peach-500/5 rounded-full blur-3xl" />
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-8">
@@ -172,7 +173,17 @@ export default function CheckInPage() {
               </div>
             </div>
 
-            {/* 打卡统计/日历 */}
+            {/* 表单（点击打卡后显示，位于日历上方） */}
+            {showForm && (
+              <CheckInForm
+                initialData={todayCheckIn}
+                onSuccess={handleCheckInSuccess}
+                onCancel={() => setShowForm(false)}
+              />
+            )}
+          </div>
+
+          {/* 打卡统计/日历 */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-orange-50">
               <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
                 <svg className="w-5 h-5 text-peach-500" fill="currentColor" viewBox="0 0 256 256"><path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h40v8a8,8,0,0,0,16,0V48h24V80H88V48Zm136,24V208H48V72Zm-80,64a8,8,0,0,1,8,8v24a8,8,0,0,1-16,0V144A8,8,0,0,1,128,136Z"/></svg>
@@ -209,17 +220,6 @@ export default function CheckInPage() {
                 <button onClick={() => setSelectedDay(null)} className="text-xs text-gray-400 cursor-pointer border-0 bg-transparent hover:text-gray-600">关闭</button>
               </div>
               <p className="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed">{selectedDay.content}</p>
-            </div>
-          )}
-
-          {/* 表单（点击打卡后显示） */}
-          {showForm && (
-            <div className="mb-8">
-              <CheckInForm
-                initialData={todayCheckIn}
-                onSuccess={handleCheckInSuccess}
-                onCancel={() => setShowForm(false)}
-              />
             </div>
           )}
 
