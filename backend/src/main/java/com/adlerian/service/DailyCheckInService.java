@@ -70,7 +70,7 @@ public class DailyCheckInService {
     private void syncToForum(DailyCheckIn checkIn, User user, CreateCheckInRequest request) {
         String title = request.getForumTitle();
         if (title == null || title.isBlank()) {
-            title = "我的实践分享 · " + LocalDate.now().format(DateTimeFormatter.ofPattern("M月d日"));
+            title = "实践分享 · " + LocalDate.now().format(DateTimeFormatter.ofPattern("M月d日"));
         }
         String category = request.getForumCategory();
         if (category == null || category.isBlank()) {

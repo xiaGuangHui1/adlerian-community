@@ -13,7 +13,7 @@ const CHECKIN_TEMPLATE = `【幸福】今天让我感到幸福的事：
 
 function defaultForumTitle() {
   const d = new Date();
-  return `我的实践分享 · ${d.getMonth() + 1}月${d.getDate()}日`;
+  return `实践分享 · ${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
 interface CheckInFormProps {
