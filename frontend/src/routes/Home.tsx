@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../lib/api';
 import { CATEGORIES, type Post, type Resource, type HomeStats } from '../types';
-import { getResourceCover, getCategoryTheme } from '../lib/covers';
+import { getResourceCover } from '../lib/covers';
 
 function timeAgo(time: string) {
   const diff = Date.now() - new Date(time).getTime();
@@ -15,13 +15,17 @@ function timeAgo(time: string) {
 
 function PostSkeleton() {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden border border-orange-50 animate-pulse">
-      <div className="aspect-video bg-gray-100" />
-      <div className="p-6 space-y-3">
-        <div className="h-4 bg-gray-100 rounded w-1/3" />
-        <div className="h-5 bg-gray-100 rounded w-2/3" />
-        <div className="h-4 bg-gray-100 rounded w-full" />
+    <div className="bg-white p-6 rounded-2xl border border-orange-50 animate-pulse">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 rounded-full bg-gray-100" />
+        <div className="flex-1 space-y-2">
+          <div className="h-4 bg-gray-100 rounded w-1/3" />
+          <div className="h-3 bg-gray-100 rounded w-1/4" />
+        </div>
       </div>
+      <div className="h-5 bg-gray-100 rounded w-2/3 mb-3" />
+      <div className="h-4 bg-gray-100 rounded w-full mb-2" />
+      <div className="h-4 bg-gray-100 rounded w-5/6" />
     </div>
   );
 }
@@ -173,40 +177,34 @@ export default function Home() {
               <Link
                 key={post.id}
                 to={`/forum/${post.id}`}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 border border-orange-50 no-underline block"
+                className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-orange-50 no-underline block"
               >
-                <div className={`relative aspect-video overflow-hidden bg-gradient-to-br ${getCategoryTheme(post.category).gradient} flex items-center justify-center`}>
-                  <span className="text-5xl drop-shadow-sm">{getCategoryTheme(post.category).emoji}</span>
-                  <span className="absolute top-3 left-3 bg-white/85 backdrop-blur-sm text-peach-700 text-xs font-bold px-3 py-1 rounded-full">
-                    {CATEGORIES.find((c) => c.value === post.category)?.label || post.category}
-                  </span>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-peach-300 to-teal-300 flex items-center justify-center text-white text-xs font-bold">
+                    {post.author.nickname.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm text-gray-800">{post.author.nickname}</p>
+                    <p className="text-xs text-gray-400">
+                      {timeAgo(post.createdAt)} · {CATEGORIES.find((c) => c.value === post.category)?.label || post.category}
+                    </p>
+                  </div>
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-peach-300 to-teal-300 flex items-center justify-center text-white text-xs font-bold">
-                      {post.author.nickname.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm text-gray-800">{post.author.nickname}</p>
-                      <p className="text-xs text-gray-400">{timeAgo(post.createdAt)}</p>
-                    </div>
-                  </div>
-                  <h4 className="text-lg font-bold mb-2 text-brown-900 hover:text-peach-500 transition-colors">
-                    {post.title}
-                  </h4>
-                  <p className="text-gray-600 text-sm line-clamp-2 mb-4">
-                    {post.content.replace(/[#*`]/g, '').substring(0, 120)}
-                  </p>
-                  <div className="flex items-center gap-4 text-gray-400 text-xs">
-                    <span className="flex items-center gap-1">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                      {post.commentCount} 回复
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                      {post.encouragementCount} 点赞
-                    </span>
-                  </div>
+                <h4 className="text-lg font-bold mb-2 text-brown-900 hover:text-peach-500 transition-colors">
+                  {post.title}
+                </h4>
+                <p className="text-gray-600 text-sm line-clamp-2 mb-4">
+                  {post.content.replace(/[#*`]/g, '').substring(0, 120)}
+                </p>
+                <div className="flex items-center gap-4 text-gray-400 text-xs">
+                  <span className="flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    {post.commentCount} 回复
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                    {post.encouragementCount} 点赞
+                  </span>
                 </div>
               </Link>
             ))}
