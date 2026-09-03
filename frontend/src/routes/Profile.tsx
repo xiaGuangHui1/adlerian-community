@@ -315,6 +315,12 @@ export default function Profile() {
                 <p className="text-gray-500 mt-2 text-lg leading-relaxed">
                   {profile.bio || '在勇气工坊慢慢寻找自己的节奏'}
                 </p>
+                {isOwnProfile && authUser?.email && (
+                  <p className="text-gray-400 mt-1 text-sm flex items-center gap-1.5">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    {authUser.email}
+                  </p>
+                )}
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <Icon icon="ph:calendar-check-fill" width="18" className="text-peach-500" />
