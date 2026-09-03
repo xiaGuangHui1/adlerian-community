@@ -21,6 +21,7 @@ export default function Forum() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [justPosted, setJustPosted] = useState(searchParams.get('justPosted') === '1');
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -40,6 +41,16 @@ export default function Forum() {
 
     void fetchPosts();
   }, [category, page]);
+
+  // 发帖成功后提示，并清除 URL 里的 justPosted 参数
+  useEffect(() => {
+    if (searchParams.get('justPosted')) {
+      setSearchParams({}, { replace: true });
+      const timer = setTimeout(() => setJustPosted(false), 3000);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getCategoryLabel = (value: string) =>
     CATEGORIES.find((c) => c.value === value)?.label || value;
@@ -96,6 +107,16 @@ export default function Forum() {
           </div>
         </div>
       </header>
+
+      {/* 发布成功提示 */}
+      {justPosted && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+          <div className="bg-teal-50 border border-teal-200 text-teal-700 rounded-2xl px-4 py-3 flex items-center gap-2">
+            <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 256 256"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Z"/></svg>
+            <span className="text-sm font-medium">发布成功！你的帖子已出现在交流广场</span>
+          </div>
+        </div>
+      )}
 
       {/* 论坛主内容区 */}
       <main className="py-10">

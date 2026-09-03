@@ -7,15 +7,15 @@ export default function NewPost() {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [category, setCategory] = useState('free-talk');
+  const [category, setCategory] = useState('other');
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const { data } = await api.post('/posts', { title, content, category });
-      navigate(`/forum/${data.id}`);
+      await api.post('/posts', { title, content, category });
+      navigate('/forum?justPosted=1');
     } catch {
       alert('发帖失败，请确认已登录');
     } finally {
