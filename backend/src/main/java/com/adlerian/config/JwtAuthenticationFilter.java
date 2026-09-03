@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -60,6 +61,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     UUID authId = UUID.fromString(sub);
 
                     userRepository.findByAuthId(authId).ifPresent(user -> {
+                        // 同步 Supabase 头像到本地（缺失时补一次）
+                        if (user.getAvatarUrl() == null || user.getAvatarUrl().isBlank()) {
+                            String avatarUrl = extractAvatarFromClaims(claims);
+                            if (avatarUrl != null && !avatarUrl.isBlank()) {
+                                user.setAvatarUrl(avatarUrl);
+                                userRepository.save(user);
+                            }
+                        }
                         var auth = new UsernamePasswordAuthenticationToken(
                                 user, null, Collections.emptyList());
                         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -89,5 +98,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /** 从 JWT 的 user_metadata 中提取头像 URL */
+    private String extractAvatarFromClaims(Claims claims) {
+        try {
+            Object metadata = claims.get("user_metadata");
+            if (metadata instanceof Map<?, ?> map) {
+                Object avatar = map.get("avatar_url");
+                if (avatar == null) avatar = map.get("picture");
+                if (avatar instanceof String s && !s.isBlank()) return s;
+            }
+        } catch (Exception ignored) {}
+        return null;
     }
 }

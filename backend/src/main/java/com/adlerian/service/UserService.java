@@ -25,10 +25,11 @@ public class UserService {
     }
 
     @Transactional
-    public User createUser(UUID authId, String nickname) {
+    public User createUser(UUID authId, String nickname, String avatarUrl) {
         User user = User.builder()
                 .authId(authId)
                 .nickname(nickname)
+                .avatarUrl(avatarUrl)
                 .build();
         return userRepository.save(user);
     }

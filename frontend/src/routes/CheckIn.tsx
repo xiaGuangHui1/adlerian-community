@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Icon } from '@iconify-icon/react';
 import api from '../lib/api';
 import Skeleton from '../components/Skeleton';
+import Avatar from '../components/Avatar';
 import type { CheckIn, Challenge, Quote, CheckInFeedItem } from '../types';
 import CheckInForm from '../components/CheckInForm';
 import CheckInCalendar from '../components/CheckInCalendar';
@@ -283,9 +284,7 @@ export default function CheckInPage() {
                 <div className="space-y-6">
                   {feed.map((item) => (
                     <div key={item.id} className="flex gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-peach-300 to-teal-300 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                        {item.author.nickname.charAt(0)}
-                      </div>
+                      <Avatar name={item.author.nickname} src={item.author.avatarUrl} className="w-8 h-8" textClassName="text-xs" />
                       <div className="flex-grow">
                         <p className="text-xs">
                           <span className="font-bold">{item.author.nickname}</span>

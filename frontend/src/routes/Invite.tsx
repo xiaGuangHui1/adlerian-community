@@ -237,14 +237,26 @@ export default function Invite() {
               <div className="flex justify-center gap-6 mb-6">
                 {myTeam.members.map((member) => (
                   <div key={member.userId} className="flex flex-col items-center gap-1.5">
-                    <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center text-lg font-bold shadow-sm ${
+                    <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center shadow-sm overflow-hidden ${
                       member.isCreator
-                        ? 'bg-orange-100 border-peach-500/30 text-peach-500'
+                        ? 'border-peach-500/30'
                         : member.todayCheckedIn
-                          ? 'bg-teal-100 border-teal-500/30 text-teal-500'
-                          : 'bg-gray-100 border-transparent text-gray-400'
+                          ? 'border-teal-500/30'
+                          : 'border-transparent'
                     }`}>
-                      {member.nickname.charAt(0)}
+                      {member.avatarUrl ? (
+                        <img src={member.avatarUrl} alt={member.nickname} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className={`w-full h-full flex items-center justify-center text-lg font-bold ${
+                          member.isCreator
+                            ? 'bg-orange-100 text-peach-500'
+                            : member.todayCheckedIn
+                              ? 'bg-teal-100 text-teal-500'
+                              : 'bg-gray-100 text-gray-400'
+                        }`}>
+                          {member.nickname.charAt(0)}
+                        </span>
+                      )}
                     </div>
                     {member.todayCheckedIn ? (
                       <span className="text-xs flex items-center gap-0.5 text-teal-500 font-medium">

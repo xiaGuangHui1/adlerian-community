@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import api from '../lib/api';
 import Skeleton from '../components/Skeleton';
+import Avatar from '../components/Avatar';
 import { Post, CATEGORIES, PageResponse } from '../types';
 
 function timeAgo(dateStr: string) {
@@ -127,9 +128,7 @@ export default function Forum() {
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full border-2 border-orange-100 bg-gradient-to-br from-peach-300 to-teal-300 flex items-center justify-center text-white font-bold text-sm">
-                            {post.author.nickname.charAt(0)}
-                          </div>
+                          <Avatar name={post.author.nickname} src={post.author.avatarUrl} className="w-12 h-12 border-2 border-orange-100" textClassName="text-sm" />
                           <div>
                             <h4 className="font-bold text-gray-800">{post.author.nickname}</h4>
                             <p className="text-xs text-gray-400 flex items-center gap-1.5 flex-wrap">

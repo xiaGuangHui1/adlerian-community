@@ -88,7 +88,8 @@ public class UserController {
             }
 
             String nickname = body.getOrDefault("nickname", "社区成员");
-            User user = userService.createUser(authId, nickname);
+            String avatarUrl = extractAvatarUrl(authHeader);
+            User user = userService.createUser(authId, nickname, avatarUrl);
             return ResponseEntity.ok(toProfileMap(user));
         } catch (Exception e) {
             log.error("Failed to register user: {} ({})", e.getMessage(), e.getClass().getSimpleName(), e);
@@ -118,6 +119,37 @@ public class UserController {
             log.warn("Failed to parse JWT: {}", e.getMessage());
             return null;
         }
+    }
+
+    /** 从 JWT 的 user_metadata 中提取头像 URL */
+    private String extractAvatarUrl(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) return null;
+        String token = authHeader.substring(7);
+        try {
+            String kid = extractKid(token);
+            PublicKey key = keyProvider.getPublicKey(kid);
+            if (key == null) return null;
+            Claims claims = Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return extractAvatarFromClaims(claims);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private String extractAvatarFromClaims(Claims claims) {
+        try {
+            Object metadata = claims.get("user_metadata");
+            if (metadata instanceof Map<?, ?> map) {
+                Object avatar = map.get("avatar_url");
+                if (avatar == null) avatar = map.get("picture");
+                if (avatar instanceof String s && !s.isBlank()) return s;
+            }
+        } catch (Exception ignored) {}
+        return null;
     }
 
     /** 从 JWT header 中提取 kid 字段 */
