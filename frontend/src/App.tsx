@@ -17,6 +17,7 @@ const InterestCircles = lazy(() => import('./routes/InterestCircles'));
 const CircleDetail = lazy(() => import('./routes/CircleDetail'));
 const Invite = lazy(() => import('./routes/Invite'));
 const Profile = lazy(() => import('./routes/Profile'));
+const Messages = lazy(() => import('./routes/Messages'));
 
 function PageLoading() {
   return (
@@ -48,6 +49,7 @@ export default function App() {
               <Route path="/circles/:id" element={<CircleDetail />} />
               <Route path="/invite" element={<Invite />} />
               <Route path="/profile/:id" element={<Profile />} />
+              <Route path="/messages" element={<Messages />} />
             </Routes>
           </Suspense>
         </Layout>

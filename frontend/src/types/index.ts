@@ -77,6 +77,18 @@ export interface CheckInFeedItem {
   encouragementCount: number;
 }
 
+export interface Notification {
+  id: number;
+  type: string;
+  actorNickname?: string;
+  actorAvatarUrl?: string;
+  targetType?: string;
+  targetId?: number;
+  content?: string;
+  read: boolean;
+  createdAt: string;
+}
+
 export interface StudyGroup {
   id: number;
   name: string;

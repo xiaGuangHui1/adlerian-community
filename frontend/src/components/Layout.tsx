@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import api from '../lib/api';
 import { useAuth } from '../hooks/useAuth';
 
 const NAV_ITEMS = [
@@ -23,6 +25,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const displayName = profile?.nickname || user?.email?.split('@')[0] || '社区成员';
   const profileInitial = displayName.trim().charAt(0) || '勇';
   const profilePath = profile ? `/profile/${profile.id}` : '/profile/me';
+
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) {
+      setUnreadCount(0);
+      return;
+    }
+    const fetchUnread = () => {
+      api.get<{ count: number }>('/notifications/unread-count')
+        .then((r) => setUnreadCount(r.data.count))
+        .catch(() => {});
+    };
+    fetchUnread();
+    const timer = window.setInterval(fetchUnread, 30000);
+    return () => window.clearInterval(timer);
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-warm-50">
@@ -73,6 +92,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-3">
+            <Link
+              to="/messages"
+              className="relative w-9 h-9 flex items-center justify-center rounded-full text-gray-500 hover:text-peach-700 hover:bg-peach-50 transition-colors no-underline"
+              aria-label="消息"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              )}
+            </Link>
             {user ? (
               <Link
                 to={profilePath}

@@ -28,6 +28,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final EncourageRepository encourageRepository;
+    private final NotificationService notificationService;
 
     public Page<CommentDTO> getCommentsByPostId(Long postId, Pageable pageable) {
         Page<Comment> topLevel = commentRepository.findByPostIdAndParentIsNullOrderByCreatedAtAsc(postId, pageable);
@@ -54,7 +55,29 @@ public class CommentService {
             comment.setParent(parent);
         }
 
-        return toDTO(commentRepository.save(comment));
+        Comment saved = commentRepository.save(comment);
+
+        // 通知帖子作者
+        if (!post.getAuthor().getId().equals(authorId)) {
+            notificationService.notify(post.getAuthor().getId(), "comment", author,
+                    "post", post.getId(), preview(request.getContent()));
+        }
+        // 通知父评论作者（回复）
+        if (comment.getParent() != null) {
+            User parentAuthor = comment.getParent().getAuthor();
+            if (!parentAuthor.getId().equals(authorId)
+                    && !parentAuthor.getId().equals(post.getAuthor().getId())) {
+                notificationService.notify(parentAuthor.getId(), "reply", author,
+                        "post", post.getId(), preview(request.getContent()));
+            }
+        }
+
+        return toDTO(saved);
+    }
+
+    private String preview(String content) {
+        if (content == null) return "";
+        return content.length() > 50 ? content.substring(0, 50) + "..." : content;
     }
 
     @Transactional

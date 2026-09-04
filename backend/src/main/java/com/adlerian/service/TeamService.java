@@ -29,6 +29,7 @@ public class TeamService {
     private final TeamMemberRepository teamMemberRepository;
     private final DailyCheckInRepository checkInRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public Map<String, String> createInvitation(UUID creatorId, String name) {
@@ -132,6 +133,12 @@ public class TeamService {
             team.setStatus(TeamStatus.ACTIVE);
             team.setActivatedAt(Instant.now());
             teamRepository.save(team);
+        }
+
+        // 通知队长有人加入
+        if (!team.getCreator().getId().equals(userId)) {
+            notificationService.notify(team.getCreator().getId(), "team", user,
+                    "team", team.getId(), team.getName());
         }
 
         return buildTeamDTO(team, userId);

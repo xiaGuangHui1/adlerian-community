@@ -25,6 +25,7 @@ public class EncourageService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final DailyCheckInRepository checkInRepository;
+    private final NotificationService notificationService;
 
     public List<EncouragementDTO> getEncouragements(String targetType, Long targetId) {
         return encourageRepository.findByTargetTypeAndTargetIdOrderByCreatedAtDesc(targetType, targetId)
@@ -65,7 +66,9 @@ public class EncourageService {
                 .anonymous(request.isAnonymous())
                 .build();
 
-        return toDTO(encourageRepository.save(encouragement));
+        Encouragement saved = encourageRepository.save(encouragement);
+        notificationService.notify(receiver.getId(), "encouragement", sender, targetType, targetId, request.getMessage());
+        return toDTO(saved);
     }
 
     public List<EncouragementDTO> getUserEncouragements(UUID userId) {
