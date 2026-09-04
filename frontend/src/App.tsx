@@ -18,6 +18,7 @@ const CircleDetail = lazy(() => import('./routes/CircleDetail'));
 const Invite = lazy(() => import('./routes/Invite'));
 const Profile = lazy(() => import('./routes/Profile'));
 const Messages = lazy(() => import('./routes/Messages'));
+const Chat = lazy(() => import('./routes/Chat'));
 
 function PageLoading() {
   return (
@@ -50,6 +51,7 @@ export default function App() {
               <Route path="/invite" element={<Invite />} />
               <Route path="/profile/:id" element={<Profile />} />
               <Route path="/messages" element={<Messages />} />
+              <Route path="/messages/dm/:conversationId" element={<Chat />} />
             </Routes>
           </Suspense>
         </Layout>

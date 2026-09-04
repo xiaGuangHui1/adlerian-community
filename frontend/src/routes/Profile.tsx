@@ -4,7 +4,7 @@ import { Icon } from '@iconify-icon/react';
 import api from '../lib/api';
 import Skeleton from '../components/Skeleton';
 import { useAuth } from '../hooks/useAuth';
-import { Post, CheckIn, UserProfile, CheckInStats, CATEGORIES } from '../types';
+import { Post, CheckIn, UserProfile, CheckInStats, CATEGORIES, Conversation } from '../types';
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
@@ -71,6 +71,16 @@ export default function Profile() {
   const [bio, setBio] = useState('');
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
+
+  const handleMessage = async () => {
+    if (!profile) return;
+    try {
+      const { data } = await api.post<Conversation>('/conversations', { userId: profile.id });
+      navigate(`/messages/dm/${data.id}`);
+    } catch {
+      alert('发起私信失败');
+    }
+  };
 
   useEffect(() => {
     if (id !== 'me') return;
@@ -282,7 +292,7 @@ export default function Profile() {
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-peach-500">
               勇气工坊 · 个人主页
             </span>
-            {isOwnProfile && (
+            {isOwnProfile ? (
               <button
                 type="button"
                 onClick={editing ? cancelEditing : startEditing}
@@ -290,6 +300,15 @@ export default function Profile() {
               >
                 <Icon icon={editing ? 'ph:x' : 'ph:pencil-simple'} width="15" />
                 {editing ? '取消编辑' : '编辑资料'}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleMessage}
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-white/85 text-peach-600 rounded-xl text-xs font-bold hover:bg-white transition-colors no-underline shadow-sm"
+              >
+                <Icon icon="ph:chat-circle-dots-fill" width="15" />
+                发私信
               </button>
             )}
           </div>

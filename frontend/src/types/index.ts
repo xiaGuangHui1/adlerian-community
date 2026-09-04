@@ -89,6 +89,22 @@ export interface Notification {
   createdAt: string;
 }
 
+export interface Conversation {
+  id: number;
+  otherUser: Author;
+  lastMessage?: string;
+  lastMessageAt?: string;
+  unreadCount: number;
+}
+
+export interface Message {
+  id: number;
+  senderId: string;
+  content: string;
+  read: boolean;
+  createdAt: string;
+}
+
 export interface StudyGroup {
   id: number;
   name: string;
