@@ -101,9 +101,9 @@ export default function Home() {
             </div>
             <div className="mt-10 flex items-center justify-center md:justify-start gap-4">
               <div className="flex -space-x-2">
-                <div className="w-10 h-10 rounded-full border-2 border-white bg-peach-300 flex items-center justify-center text-white text-xs font-bold">自</div>
-                <div className="w-10 h-10 rounded-full border-2 border-white bg-teal-400 flex items-center justify-center text-white text-xs font-bold">林</div>
-                <div className="w-10 h-10 rounded-full border-2 border-white bg-orange-400 flex items-center justify-center text-white text-xs font-bold">勇</div>
+                <img alt="同路人" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-1.jpg" />
+                <img alt="同路人" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-2.jpg" />
+                <img alt="同路人" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-3.jpg" />
               </div>
               <p className="text-sm text-gray-500 font-medium">
                 <span className="text-teal-500">{displayUsers}+</span> 位同路人正在这里成长
