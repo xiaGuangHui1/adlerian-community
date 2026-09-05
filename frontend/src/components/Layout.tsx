@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import api from '../lib/api';
 import { useAuth } from '../hooks/useAuth';
 import FeedbackButton from './FeedbackButton';
+import JoinGroupButton from './JoinGroupButton';
 
 const NAV_ITEMS = [
   { path: '/', label: '社区首页' },
@@ -232,6 +233,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </footer>
       <FeedbackButton />
+      <JoinGroupButton />
     </div>
   );
 }
