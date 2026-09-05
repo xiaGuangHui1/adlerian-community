@@ -446,6 +446,12 @@ public class DataSeeder implements CommandLineRunner {
                 .description("游戏交流、电竞讨论与娱乐放松")
                 .icon("🎮")
                 .sortOrder(22)
+                .build(),
+            InterestCircle.builder()
+                .name("创意分享")
+                .description("分享你的创作：写作、绘画、手账、设计等，一起碰撞灵感")
+                .icon("🎨")
+                .sortOrder(23)
                 .build()
         );
 
