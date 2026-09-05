@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../lib/api';
-import { CATEGORIES, type Post, type Resource, type HomeStats } from '../types';
+import { CATEGORIES, type Post, type Resource, type HomeStats, type Author, type PageResponse } from '../types';
 import { getResourceCover } from '../lib/covers';
 import Avatar from '../components/Avatar';
 
@@ -45,20 +45,34 @@ export default function Home() {
   const [stats, setStats] = useState<HomeStats | null>(null);
   const [hotPosts, setHotPosts] = useState<Post[]>([]);
   const [hotResources, setHotResources] = useState<Resource[]>([]);
+  const [recentPosters, setRecentPosters] = useState<Author[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [statsR, postsR, resourcesR] = await Promise.allSettled([
+        const [statsR, postsR, resourcesR, recentR] = await Promise.allSettled([
           api.get<HomeStats>('/home/stats'),
           api.get<Post[]>('/posts/hot', { params: { limit: 5 } }),
           api.get<Resource[]>('/resources/hot', { params: { limit: 6 } }),
+          api.get<PageResponse<Post>>('/posts', { params: { page: 0, size: 10 } }),
         ]);
 
         if (statsR.status === 'fulfilled') setStats(statsR.value.data);
         if (postsR.status === 'fulfilled') setHotPosts(postsR.value.data);
         if (resourcesR.status === 'fulfilled') setHotResources(resourcesR.value.data);
+        if (recentR.status === 'fulfilled') {
+          const seen = new Set<string>();
+          const authors: Author[] = [];
+          for (const p of recentR.value.data.content) {
+            if (!seen.has(p.author.id)) {
+              seen.add(p.author.id);
+              authors.push(p.author);
+              if (authors.length >= 3) break;
+            }
+          }
+          setRecentPosters(authors);
+        }
       } catch {
         // gracefully handle errors
       } finally {
@@ -101,9 +115,17 @@ export default function Home() {
             </div>
             <div className="mt-10 flex items-center justify-center md:justify-start gap-4">
               <div className="flex -space-x-2">
-                <img alt="同路人" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-1.jpg" />
-                <img alt="同路人" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-2.jpg" />
-                <img alt="同路人" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-3.jpg" />
+                {recentPosters.length > 0 ? (
+                  recentPosters.map((a) => (
+                    <Avatar key={a.id} name={a.nickname} src={a.avatarUrl} className="w-10 h-10 border-2 border-white" textClassName="text-xs" />
+                  ))
+                ) : (
+                  <>
+                    <img alt="同路人" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-1.jpg" />
+                    <img alt="同路人" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-2.jpg" />
+                    <img alt="同路人" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-3.jpg" />
+                  </>
+                )}
               </div>
               <p className="text-sm text-gray-500 font-medium">
                 <span className="text-teal-500">{displayUsers}+</span> 位同路人正在这里成长
