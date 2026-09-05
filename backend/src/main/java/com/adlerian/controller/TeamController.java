@@ -2,6 +2,7 @@ package com.adlerian.controller;
 
 import com.adlerian.dto.CreateTeamRequest;
 import com.adlerian.dto.TeamDTO;
+import com.adlerian.dto.TeamSummaryDTO;
 import com.adlerian.entity.User;
 import com.adlerian.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -31,10 +33,21 @@ public class TeamController {
         return ResponseEntity.ok(teamService.getInvitationDetail(code));
     }
 
-    @PostMapping("/{code}/join")
-    public ResponseEntity<TeamDTO> joinTeam(@PathVariable String code) {
+    @GetMapping("/open")
+    public ResponseEntity<List<TeamSummaryDTO>> getOpenTeams() {
+        return ResponseEntity.ok(teamService.getOpenTeams());
+    }
+
+    @PostMapping("/join-by-code")
+    public ResponseEntity<TeamDTO> joinTeam(@RequestBody Map<String, String> body) {
         User user = currentUser();
-        return ResponseEntity.ok(teamService.joinTeam(code, user.getId()));
+        return ResponseEntity.ok(teamService.joinTeam(body.get("code"), user.getId()));
+    }
+
+    @PostMapping("/{id}/join")
+    public ResponseEntity<TeamDTO> joinTeamById(@PathVariable Long id) {
+        User user = currentUser();
+        return ResponseEntity.ok(teamService.joinTeamById(id, user.getId()));
     }
 
     @GetMapping("/my")

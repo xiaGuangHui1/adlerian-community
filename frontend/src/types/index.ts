@@ -244,6 +244,16 @@ export interface CreateTeamResponse {
   shareUrl: string;
 }
 
+export interface TeamSummary {
+  id: number;
+  name: string;
+  memberCount: number;
+  maxMembers: number;
+  creatorNickname: string;
+  creatorAvatarUrl?: string;
+  status: string;
+}
+
 export interface InterestCircle {
   id: number;
   name: string;

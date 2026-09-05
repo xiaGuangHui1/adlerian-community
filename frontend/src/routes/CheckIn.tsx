@@ -8,6 +8,7 @@ import type { CheckIn, Challenge, Quote, CheckInFeedItem } from '../types';
 import CheckInForm from '../components/CheckInForm';
 import CheckInCalendar from '../components/CheckInCalendar';
 import EncourageButton from '../components/EncourageButton';
+import TeamSection from '../components/TeamSection';
 
 const MOCK_PRACTICE_TOPIC = {
   theme: '接纳不完美的自己',
@@ -34,6 +35,7 @@ export default function CheckInPage() {
   const [myChallenges, setMyChallenges] = useState<Challenge[]>([]);
   const [quote, setQuote] = useState<Quote | null>(null);
   const [feed, setFeed] = useState<CheckInFeedItem[]>([]);
+  const [activeTab, setActiveTab] = useState<'personal' | 'team'>('personal');
 
   useEffect(() => {
     Promise.all([
@@ -99,6 +101,30 @@ export default function CheckInPage() {
     <div className="-mx-4 sm:-mx-6 lg:-mx-8">
       <main className="pt-8 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* 子标签：个人打卡 / 组队打卡 */}
+          <div className="flex gap-2 mb-6">
+            <button
+              onClick={() => setActiveTab('personal')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer border-0 ${
+                activeTab === 'personal' ? 'bg-peach-500 text-white' : 'bg-warm-50 text-gray-600 hover:bg-orange-100'
+              }`}
+            >
+              个人打卡
+            </button>
+            <button
+              onClick={() => setActiveTab('team')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer border-0 ${
+                activeTab === 'team' ? 'bg-peach-500 text-white' : 'bg-warm-50 text-gray-600 hover:bg-orange-100'
+              }`}
+            >
+              组队打卡
+            </button>
+          </div>
+
+          {activeTab === 'team' ? (
+            <TeamSection />
+          ) : (
+            <>
           {/* 顶部概览 */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             {/* 今日打卡卡片 + 表单（移动端表单位于日历上方） */}
@@ -383,6 +409,8 @@ export default function CheckInPage() {
               </div>
             </aside>
           </div>
+            </>
+          )}
         </div>
       </main>
     </div>

@@ -1,6 +1,7 @@
 package com.adlerian.service;
 
 import com.adlerian.dto.TeamDTO;
+import com.adlerian.dto.TeamSummaryDTO;
 import com.adlerian.dto.TeamDTO.RecentActivityDTO;
 import com.adlerian.dto.TeamDTO.TeamMemberDTO;
 import com.adlerian.entity.DailyCheckIn;
@@ -85,6 +86,19 @@ public class TeamService {
 
     @Transactional
     public TeamDTO joinTeam(String inviteCode, UUID userId) {
+        Team team = teamRepository.findByInviteCode(inviteCode)
+                .orElseThrow(() -> new RuntimeException("邀请不存在或已过期"));
+        return joinTeamInternal(team, userId);
+    }
+
+    @Transactional
+    public TeamDTO joinTeamById(Long teamId, UUID userId) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("队伍不存在"));
+        return joinTeamInternal(team, userId);
+    }
+
+    private TeamDTO joinTeamInternal(Team team, UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("用户不存在"));
 
@@ -92,9 +106,6 @@ public class TeamService {
         teamRepository.findActiveTeamByUserId(userId).ifPresent(t -> {
             throw new RuntimeException("你已在队伍中，请先退出当前队伍");
         });
-
-        Team team = teamRepository.findByInviteCode(inviteCode)
-                .orElseThrow(() -> new RuntimeException("邀请不存在或已过期"));
 
         if (team.getStatus() == TeamStatus.DISBANDED) {
             throw new RuntimeException("该邀请已失效");
@@ -142,6 +153,29 @@ public class TeamService {
         }
 
         return buildTeamDTO(team, userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TeamSummaryDTO> getOpenTeams() {
+        List<Team> teams = teamRepository.findByStatusInOrderByCreatedAtDesc(
+                List.of(TeamStatus.PENDING, TeamStatus.ACTIVE));
+        List<TeamSummaryDTO> result = new ArrayList<>();
+        for (Team t : teams) {
+            long memberCount = teamMemberRepository.countByTeamId(t.getId());
+            if (memberCount >= t.getMaxMembers()) {
+                continue;
+            }
+            result.add(TeamSummaryDTO.builder()
+                    .id(t.getId())
+                    .name(t.getName())
+                    .memberCount((int) memberCount)
+                    .maxMembers(t.getMaxMembers())
+                    .creatorNickname(t.getCreator().getNickname())
+                    .creatorAvatarUrl(t.getCreator().getAvatarUrl())
+                    .status(t.getStatus().name())
+                    .build());
+        }
+        return result;
     }
 
     public TeamDTO getMyTeam(UUID userId) {

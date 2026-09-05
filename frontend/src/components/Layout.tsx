@@ -9,7 +9,6 @@ const NAV_ITEMS = [
   { path: '/knowledge-base', label: '理论探索' },
   { path: '/forum', label: '交流广场' },
   { path: '/circles', label: '社会兴趣' },
-  { path: '/invite', label: '组队广场' },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -193,7 +192,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <li><Link to="/knowledge-base" className="hover:text-peach-500 transition-colors no-underline">理论探索</Link></li>
                 <li><Link to="/forum" className="hover:text-peach-500 transition-colors no-underline">交流广场</Link></li>
                 <li><Link to="/circles" className="hover:text-peach-500 transition-colors no-underline">社会兴趣</Link></li>
-                <li><Link to="/invite" className="hover:text-peach-500 transition-colors no-underline">组队广场</Link></li>
               </ul>
             </div>
 

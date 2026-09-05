@@ -90,7 +90,7 @@ export default function Invite() {
       if (!user) {
         return;
       }
-      await api.post(`/teams/${teamCode}/join`);
+      await api.post('/teams/join-by-code', { code: teamCode });
       await fetchPageData();
     } catch (error: unknown) {
       setJoinError(getErrorMessage(error, '加入失败'));

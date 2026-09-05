@@ -16,6 +16,8 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     List<Team> findByStatusAndCreatorId(TeamStatus status, UUID creatorId);
 
+    List<Team> findByStatusInOrderByCreatedAtDesc(List<TeamStatus> statuses);
+
     @Query("SELECT t FROM Team t JOIN TeamMember tm ON tm.team = t WHERE tm.user.id = :userId AND t.status = 'ACTIVE'")
     Optional<Team> findActiveTeamByUserId(@Param("userId") UUID userId);
 }
