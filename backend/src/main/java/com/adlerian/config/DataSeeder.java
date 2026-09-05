@@ -62,11 +62,6 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedResources() {
-        if (resourceRepository.count() > 0) {
-            log.info("Resources already exist ({} records), skipping seed", resourceRepository.count());
-            return;
-        }
-
         List<Resource> resources = List.of(
             // ========== 核心概念 (concept) ==========
             Resource.builder().title("自卑感与超越").description("阿德勒心理学的基石概念，探讨自卑感的本质与转化").type("concept")
@@ -166,8 +161,16 @@ public class DataSeeder implements CommandLineRunner {
                 .sortOrder(86).createdAt(Instant.now()).build()
         );
 
-        resourceRepository.saveAll(resources);
-        log.info("Seeded {} learning resources", resources.size());
+        List<String> existingTitles = resourceRepository.findAll().stream()
+                .map(Resource::getTitle)
+                .toList();
+        List<Resource> missing = resources.stream()
+                .filter(r -> !existingTitles.contains(r.getTitle()))
+                .toList();
+        if (!missing.isEmpty()) {
+            resourceRepository.saveAll(missing);
+            log.info("Seeded {} new learning resources", missing.size());
+        }
     }
 
     private void seedPosts() {
