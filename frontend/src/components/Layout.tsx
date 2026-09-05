@@ -33,13 +33,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       setUnreadCount(0);
       return;
     }
-    const fetchUnread = () => {
-      api.get<{ count: number }>('/notifications/unread-count')
-        .then((r) => setUnreadCount(r.data.count))
-        .catch(() => {});
+    const fetchUnread = async () => {
+      try {
+        const [notif, conv] = await Promise.all([
+          api.get<{ count: number }>('/notifications/unread-count'),
+          api.get<{ count: number }>('/conversations/unread-count'),
+        ]);
+        setUnreadCount(notif.data.count + conv.data.count);
+      } catch {
+        // ignore
+      }
     };
     fetchUnread();
-    const timer = window.setInterval(fetchUnread, 30000);
+    const timer = window.setInterval(fetchUnread, 10000);
     return () => window.clearInterval(timer);
   }, [user]);
 

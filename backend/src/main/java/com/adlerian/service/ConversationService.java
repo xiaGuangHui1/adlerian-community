@@ -31,6 +31,12 @@ public class ConversationService {
                 .toList();
     }
 
+    public long getUnreadCount(UUID currentUserId) {
+        return conversationRepository.findByUserId(currentUserId).stream()
+                .mapToLong(c -> messageRepository.countUnread(c.getId(), currentUserId))
+                .sum();
+    }
+
     @Transactional
     public ConversationDTO getOrCreateConversation(UUID currentUserId, UUID otherUserId) {
         if (currentUserId.equals(otherUserId)) {

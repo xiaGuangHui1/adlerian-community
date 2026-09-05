@@ -26,6 +26,12 @@ public class ConversationController {
         return ResponseEntity.ok(conversationService.getConversations(user.getId()));
     }
 
+    @GetMapping("/unread-count")
+    public ResponseEntity<Map<String, Object>> getUnreadCount() {
+        User user = currentUser();
+        return ResponseEntity.ok(Map.of("count", conversationService.getUnreadCount(user.getId())));
+    }
+
     @PostMapping
     public ResponseEntity<ConversationDTO> openConversation(@RequestBody Map<String, String> body) {
         User user = currentUser();

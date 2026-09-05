@@ -134,26 +134,49 @@ export default function Messages() {
           </div>
         ) : (
           <div className="space-y-3">
-            {notifications.map((n) => (
-              <div
-                key={n.id}
-                onClick={() => handleNotificationClick(n)}
-                className={`bg-white p-4 rounded-2xl border flex gap-3 cursor-pointer transition-colors hover:bg-warm-50 ${
-                  n.read ? 'border-orange-50' : 'border-peach-200'
-                }`}
-              >
-                <Avatar name={n.actorNickname || '勇'} src={n.actorAvatarUrl} className="w-10 h-10 flex-shrink-0" textClassName="text-xs" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-sm text-gray-800">{n.actorNickname || '社区伙伴'}</span>
-                    <span className="text-sm text-gray-600">{notificationText(n)}</span>
-                    {!n.read && <span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />}
+            {notifications.map((n) => {
+              if (n.type === 'system') {
+                return (
+                  <div
+                    key={n.id}
+                    onClick={() => handleNotificationClick(n)}
+                    className={`bg-white p-4 rounded-2xl border flex gap-3 cursor-pointer transition-colors hover:bg-warm-50 ${
+                      n.read ? 'border-orange-50' : 'border-peach-200'
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-lg flex-shrink-0">📢</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-400">系统通知</span>
+                        {!n.read && <span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />}
+                      </div>
+                      {n.content && <p className="text-sm text-gray-700 mt-1">{n.content}</p>}
+                      <p className="text-xs text-gray-400 mt-1">{timeAgo(n.createdAt)}</p>
+                    </div>
                   </div>
-                  {n.content && <p className="text-sm text-gray-500 mt-1 line-clamp-2">{n.content}</p>}
-                  <p className="text-xs text-gray-400 mt-1">{timeAgo(n.createdAt)}</p>
+                );
+              }
+              return (
+                <div
+                  key={n.id}
+                  onClick={() => handleNotificationClick(n)}
+                  className={`bg-white p-4 rounded-2xl border flex gap-3 cursor-pointer transition-colors hover:bg-warm-50 ${
+                    n.read ? 'border-orange-50' : 'border-peach-200'
+                  }`}
+                >
+                  <Avatar name={n.actorNickname || '勇'} src={n.actorAvatarUrl} className="w-10 h-10 flex-shrink-0" textClassName="text-xs" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-bold text-sm text-gray-800">{n.actorNickname || '社区伙伴'}</span>
+                      <span className="text-sm text-gray-600">{notificationText(n)}</span>
+                      {!n.read && <span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />}
+                    </div>
+                    {n.content && <p className="text-sm text-gray-500 mt-1 line-clamp-2">{n.content}</p>}
+                    <p className="text-xs text-gray-400 mt-1">{timeAgo(n.createdAt)}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )
       ) : conversations.length === 0 ? (

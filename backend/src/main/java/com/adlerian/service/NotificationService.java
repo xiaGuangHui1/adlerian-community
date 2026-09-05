@@ -59,6 +59,11 @@ public class NotificationService {
         notificationRepository.save(n);
     }
 
+    /** 创建系统通知（无触发者） */
+    public void notifySystem(UUID recipientId, String type, String content) {
+        notify(recipientId, type, null, null, null, content);
+    }
+
     private NotificationDTO toDTO(Notification n) {
         return NotificationDTO.builder()
                 .id(n.getId())

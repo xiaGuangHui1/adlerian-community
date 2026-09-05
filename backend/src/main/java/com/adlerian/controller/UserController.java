@@ -3,6 +3,7 @@ package com.adlerian.controller;
 import com.adlerian.config.JwtKeyProvider;
 import com.adlerian.dto.UpdateUserRequest;
 import com.adlerian.entity.User;
+import com.adlerian.service.NotificationService;
 import com.adlerian.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -27,6 +28,7 @@ public class UserController {
 
     private final UserService userService;
     private final JwtKeyProvider keyProvider;
+    private final NotificationService notificationService;
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(
@@ -90,6 +92,7 @@ public class UserController {
             String nickname = body.getOrDefault("nickname", "社区成员");
             String avatarUrl = extractAvatarUrl(authHeader);
             User user = userService.createUser(authId, nickname, avatarUrl);
+            notificationService.notifySystem(user.getId(), "system", "欢迎加入勇气工坊，开始你的勇气之旅吧");
             return ResponseEntity.ok(toProfileMap(user));
         } catch (Exception e) {
             log.error("Failed to register user: {} ({})", e.getMessage(), e.getClass().getSimpleName(), e);
