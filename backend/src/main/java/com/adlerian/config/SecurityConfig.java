@@ -67,6 +67,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/users/me").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/users/*").permitAll()
                 .requestMatchers("/api/users/register").permitAll()
+                .requestMatchers("/api/feedback").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 // 其他API需要认证
                 .requestMatchers("/api/**").authenticated()

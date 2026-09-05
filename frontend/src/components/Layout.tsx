@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../lib/api';
 import { useAuth } from '../hooks/useAuth';
+import FeedbackButton from './FeedbackButton';
 
 const NAV_ITEMS = [
   { path: '/', label: '社区首页' },
@@ -230,6 +231,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </footer>
+      <FeedbackButton />
     </div>
   );
 }
