@@ -6,7 +6,7 @@ const COVER_IMAGES: Record<string, string[]> = {
   bio: ['/covers/bio-1.jpg', '/covers/bio-2.jpg'],
   practice: ['/covers/practice-1.jpg', '/covers/practice-2.jpg'],
   article: ['/covers/practice-1.jpg', '/covers/practice-2.jpg'],
-  quote: ['/covers/concept-1.jpg', '/covers/concept-3.jpg'],
+  quote: ['/covers/quote-1.jpg', '/covers/quote-2.jpg'],
 };
 
 export function getResourceCover(resource: Resource): string {
