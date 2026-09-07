@@ -27,7 +27,7 @@ export default function CheckInForm({ initialData, onSuccess, onCancel }: CheckI
   const [submitting, setSubmitting] = useState(false);
   const [syncToForum, setSyncToForum] = useState(false);
   const [forumTitle, setForumTitle] = useState('');
-  const [forumCategory, setForumCategory] = useState('life-courage');
+  const [forumCategory, setForumCategory] = useState('practice-checkin');
 
   const isBlank = content.trim() === '' || content.trim() === CHECKIN_TEMPLATE.trim();
 

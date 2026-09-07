@@ -74,7 +74,7 @@ public class DailyCheckInService {
         }
         String category = request.getForumCategory();
         if (category == null || category.isBlank()) {
-            category = "life-courage";
+            category = "practice-checkin";
         }
         CreatePostRequest postRequest = new CreatePostRequest(title, request.getContent(), category, "checkin");
 

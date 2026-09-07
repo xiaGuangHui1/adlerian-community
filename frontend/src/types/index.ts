@@ -136,6 +136,7 @@ export interface PageResponse<T> {
 }
 
 export const CATEGORIES = [
+  { value: 'practice-checkin', label: '实践打卡', icon: '📝', desc: '记录每日实践，分享勇气与成长' },
   { value: 'parent-child-conflict', label: '改善亲子冲突', desc: '用阿德勒心理学改善亲子沟通，化解家庭冲突' },
   { value: 'reduce-internal-friction', label: '减少内耗', desc: '停止自我消耗，将能量用在真正重要的事情上' },
   { value: 'enhance-connection', label: '提升关系感', desc: '培养共同体感觉，建立更深层的人际连接' },
