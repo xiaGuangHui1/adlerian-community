@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByCategory(String category, Pageable pageable);
-    Page<Post> findByAuthorId(UUID authorId, Pageable pageable);
+    Page<Post> findByAuthorIdOrderByCreatedAtDesc(UUID authorId, Pageable pageable);
     Page<Post> findAllByOrderByPinnedDescCreatedAtDesc(Pageable pageable);
     Page<Post> findByCategoryOrderByPinnedDescCreatedAtDesc(String category, Pageable pageable);
     @EntityGraph(attributePaths = "author")

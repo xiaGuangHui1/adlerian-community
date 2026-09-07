@@ -81,7 +81,7 @@ public class PostService {
     }
 
     public Page<PostDTO> getUserPosts(UUID authorId, Pageable pageable) {
-        return postRepository.findByAuthorId(authorId, pageable).map(this::toDTO);
+        return postRepository.findByAuthorIdOrderByCreatedAtDesc(authorId, pageable).map(this::toDTO);
     }
 
     public List<PostDTO> getHotPosts(int limit) {
