@@ -31,7 +31,7 @@ export default function JoinGroupButton() {
               alt="开发者微信二维码"
               className="w-52 h-52 object-contain mx-auto rounded-2xl border border-orange-100"
             />
-            <p className="text-xs text-gray-400 mt-4">添加时备注「勇气工坊」</p>
+            <p className="text-xs text-gray-400 mt-4">添加时备注「阿德勒心理学社区」</p>
           </div>
         </div>
       )}

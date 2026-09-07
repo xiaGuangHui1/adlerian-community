@@ -223,7 +223,7 @@ export default function Profile() {
     return (
       <div className="text-center py-24">
         <Icon icon="ph:user-sound-fill" width="64" className="text-gray-300 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-400 mb-2">该伙伴尚未加入勇气工坊</h2>
+        <h2 className="text-2xl font-bold text-gray-400 mb-2">该伙伴尚未加入阿德勒心理学社区</h2>
         <p className="text-gray-400 mb-6">也许Ta正在寻找自己的勇气之路，期待与Ta相遇。</p>
         <Link
           to="/forum"
@@ -266,7 +266,7 @@ export default function Profile() {
 
   const profileInitial = profile.nickname.trim().charAt(0) || '勇';
   const joinTime = profile.createdAt
-    ? `${new Date(profile.createdAt).getFullYear()}年加入勇气工坊`
+    ? `${new Date(profile.createdAt).getFullYear()}年加入阿德勒心理学社区`
     : '加入时间未知';
   const aboutParagraphs = profile.bio
     ? profile.bio.split(/\n+/).map(item => item.trim()).filter(Boolean)
@@ -290,7 +290,7 @@ export default function Profile() {
         <div className="bg-gradient-to-r from-peach-500/12 via-warm-50 to-teal-500/12 h-32 relative">
           <div className="absolute inset-x-8 top-6 flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-peach-500">
-              勇气工坊 · 个人主页
+              阿德勒心理学社区 · 个人主页
             </span>
             {isOwnProfile ? (
               <button
@@ -332,7 +332,7 @@ export default function Profile() {
               <div>
               <h1 className="text-3xl font-bold text-brown-900">{profile.nickname}</h1>
                 <p className="text-gray-500 mt-2 text-lg leading-relaxed">
-                  {profile.bio || '在勇气工坊慢慢寻找自己的节奏'}
+                  {profile.bio || '在阿德勒心理学社区慢慢寻找自己的节奏'}
                 </p>
                 {isOwnProfile && authUser?.email && (
                   <p className="text-gray-400 mt-1 text-sm flex items-center gap-1.5">

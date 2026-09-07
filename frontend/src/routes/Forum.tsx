@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import api from '../lib/api';
 import Skeleton from '../components/Skeleton';
 import Avatar from '../components/Avatar';
-import { Post, CATEGORIES, PageResponse } from '../types';
+import { Post, CATEGORIES, PageResponse, HomeStats } from '../types';
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -22,6 +22,7 @@ export default function Forum() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [justPosted, setJustPosted] = useState(searchParams.get('justPosted') === '1');
+  const [stats, setStats] = useState<HomeStats | null>(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -41,6 +42,13 @@ export default function Forum() {
 
     void fetchPosts();
   }, [category, page]);
+
+  // 拉取社区真实统计
+  useEffect(() => {
+    api.get<HomeStats>('/home/stats')
+      .then((r) => setStats(r.data))
+      .catch(() => {});
+  }, []);
 
   // 发帖成功后提示，并清除 URL 里的 justPosted 参数
   useEffect(() => {
@@ -245,20 +253,20 @@ export default function Forum() {
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-warm-50 p-4 rounded-2xl text-center">
-                    <p className="text-2xl font-bold text-peach-500">12.4k</p>
+                    <p className="text-2xl font-bold text-peach-500">{stats?.totalUsers ?? 0}</p>
                     <p className="text-xs text-gray-500 mt-1">成员</p>
                   </div>
                   <div className="bg-warm-50 p-4 rounded-2xl text-center">
-                    <p className="text-2xl font-bold text-teal-500">856</p>
-                    <p className="text-xs text-gray-500 mt-1">今日发帖</p>
+                    <p className="text-2xl font-bold text-teal-500">{stats?.totalPosts ?? 0}</p>
+                    <p className="text-xs text-gray-500 mt-1">帖子</p>
                   </div>
                   <div className="bg-warm-50 p-4 rounded-2xl text-center">
-                    <p className="text-2xl font-bold text-orange-400">3.2k</p>
-                    <p className="text-xs text-gray-500 mt-1">在线勇气</p>
+                    <p className="text-2xl font-bold text-orange-400">{stats?.totalEncouragements ?? 0}</p>
+                    <p className="text-xs text-gray-500 mt-1">鼓励</p>
                   </div>
                   <div className="bg-warm-50 p-4 rounded-2xl text-center">
-                    <p className="text-2xl font-bold text-blue-400">99%</p>
-                    <p className="text-xs text-gray-500 mt-1">互助率</p>
+                    <p className="text-2xl font-bold text-blue-400">{stats?.todayCheckIns ?? 0}</p>
+                    <p className="text-xs text-gray-500 mt-1">今日打卡</p>
                   </div>
                 </div>
               </div>

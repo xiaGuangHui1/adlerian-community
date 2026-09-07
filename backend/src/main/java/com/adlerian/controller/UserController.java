@@ -92,7 +92,7 @@ public class UserController {
             String nickname = body.getOrDefault("nickname", "社区成员");
             String avatarUrl = extractAvatarUrl(authHeader);
             User user = userService.createUser(authId, nickname, avatarUrl);
-            notificationService.notifySystem(user.getId(), "system", "欢迎加入勇气工坊，开始你的勇气之旅吧");
+            notificationService.notifySystem(user.getId(), "system", "欢迎加入阿德勒心理学社区，开始你的勇气之旅吧");
             return ResponseEntity.ok(toProfileMap(user));
         } catch (Exception e) {
             log.error("Failed to register user: {} ({})", e.getMessage(), e.getClass().getSimpleName(), e);

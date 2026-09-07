@@ -145,6 +145,9 @@ export const CATEGORIES = [
   { value: 'self-acceptance', label: '自我接纳', icon: '💝', desc: '接纳不完美的自己，从自卑走向超越' },
   { value: 'work-meaning', label: '工作意义', icon: '💼', desc: '在平凡工作中寻找对他人的贡献感' },
   { value: 'emotional-confusion', label: '情感困惑', icon: '💭', desc: '在亲密关系中探索真正的信赖与爱' },
+  { value: 'work-task', label: '工作课题', icon: '💼', desc: '阿德勒三大人生课题之一：在贡献中实现价值' },
+  { value: 'friendship-task', label: '交友课题', icon: '👥', desc: '阿德勒三大人生课题之一：建立横向关系' },
+  { value: 'love-task', label: '爱的课题', icon: '❤️', desc: '阿德勒三大人生课题之一：在爱中学会合作与贡献' },
   { value: 'other', label: '其他', icon: '💬', desc: '不限主题，自由讨论与实践分享' },
 ] as const;
 

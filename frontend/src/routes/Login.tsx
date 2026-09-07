@@ -74,8 +74,20 @@ export default function Login() {
       <div className="bg-white p-8 rounded-2xl border border-peach-100 shadow-sm">
         {/* 标题 */}
         <div className="text-center mb-8">
-          <div className="w-14 h-14 bg-gradient-to-br from-peach-500 to-peach-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md">
-            <span className="text-white font-bold text-lg">勇</span>
+          <div className="w-14 h-14 bg-gradient-to-br from-peach-500 to-peach-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md text-white">
+            <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="4.5" fill="currentColor" />
+              <g stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                <path d="M12 3.5v2.5" />
+                <path d="M12 18v2.5" />
+                <path d="M3.5 12h2.5" />
+                <path d="M18 12h2.5" />
+                <path d="M6 6l1.8 1.8" />
+                <path d="M18 6l-1.8 1.8" />
+                <path d="M6 18l1.8-1.8" />
+                <path d="M18 18l-1.8-1.8" />
+              </g>
+            </svg>
           </div>
           <h1 className="text-2xl font-bold text-brown-900">欢迎回来</h1>
           <p className="text-sm text-gray-400 mt-1">在横向关系中共同成长</p>

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import api from '../lib/api';
 import Skeleton from '../components/Skeleton';
+import Avatar from '../components/Avatar';
 import { useAuth } from '../hooks/useAuth';
 import { Post, Comment as CommentType, Encouragement, CATEGORIES } from '../types';
 import CommentTree from '../components/CommentTree';
@@ -201,9 +202,13 @@ export default function PostDetail() {
         ) : (
           <>
             <h1 className="text-2xl font-semibold text-brown-900 mb-3">{post.title}</h1>
-            <div className="flex items-center gap-3 mb-6 text-sm text-gray-400">
-              <span className="text-gray-600">{post.author.nickname}</span>
+            <div className="flex items-center gap-2.5 mb-6 text-sm text-gray-400 flex-wrap">
+              <Avatar name={post.author.nickname} src={post.author.avatarUrl} className="w-8 h-8" textClassName="text-xs" />
+              <span className="text-gray-600 font-medium">{post.author.nickname}</span>
+              <span>·</span>
               <span>{new Date(post.createdAt).toLocaleString('zh-CN')}</span>
+              <span>·</span>
+              <span>{post.viewCount} 阅读</span>
               {post.updatedAt && post.updatedAt !== post.createdAt && (
                 <span>（已编辑）</span>
               )}
