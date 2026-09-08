@@ -246,7 +246,7 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 fade-in-list">
             {loading ? Array.from({ length: 3 }).map((_, i) => <ResourceSkeleton key={i} />) : hotResources.slice(0, 3).map((r) => (
-              <Link key={r.id} to="/knowledge-base" className="group cursor-pointer no-underline block hover:-translate-y-1 transition-all duration-300">
+              <Link key={r.id} to={`/knowledge-base/${r.id}`} className="group cursor-pointer no-underline block hover:-translate-y-1 transition-all duration-300">
                 <div className="relative rounded-3xl overflow-hidden mb-6 aspect-video">
                   <div className="absolute inset-0 bg-gradient-to-br from-peach-200 to-teal-200 flex items-center justify-center text-4xl">
                     {r.type === 'book' ? '📖' : r.type === 'concept' ? '🧠' : r.type === 'article' ? '📄' : '📚'}

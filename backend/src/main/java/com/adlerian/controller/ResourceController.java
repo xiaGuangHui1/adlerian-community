@@ -22,7 +22,7 @@ public class ResourceController {
         if (type != null && !type.isBlank()) {
             return ResponseEntity.ok(resourceService.getResourcesByType(type, pageable));
         }
-        return ResponseEntity.ok(resourceService.getHotResources(20));
+        return ResponseEntity.ok(resourceService.getLatestResources(20));
     }
 
     @GetMapping("/hot")

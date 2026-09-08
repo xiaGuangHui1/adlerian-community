@@ -32,6 +32,9 @@ public class Resource {
     @Column(name = "sort_order")
     private int sortOrder;
 
+    @Column(name = "view_count")
+    private int viewCount;
+
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 

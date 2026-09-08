@@ -35,6 +35,8 @@ export default function CheckInPage() {
   const [quote, setQuote] = useState<Quote | null>(null);
   const [feed, setFeed] = useState<CheckInFeedItem[]>([]);
   const [activeTab, setActiveTab] = useState<'personal' | 'team'>('personal');
+  const [showHistory, setShowHistory] = useState(false);
+  const [historyCheckIns, setHistoryCheckIns] = useState<CheckIn[] | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -72,6 +74,20 @@ export default function CheckInPage() {
       .then(r => setMonthlyCheckIns(r.data))
       .catch(() => {});
   };
+
+  const toggleHistory = async () => {
+    if (!showHistory && historyCheckIns === null) {
+      try {
+        const { data } = await api.get<CheckIn[]>('/checkins/history');
+        setHistoryCheckIns(data);
+      } catch {
+        setHistoryCheckIns([]);
+      }
+    }
+    setShowHistory((s) => !s);
+  };
+
+  const displayedRecords = showHistory && historyCheckIns ? historyCheckIns : monthlyCheckIns.slice(0, 5);
 
   if (loading) {
     return (
@@ -256,8 +272,8 @@ export default function CheckInPage() {
                 我的实践记录
               </h3>
               <div className="space-y-4">
-                {monthlyCheckIns.length > 0 ? (
-                  monthlyCheckIns.slice(0, 5).map((ci) => (
+                {displayedRecords.length > 0 ? (
+                  displayedRecords.map((ci) => (
                     <div key={ci.id} className="bg-white p-6 rounded-3xl shadow-sm border border-orange-50 hover:shadow-md transition-shadow">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex items-center gap-3">
@@ -293,8 +309,11 @@ export default function CheckInPage() {
                   ))
                 )}
               </div>
-              <button className="w-full py-4 text-gray-400 font-medium hover:text-peach-500 transition-colors bg-transparent border-0 cursor-pointer">
-                查看更多历史记录
+              <button
+                onClick={toggleHistory}
+                className="w-full py-4 text-gray-400 font-medium hover:text-peach-500 transition-colors bg-transparent border-0 cursor-pointer"
+              >
+                {showHistory ? '收起' : '查看更多历史记录'}
               </button>
             </div>
 

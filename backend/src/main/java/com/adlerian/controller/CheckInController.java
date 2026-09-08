@@ -37,6 +37,12 @@ public class CheckInController {
         return ResponseEntity.ok(checkInService.getMonthlyCheckIns(user.getId(), year, month));
     }
 
+    @GetMapping("/history")
+    public ResponseEntity<List<CheckInDTO>> getHistory() {
+        User user = currentUser();
+        return ResponseEntity.ok(checkInService.getUserCheckIns(user.getId()));
+    }
+
     @GetMapping("/feed")
     public ResponseEntity<List<CheckInFeedDTO>> getFeed(
             @RequestParam(defaultValue = "20") int limit) {

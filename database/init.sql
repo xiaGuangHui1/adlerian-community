@@ -100,6 +100,7 @@ CREATE TABLE IF NOT EXISTS resources (
     content TEXT,
     cover_url TEXT,
     sort_order INT DEFAULT 0,
+    view_count INT DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -114,6 +115,8 @@ CREATE TABLE IF NOT EXISTS daily_checkins (
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE (user_id, checkin_date)
 );
+
+ALTER TABLE resources ADD COLUMN IF NOT EXISTS view_count INT DEFAULT 0;
 
 -- 名言表
 CREATE TABLE IF NOT EXISTS quotes (
@@ -229,6 +232,7 @@ CREATE INDEX IF NOT EXISTS idx_daily_checkins_date ON daily_checkins(checkin_dat
 CREATE INDEX IF NOT EXISTS idx_journals_author ON journals(author_id);
 CREATE INDEX IF NOT EXISTS idx_journals_public ON journals(is_public) WHERE is_public = TRUE;
 CREATE INDEX IF NOT EXISTS idx_resources_type ON resources(type);
+CREATE INDEX IF NOT EXISTS idx_resources_view_count ON resources(view_count DESC);
 CREATE INDEX IF NOT EXISTS idx_circle_posts_circle ON circle_posts(circle_id);
 CREATE INDEX IF NOT EXISTS idx_circle_posts_author ON circle_posts(author_id);
 CREATE INDEX IF NOT EXISTS idx_circle_posts_created ON circle_posts(created_at DESC);

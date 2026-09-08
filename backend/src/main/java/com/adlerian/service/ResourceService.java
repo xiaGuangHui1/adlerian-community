@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,14 +22,24 @@ public class ResourceService {
         return resourceRepository.findByTypeOrderBySortOrderAsc(type, pageable).map(this::toDTO);
     }
 
+    @Transactional
     public ResourceDTO getResourceById(Long id) {
         Resource resource = resourceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("资源不存在"));
+        resource.setViewCount(resource.getViewCount() + 1);
+        resourceRepository.save(resource);
         return toDTO(resource);
     }
 
-    public List<ResourceDTO> getHotResources(int limit) {
+    /** 最新：按创建时间倒序 */
+    public List<ResourceDTO> getLatestResources(int limit) {
         return resourceRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, Math.min(limit, 100)))
+                .getContent().stream().map(this::toDTO).toList();
+    }
+
+    /** 最热：按阅读量倒序，其次按创建时间倒序 */
+    public List<ResourceDTO> getHotResources(int limit) {
+        return resourceRepository.findAllByOrderByViewCountDescCreatedAtDesc(PageRequest.of(0, Math.min(limit, 100)))
                 .getContent().stream().map(this::toDTO).toList();
     }
 
@@ -40,6 +51,7 @@ public class ResourceService {
                 .type(r.getType())
                 .content(r.getContent())
                 .coverUrl(r.getCoverUrl())
+                .viewCount(r.getViewCount())
                 .createdAt(r.getCreatedAt())
                 .build();
     }
