@@ -2,8 +2,10 @@
 -- 添加「如何爱上别人」到理论探索（实践指南 practice）
 -- 在 Supabase SQL Editor 执行本文件即可
 -- =============================================
-INSERT INTO resources (title, description, type, content, sort_order)
-SELECT '如何爱上别人', '从防御机制到主动去爱：爱上不是跳崖，是走台阶', 'practice',
+WITH article AS (
+  SELECT '如何爱上别人' AS title,
+         '从防御机制到主动去爱：爱上不是跳崖，是走台阶' AS description,
+         'practice' AS type,
 $$# 如何爱上别人
 
 > "如何爱别人"是能力问题——你已经在关系里了，怎么对她好。
@@ -324,5 +326,11 @@ A 是"被爱的感觉"，B 是"爱上的感觉"。
 
 你不需要把门全拆了。你只需要在门边站一会儿。从门缝里往外看一下。看到外面有一个人在过她的生活——她的烦恼、她的喜好、她说话时眼神的变化。这些和你的恐惧无关，和你的自尊无关，和你是不是够好无关。它们只是她的。
 
-**当你看到的那个瞬间，你的注意力第一次不是放在自己身上——那就是爱上的开始。**$$, 1
-WHERE NOT EXISTS (SELECT 1 FROM resources WHERE title = '如何爱上别人');
+**当你看到的那个瞬间，你的注意力第一次不是放在自己身上——那就是爱上的开始。**$$ AS content, 1 AS sort_order
+)
+INSERT INTO resources (title, description, type, content, sort_order)
+SELECT title, description, type, content, sort_order
+FROM article
+WHERE NOT EXISTS (
+  SELECT 1 FROM resources r WHERE r.title = article.title AND r.content = article.content
+);

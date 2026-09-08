@@ -2,8 +2,10 @@
 -- 添加「亲密关系中的阿德勒心理学」到理论探索（实践指南 practice）
 -- 在 Supabase SQL Editor 执行本文件即可
 -- =============================================
-INSERT INTO resources (title, description, type, content, sort_order)
-SELECT '亲密关系中的阿德勒心理学', '用阿德勒个体心理学解读亲密关系中的回避模式：自卑情结、追求优越与社会兴趣', 'practice',
+WITH article AS (
+  SELECT '亲密关系中的阿德勒心理学' AS title,
+         '用阿德勒个体心理学解读亲密关系中的回避模式：自卑情结、追求优越与社会兴趣' AS description,
+         'practice' AS type,
 $$# 亲密关系中的阿德勒心理学
 
 > 阿德勒说：所有的心理问题，归根结底都是勇气的问题。
@@ -129,5 +131,11 @@ $$# 亲密关系中的阿德勒心理学
 
 > 把自卑感错误地导向了个人优越感的追逐，而不是社会兴趣的发展。被爱的资格不在钱里——它在你有勇气把真实的自己交给另一个人看的时候。
 
-亲密关系不是一场需要"够好"才配参加的考试，而是一个需要"够真实"才走得进去的空间。而真实，需要勇气。$$, 2
-WHERE NOT EXISTS (SELECT 1 FROM resources WHERE title = '亲密关系中的阿德勒心理学');
+亲密关系不是一场需要"够好"才配参加的考试，而是一个需要"够真实"才走得进去的空间。而真实，需要勇气。$$ AS content, 2 AS sort_order
+)
+INSERT INTO resources (title, description, type, content, sort_order)
+SELECT title, description, type, content, sort_order
+FROM article
+WHERE NOT EXISTS (
+  SELECT 1 FROM resources r WHERE r.title = article.title AND r.content = article.content
+);
