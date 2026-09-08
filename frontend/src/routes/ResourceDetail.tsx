@@ -97,7 +97,17 @@ export default function ResourceDetail() {
           <p className="text-gray-500 leading-relaxed mb-8">{resource.description}</p>
         )}
         <div className="prose prose-stone prose-sm max-w-none">
-          <ReactMarkdown>{resource.content || ''}</ReactMarkdown>
+          <ReactMarkdown
+            components={{
+              table: ({ node: _node, ...props }) => (
+                <div className="overflow-x-auto my-4">
+                  <table {...props} />
+                </div>
+              ),
+            }}
+          >
+            {resource.content || ''}
+          </ReactMarkdown>
         </div>
       </article>
     </div>

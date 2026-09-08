@@ -215,7 +215,17 @@ export default function PostDetail() {
             </div>
 
             <div className="prose prose-stone prose-sm max-w-none">
-              <ReactMarkdown>{post.content}</ReactMarkdown>
+              <ReactMarkdown
+                components={{
+                  table: ({ node: _node, ...props }) => (
+                    <div className="overflow-x-auto my-4">
+                      <table {...props} />
+                    </div>
+                  ),
+                }}
+              >
+                {post.content}
+              </ReactMarkdown>
             </div>
 
             <div className="mt-6 pt-4 border-t border-peach-50">
