@@ -7,7 +7,6 @@ import Avatar from '../components/Avatar';
 import type { CheckIn, Challenge, Quote, CheckInFeedItem } from '../types';
 import CheckInForm from '../components/CheckInForm';
 import CheckInCalendar from '../components/CheckInCalendar';
-import EncourageButton from '../components/EncourageButton';
 import TeamSection from '../components/TeamSection';
 
 const MOCK_PRACTICE_TOPIC = {
@@ -213,7 +212,7 @@ export default function CheckInPage() {
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-orange-50">
               <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
                 <svg className="w-5 h-5 text-peach-500" fill="currentColor" viewBox="0 0 256 256"><path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h40v8a8,8,0,0,0,16,0V48h24V80H88V48Zm136,24V208H48V72Zm-80,64a8,8,0,0,1,8,8v24a8,8,0,0,1-16,0V144A8,8,0,0,1,128,136Z"/></svg>
-                勇气日历
+                打卡日历
               </h3>
               <div className="mb-6">
                 <CheckInCalendar
@@ -319,9 +318,6 @@ export default function CheckInPage() {
                         <p className="text-[11px] text-gray-500 mt-1 bg-warm-50 p-2 rounded-lg whitespace-pre-wrap line-clamp-3">
                           {item.content}
                         </p>
-                        <div className="mt-2">
-                          <EncourageButton targetType="checkin" targetId={item.id} initialCount={item.encouragementCount} />
-                        </div>
                       </div>
                     </div>
                   ))}

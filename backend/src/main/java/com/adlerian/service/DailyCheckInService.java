@@ -41,7 +41,7 @@ public class DailyCheckInService {
         LocalDate start = LocalDate.of(year, month, 1);
         LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
         return checkInRepository
-                .findByUserIdAndCheckinDateBetweenOrderByCheckinDateAsc(userId, start, end)
+                .findByUserIdAndCheckinDateBetweenOrderByCheckinDateDesc(userId, start, end)
                 .stream().map(this::toDTO).collect(Collectors.toList());
     }
 

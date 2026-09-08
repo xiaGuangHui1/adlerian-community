@@ -14,7 +14,7 @@ public interface DailyCheckInRepository extends JpaRepository<DailyCheckIn, Long
 
     Optional<DailyCheckIn> findByUserIdAndCheckinDate(UUID userId, LocalDate checkinDate);
 
-    List<DailyCheckIn> findByUserIdAndCheckinDateBetweenOrderByCheckinDateAsc(
+    List<DailyCheckIn> findByUserIdAndCheckinDateBetweenOrderByCheckinDateDesc(
         UUID userId, LocalDate start, LocalDate end);
 
     long countByUserId(UUID userId);
