@@ -488,7 +488,6 @@ export default function Profile() {
                     {post.commentCount} 条分享
                   </span>
                   <span className="inline-flex items-center gap-1.5">
-                    <Icon icon="ph:heart" width="16" />
                     {post.encouragementCount} 个谢谢
                   </span>
                 </div>

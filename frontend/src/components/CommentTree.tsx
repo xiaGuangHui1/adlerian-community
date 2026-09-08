@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Comment as CommentType, Encouragement, COMMENT_TAGS } from '../types';
-import EncourageButton from './EncourageButton';
+import { Comment as CommentType, COMMENT_TAGS } from '../types';
+import Avatar from './Avatar';
 import api from '../lib/api';
 
 const TAG_COLORS: Record<string, string> = {
@@ -17,114 +17,52 @@ interface Props {
   onCommentAdded?: () => void;
 }
 
-function CommentItem({ comment, postId, depth = 0, onCommentAdded }: {
+/** 将嵌套回复拍平成单层，并标注每条回复的对象昵称 */
+interface FlatReply {
   comment: CommentType;
-  postId: number;
-  depth?: number;
-  onCommentAdded?: () => void;
-}) {
-  const [replying, setReplying] = useState(false);
-  const [replyContent, setReplyContent] = useState('');
-  const [replyTag, setReplyTag] = useState<string>('');
-  const [encouragements, setEncouragements] = useState<Encouragement[]>([]);
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleReply = async () => {
-    if (!replyContent.trim()) return;
-    setSubmitting(true);
-    try {
-      await api.post(`/posts/${postId}/comments`, {
-        content: replyContent,
-        parentId: comment.id,
-        tag: replyTag || null,
-      });
-      setReplyContent('');
-      setReplyTag('');
-      setReplying(false);
-      onCommentAdded?.();
-    } catch {
-      alert('回复失败，请确认已登录');
-    } finally {
-      setSubmitting(false);
+  replyTo: string;
+}
+function flattenReplies(replies: CommentType[] | undefined, parentName: string): FlatReply[] {
+  const out: FlatReply[] = [];
+  const walk = (list: CommentType[] | undefined, replyTo: string) => {
+    if (!list) return;
+    for (const r of list) {
+      out.push({ comment: r, replyTo });
+      walk(r.replies, r.author.nickname);
     }
   };
+  walk(replies, parentName);
+  out.sort(
+    (a, b) => new Date(a.comment.createdAt).getTime() - new Date(b.comment.createdAt).getTime()
+  );
+  return out;
+}
 
-  const timeStr = new Date(comment.createdAt).toLocaleString('zh-CN');
-  const tagInfo = COMMENT_TAGS.find(t => t.value === comment.tag);
+function formatTime(s: string) {
+  return new Date(s).toLocaleString('zh-CN', {
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
 
+function TagSelector({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
-    <div className={`${depth > 0 ? 'ml-6 border-l-2 border-peach-50 pl-4' : ''}`}>
-      <div className="py-3">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-sm font-medium text-brown-900">{comment.author.nickname}</span>
-          {tagInfo && (
-            <span className={`text-xs px-1.5 py-0.5 rounded-full border ${TAG_COLORS[tagInfo.value] || ''}`}>
-              {tagInfo.label}
-            </span>
-          )}
-          <span className="text-xs text-gray-400">{timeStr}</span>
-        </div>
-        <p className="text-sm text-gray-600 whitespace-pre-wrap">{comment.content}</p>
-        <div className="flex items-center gap-3 mt-2">
-          <button
-            onClick={() => setReplying(!replying)}
-            className="text-xs text-gray-400 hover:text-peach-700 bg-transparent border-0 cursor-pointer"
-          >
-            回复
-          </button>
-          <EncourageButton
-            targetType="comment"
-            targetId={comment.id}
-            encouragements={encouragements}
-            onNewEncouragement={(e) => setEncouragements([e, ...encouragements])}
-          />
-        </div>
-
-        {replying && (
-          <div className="mt-2 space-y-2">
-            {/* 标签选择器 */}
-            <div className="flex flex-wrap gap-1.5">
-              {COMMENT_TAGS.map((tag) => (
-                <button
-                  key={tag.value}
-                  onClick={() => setReplyTag(replyTag === tag.value ? '' : tag.value)}
-                  className={`text-xs px-2 py-1 rounded-full border cursor-pointer transition-colors ${
-                    replyTag === tag.value
-                      ? `${TAG_COLORS[tag.value]} border-current`
-                      : 'border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-500'
-                  }`}
-                >
-                  {tag.label}
-                </button>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <input
-                value={replyContent}
-                onChange={(e) => setReplyContent(e.target.value)}
-                placeholder="写下你的回复..."
-                className="flex-1 px-3 py-1.5 border border-peach-100 rounded text-sm focus:outline-none focus:ring-1 focus:ring-peach-400"
-              />
-              <button
-                onClick={handleReply}
-                disabled={submitting}
-                className="text-sm text-white bg-peach-500 px-3 py-1.5 rounded cursor-pointer border-0 disabled:opacity-50"
-              >
-                发送
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {comment.replies?.map((reply) => (
-        <CommentItem
-          key={reply.id}
-          comment={reply}
-          postId={postId}
-          depth={depth + 1}
-          onCommentAdded={onCommentAdded}
-        />
+    <div className="flex flex-wrap gap-1.5">
+      {COMMENT_TAGS.map((t) => (
+        <button
+          key={t.value}
+          type="button"
+          onClick={() => onChange(value === t.value ? '' : t.value)}
+          className={`text-xs px-2 py-1 rounded-full border cursor-pointer transition-colors ${
+            value === t.value
+              ? `${TAG_COLORS[t.value]} border-current`
+              : 'border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-500'
+          }`}
+        >
+          {t.label}
+        </button>
       ))}
     </div>
   );
@@ -135,14 +73,18 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
   const [tag, setTag] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async () => {
+  const [replyTarget, setReplyTarget] = useState<CommentType | null>(null);
+  const [replyContent, setReplyContent] = useState('');
+  const [replyTag, setReplyTag] = useState<string>('');
+  const [replySubmitting, setReplySubmitting] = useState(false);
+
+  const [collapsed, setCollapsed] = useState<Set<number>>(new Set());
+
+  const submitTop = async () => {
     if (!content.trim()) return;
     setSubmitting(true);
     try {
-      await api.post(`/posts/${postId}/comments`, {
-        content,
-        tag: tag || null,
-      });
+      await api.post(`/posts/${postId}/comments`, { content, tag: tag || null });
       setContent('');
       setTag('');
       onCommentAdded?.();
@@ -153,37 +95,77 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
     }
   };
 
+  const submitReply = async () => {
+    if (!replyContent.trim() || !replyTarget) return;
+    setReplySubmitting(true);
+    try {
+      await api.post(`/posts/${postId}/comments`, {
+        content: replyContent,
+        parentId: replyTarget.id,
+        tag: replyTag || null,
+      });
+      setReplyContent('');
+      setReplyTag('');
+      setReplyTarget(null);
+      onCommentAdded?.();
+    } catch {
+      alert('回复失败，请确认已登录');
+    } finally {
+      setReplySubmitting(false);
+    }
+  };
+
+  const toggleCollapsed = (id: number) => {
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const startReply = (c: CommentType) => {
+    setReplyTarget(c);
+    setReplyContent('');
+    setReplyTag('');
+  };
+
+  const renderReplyBox = () => (
+    <div className="mt-2 space-y-2">
+      <TagSelector value={replyTag} onChange={setReplyTag} />
+      <div className="flex gap-2">
+        <input
+          value={replyContent}
+          onChange={(e) => setReplyContent(e.target.value)}
+          placeholder={`回复 @${replyTarget?.author.nickname ?? ''}…`}
+          className="flex-1 px-3 py-1.5 border border-peach-100 rounded text-sm focus:outline-none focus:ring-1 focus:ring-peach-400"
+        />
+        <button
+          onClick={submitReply}
+          disabled={!replyContent.trim() || replySubmitting}
+          className="text-sm text-white bg-peach-500 px-3 py-1.5 rounded cursor-pointer border-0 disabled:opacity-50"
+        >
+          发送
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <div>
       {/* 发起分享 */}
-      <div className="mb-4">
-        {/* 标签选择器 */}
-        <div className="flex flex-wrap gap-1.5 mb-2">
-          {COMMENT_TAGS.map((t) => (
-            <button
-              key={t.value}
-              onClick={() => setTag(tag === t.value ? '' : t.value)}
-              className={`text-xs px-2 py-1 rounded-full border cursor-pointer transition-colors ${
-                tag === t.value
-                  ? `${TAG_COLORS[t.value]} border-current`
-                  : 'border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-500'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-          <span className="text-xs text-gray-300 self-center ml-1">（可选）</span>
-        </div>
+      <div className="mb-5">
+        <TagSelector value={tag} onChange={setTag} />
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="分享你的想法..."
-          className="w-full p-3 border border-peach-100 rounded-lg text-sm resize-none focus:outline-none focus:ring-1 focus:ring-peach-400"
+          className="w-full p-3 mt-2 border border-peach-100 rounded-lg text-sm resize-none focus:outline-none focus:ring-1 focus:ring-peach-400"
           rows={3}
         />
         <div className="flex justify-end mt-2">
           <button
-            onClick={handleSubmit}
+            onClick={submitTop}
             disabled={!content.trim() || submitting}
             className="text-sm text-white bg-peach-500 hover:bg-peach-600 px-4 py-2 rounded-lg cursor-pointer border-0 disabled:opacity-50"
           >
@@ -192,16 +174,97 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
         </div>
       </div>
 
-      {/* 分享列表 */}
-      <div className="divide-y divide-peach-50">
-        {comments.map((comment) => (
-          <CommentItem
-            key={comment.id}
-            comment={comment}
-            postId={postId}
-            onCommentAdded={onCommentAdded}
-          />
-        ))}
+      {/* 楼层列表 */}
+      <div className="space-y-3">
+        {comments.map((c, i) => {
+          const tagInfo = COMMENT_TAGS.find((t) => t.value === c.tag);
+          const flatReplies = flattenReplies(c.replies, c.author.nickname);
+          const isCollapsed = collapsed.has(c.id);
+          return (
+            <div key={c.id} className="border border-peach-50 rounded-xl overflow-hidden">
+              {/* 楼层主体 */}
+              <div className="p-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-peach-600 bg-peach-50 px-1.5 py-0.5 rounded">
+                    {i + 1}楼
+                  </span>
+                  <Avatar
+                    name={c.author.nickname}
+                    src={c.author.avatarUrl}
+                    className="w-6 h-6"
+                    textClassName="text-[10px]"
+                  />
+                  <span className="text-sm font-medium text-brown-900">{c.author.nickname}</span>
+                  {tagInfo && (
+                    <span className={`text-xs px-1.5 py-0.5 rounded-full border ${TAG_COLORS[tagInfo.value] || ''}`}>
+                      {tagInfo.label}
+                    </span>
+                  )}
+                  <span className="text-xs text-gray-400 ml-auto">{formatTime(c.createdAt)}</span>
+                </div>
+                <p className="text-sm text-gray-700 whitespace-pre-wrap mt-2">{c.content}</p>
+                <div className="mt-1.5">
+                  <button
+                    onClick={() => startReply(c)}
+                    className="text-xs text-gray-400 hover:text-peach-700 bg-transparent border-0 cursor-pointer"
+                  >
+                    回复
+                  </button>
+                </div>
+                {replyTarget?.id === c.id && renderReplyBox()}
+              </div>
+
+              {/* 楼中楼 */}
+              {flatReplies.length > 0 && (
+                <div className="border-t border-peach-50 bg-warm-50/60 px-3 py-2">
+                  <button
+                    onClick={() => toggleCollapsed(c.id)}
+                    className="text-xs text-gray-400 hover:text-peach-600 bg-transparent border-0 cursor-pointer"
+                  >
+                    {isCollapsed ? `展开 ${flatReplies.length} 条回复` : '收起回复'}
+                  </button>
+                  {!isCollapsed && (
+                    <div className="mt-2 space-y-2.5">
+                      {flatReplies.map((r) => (
+                        <div key={r.comment.id} className="flex items-start gap-2">
+                          <Avatar
+                            name={r.comment.author.nickname}
+                            src={r.comment.author.avatarUrl}
+                            className="w-5 h-5 flex-shrink-0"
+                            textClassName="text-[9px]"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="text-xs font-medium text-brown-900">
+                                {r.comment.author.nickname}
+                              </span>
+                              {r.replyTo !== r.comment.author.nickname && (
+                                <span className="text-xs text-gray-400">
+                                  回复 @{r.replyTo}
+                                </span>
+                              )}
+                              <span className="text-xs text-gray-300">{formatTime(r.comment.createdAt)}</span>
+                            </div>
+                            <p className="text-sm text-gray-700 mt-0.5 whitespace-pre-wrap">
+                              {r.comment.content}
+                            </p>
+                            <button
+                              onClick={() => startReply(r.comment)}
+                              className="text-xs text-gray-400 hover:text-peach-700 bg-transparent border-0 cursor-pointer mt-0.5"
+                            >
+                              回复
+                            </button>
+                            {replyTarget?.id === r.comment.id && renderReplyBox()}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
         {comments.length === 0 && (
           <p className="text-sm text-gray-400 py-4 text-center">暂无分享，来发起第一个分享吧</p>
         )}
