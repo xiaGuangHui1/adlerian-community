@@ -60,7 +60,7 @@ public class HomeService {
         commentRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, limit)).forEach(comment -> {
             activities.add(ActivityItemDTO.builder()
                     .type("comment")
-                    .description(comment.getAuthor().getNickname() + " 发表了评论")
+                    .description(comment.getAuthor().getNickname() + " 发表了分享")
                     .title(limitContent(comment.getContent(), 50))
                     .targetId(comment.getPost().getId())
                     .createdAt(comment.getCreatedAt())

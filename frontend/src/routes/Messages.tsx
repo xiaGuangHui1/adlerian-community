@@ -17,9 +17,9 @@ function timeAgo(time: string) {
 
 function notificationText(n: Notification): string {
   switch (n.type) {
-    case 'comment': return '评论了你的帖子';
-    case 'reply': return '回复了你的评论';
-    case 'encouragement': return '给了你一份鼓励';
+    case 'comment': return '分享了你的帖子';
+    case 'reply': return '回复了你的分享';
+    case 'encouragement': return '对你说了一声谢谢';
     case 'team': return '加入了你的队伍';
     default: return '与你互动';
   }

@@ -5,7 +5,7 @@ import lombok.*;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class CreateEncouragementRequest {
-    @NotBlank(message = "鼓励文字不能为空，请写下你的鼓励")
+    @NotBlank(message = "谢谢不能为空，请写下你的感谢")
     private String message;
 
     private boolean anonymous;

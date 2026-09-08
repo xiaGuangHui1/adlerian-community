@@ -237,7 +237,7 @@ export default function CircleDetail() {
       await fetchComments(postId);
       await fetchPosts();
     } catch (error: unknown) {
-      alert('评论失败：' + getErrorMessage(error, '请确认已登录'));
+      alert('分享失败：' + getErrorMessage(error, '请确认已登录'));
     } finally {
       setTopCommentSubmitting(false);
     }
@@ -395,29 +395,29 @@ export default function CircleDetail() {
                 )}
                 <div className="flex items-center gap-3 mt-3">
                   <span className="text-xs text-stone-400">{post.viewCount} 阅读</span>
-                  <span className="text-xs text-stone-400">{post.commentCount} 评论</span>
+                  <span className="text-xs text-stone-400">{post.commentCount} 分享</span>
                 </div>
               </div>
 
-              {/* 展开的帖子和评论 */}
+              {/* 展开的帖子和分享 */}
               {expandedPost === post.id && (
                 <div className="border-t border-stone-100">
                   <div className="p-5">
                     <p className="text-sm text-stone-700 whitespace-pre-wrap">{post.content}</p>
                   </div>
 
-                  {/* 评论区域 */}
+                  {/* 分享区域 */}
                   <div className="border-t border-stone-100 px-5 py-4">
-                    <h4 className="text-sm font-medium text-stone-700 mb-3">评论</h4>
+                    <h4 className="text-sm font-medium text-stone-700 mb-3">分享</h4>
 
-                    {/* 顶级评论输入框 */}
+                    {/* 顶级分享输入框 */}
                     {user && (
                       <div className="flex gap-2 mb-4">
                         <input
                           type="text"
                           value={topComment}
                           onChange={(e) => setTopComment(e.target.value)}
-                          placeholder="写下你的评论..."
+                          placeholder="写下你的分享..."
                           className="flex-1 px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-amber-400"
                           ref={commentInputRef}
                           onKeyDown={(e) => {
@@ -441,11 +441,11 @@ export default function CircleDetail() {
                       </div>
                     )}
 
-                    {/* 评论列表 */}
+                    {/* 分享列表 */}
                     {commentsLoading ? (
-                      <div className="text-center py-4 text-stone-400 text-sm">加载评论中...</div>
+                      <div className="text-center py-4 text-stone-400 text-sm">加载分享中...</div>
                     ) : comments.length === 0 ? (
-                      <div className="text-center py-4 text-stone-400 text-sm">暂无评论，来发表第一条评论吧</div>
+                      <div className="text-center py-4 text-stone-400 text-sm">暂无分享，来发表第一条分享吧</div>
                     ) : (
                       <div className="space-y-3">
                         {comments.map((comment) => (

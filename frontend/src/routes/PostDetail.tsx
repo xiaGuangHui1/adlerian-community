@@ -230,10 +230,10 @@ export default function PostDetail() {
         )}
       </article>
 
-      {/* 评论区 */}
+      {/* 分享区 */}
       <div className="mt-6 bg-white p-6 rounded-xl border border-peach-100">
         <h2 className="text-lg font-medium text-brown-900 mb-4">
-          评论 ({comments.reduce((acc, c) => acc + 1 + (c.replies?.length || 0), 0)})
+          分享 ({comments.reduce((acc, c) => acc + 1 + (c.replies?.length || 0), 0)})
         </h2>
         <CommentTree comments={comments} postId={post.id} onCommentAdded={fetchData} />
       </div>

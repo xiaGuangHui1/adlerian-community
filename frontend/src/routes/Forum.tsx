@@ -262,7 +262,7 @@ export default function Forum() {
                   </div>
                   <div className="bg-warm-50 p-4 rounded-2xl text-center">
                     <p className="text-2xl font-bold text-orange-400">{stats?.totalEncouragements ?? 0}</p>
-                    <p className="text-xs text-gray-500 mt-1">鼓励</p>
+                    <p className="text-xs text-gray-500 mt-1">谢谢</p>
                   </div>
                   <div className="bg-warm-50 p-4 rounded-2xl text-center">
                     <p className="text-2xl font-bold text-blue-400">{stats?.todayCheckIns ?? 0}</p>

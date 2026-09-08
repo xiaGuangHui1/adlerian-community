@@ -485,11 +485,11 @@ export default function Profile() {
                 <div className="flex items-center gap-5 text-gray-400 text-xs">
                   <span className="inline-flex items-center gap-1.5">
                     <Icon icon="ph:chat-circle-text" width="16" />
-                    {post.commentCount} 条评论
+                    {post.commentCount} 条分享
                   </span>
                   <span className="inline-flex items-center gap-1.5">
                     <Icon icon="ph:heart" width="16" />
-                    {post.encouragementCount} 个鼓励
+                    {post.encouragementCount} 个谢谢
                   </span>
                 </div>
               </article>

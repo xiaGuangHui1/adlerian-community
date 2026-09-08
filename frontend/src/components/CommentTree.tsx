@@ -147,7 +147,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
       setTag('');
       onCommentAdded?.();
     } catch {
-      alert('评论失败，请确认已登录');
+      alert('分享失败，请确认已登录');
     } finally {
       setSubmitting(false);
     }
@@ -155,7 +155,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
 
   return (
     <div>
-      {/* 发表评论 */}
+      {/* 发起分享 */}
       <div className="mb-4">
         {/* 标签选择器 */}
         <div className="flex flex-wrap gap-1.5 mb-2">
@@ -187,12 +187,12 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
             disabled={!content.trim() || submitting}
             className="text-sm text-white bg-peach-500 hover:bg-peach-600 px-4 py-2 rounded-lg cursor-pointer border-0 disabled:opacity-50"
           >
-            发表评论
+            发起分享
           </button>
         </div>
       </div>
 
-      {/* 评论列表 */}
+      {/* 分享列表 */}
       <div className="divide-y divide-peach-50">
         {comments.map((comment) => (
           <CommentItem
@@ -203,7 +203,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
           />
         ))}
         {comments.length === 0 && (
-          <p className="text-sm text-gray-400 py-4 text-center">暂无评论，来分享你的想法吧</p>
+          <p className="text-sm text-gray-400 py-4 text-center">暂无分享，来发起第一个分享吧</p>
         )}
       </div>
     </div>
