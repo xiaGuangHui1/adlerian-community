@@ -47,7 +47,7 @@ export default function CheckInPage() {
       }).catch(() => {}),
       api.get<Challenge[]>('/challenges/my').then(r => setMyChallenges(r.data)).catch(() => {}),
       api.get<Quote>('/quotes/daily').then(r => setQuote(r.data)).catch(() => {}),
-      api.get<CheckInFeedItem[]>('/checkins/feed', { params: { limit: 10 } }).then(r => setFeed(r.data)).catch(() => {}),
+      api.get<CheckInFeedItem[]>('/checkins/feed', { params: { limit: 5 } }).then(r => setFeed(r.data)).catch(() => {}),
     ]).finally(() => setLoading(false));
   }, []);
 
@@ -315,7 +315,7 @@ export default function CheckInPage() {
                           <span className="font-bold">{item.author.nickname}</span>
                           <span className="text-gray-400 font-normal"> 完成了打卡</span>
                         </p>
-                        <p className="text-[11px] text-gray-500 mt-1 bg-warm-50 p-2 rounded-lg whitespace-pre-wrap line-clamp-3">
+                        <p className="text-[11px] text-gray-500 mt-1 bg-warm-50 p-2 rounded-lg whitespace-pre-wrap line-clamp-2">
                           {item.content}
                         </p>
                       </div>
