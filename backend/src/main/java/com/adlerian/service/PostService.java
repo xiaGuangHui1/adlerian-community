@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +36,7 @@ public class PostService {
         } else {
             posts = postRepository.findAllByOrderByPinnedDescCreatedAtDesc(pageable);
         }
-        return posts.map(this::toDTO);
+        return mapPage(posts);
     }
 
     public PostDTO getPostById(Long id) {
@@ -54,7 +56,7 @@ public class PostService {
                 .category(request.getCategory())
                 .source(request.getSource())
                 .build();
-        return toDTO(postRepository.save(post));
+        return toDTO(postRepository.save(post), 0, 0);
     }
 
     @Transactional
@@ -81,12 +83,12 @@ public class PostService {
     }
 
     public Page<PostDTO> getUserPosts(UUID authorId, Pageable pageable) {
-        return postRepository.findByAuthorIdOrderByCreatedAtDesc(authorId, pageable).map(this::toDTO);
+        return mapPage(postRepository.findByAuthorIdOrderByCreatedAtDesc(authorId, pageable));
     }
 
     public List<PostDTO> getHotPosts(int limit) {
         Page<Post> page = postRepository.findHotPosts(PageRequest.of(0, Math.min(limit, 100)));
-        return page.getContent().stream().map(this::toDTO).toList();
+        return mapList(page.getContent());
     }
 
     @Transactional
@@ -98,7 +100,52 @@ public class PostService {
         return toDTO(post);
     }
 
+    // ===== 批量计数，避免 N+1 查询 =====
+
+    private Page<PostDTO> mapPage(Page<Post> posts) {
+        List<Post> content = posts.getContent();
+        Map<Long, Integer> encCounts = countEncouragements(content);
+        Map<Long, Integer> commentCounts = countComments(content);
+        return posts.map(p -> toDTO(p,
+                encCounts.getOrDefault(p.getId(), 0),
+                commentCounts.getOrDefault(p.getId(), 0)));
+    }
+
+    private List<PostDTO> mapList(List<Post> posts) {
+        Map<Long, Integer> encCounts = countEncouragements(posts);
+        Map<Long, Integer> commentCounts = countComments(posts);
+        return posts.stream()
+                .map(p -> toDTO(p,
+                        encCounts.getOrDefault(p.getId(), 0),
+                        commentCounts.getOrDefault(p.getId(), 0)))
+                .toList();
+    }
+
+    private Map<Long, Integer> countEncouragements(List<Post> posts) {
+        if (posts.isEmpty()) return Map.of();
+        List<Long> ids = posts.stream().map(Post::getId).toList();
+        return encourageRepository.countByTargetTypeAndTargetIdIn("post", ids).stream()
+                .collect(Collectors.toMap(
+                        r -> ((Number) r[0]).longValue(),
+                        r -> ((Number) r[1]).intValue()));
+    }
+
+    private Map<Long, Integer> countComments(List<Post> posts) {
+        if (posts.isEmpty()) return Map.of();
+        List<Long> ids = posts.stream().map(Post::getId).toList();
+        return commentRepository.countByPostIdIn(ids).stream()
+                .collect(Collectors.toMap(
+                        r -> ((Number) r[0]).longValue(),
+                        r -> ((Number) r[1]).intValue()));
+    }
+
     private PostDTO toDTO(Post post) {
+        return toDTO(post,
+                encourageRepository.countByTargetTypeAndTargetId("post", post.getId()),
+                commentRepository.countByPostId(post.getId()));
+    }
+
+    private PostDTO toDTO(Post post, int encouragementCount, int commentCount) {
         return PostDTO.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -113,8 +160,8 @@ public class PostService {
                         .build())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
-                .encouragementCount(encourageRepository.countByTargetTypeAndTargetId("post", post.getId()))
-                .commentCount(commentRepository.countByPostId(post.getId()))
+                .encouragementCount(encouragementCount)
+                .commentCount(commentCount)
                 .viewCount(post.getViewCount())
                 .build();
     }

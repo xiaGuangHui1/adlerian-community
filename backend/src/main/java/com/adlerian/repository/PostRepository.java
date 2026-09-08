@@ -7,13 +7,16 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
+    @EntityGraph(attributePaths = "author")
     Page<Post> findByCategory(String category, Pageable pageable);
+    @EntityGraph(attributePaths = "author")
     Page<Post> findByAuthorIdOrderByCreatedAtDesc(UUID authorId, Pageable pageable);
+    @EntityGraph(attributePaths = "author")
     Page<Post> findAllByOrderByPinnedDescCreatedAtDesc(Pageable pageable);
+    @EntityGraph(attributePaths = "author")
     Page<Post> findByCategoryOrderByPinnedDescCreatedAtDesc(String category, Pageable pageable);
     @EntityGraph(attributePaths = "author")
     Page<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);

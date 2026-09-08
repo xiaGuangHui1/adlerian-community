@@ -220,10 +220,12 @@ CREATE TABLE IF NOT EXISTS circle_comments (
 CREATE INDEX IF NOT EXISTS idx_posts_category ON posts(category);
 CREATE INDEX IF NOT EXISTS idx_posts_author ON posts(author_id);
 CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_posts_pinned_created ON posts(is_pinned, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id);
 CREATE INDEX IF NOT EXISTS idx_comments_parent ON comments(parent_id);
 CREATE INDEX IF NOT EXISTS idx_encouragements_target ON encouragements(target_type, target_id);
 CREATE INDEX IF NOT EXISTS idx_encouragements_receiver ON encouragements(receiver_id);
+CREATE INDEX IF NOT EXISTS idx_daily_checkins_date ON daily_checkins(checkin_date);
 CREATE INDEX IF NOT EXISTS idx_journals_author ON journals(author_id);
 CREATE INDEX IF NOT EXISTS idx_journals_public ON journals(is_public) WHERE is_public = TRUE;
 CREATE INDEX IF NOT EXISTS idx_resources_type ON resources(type);
