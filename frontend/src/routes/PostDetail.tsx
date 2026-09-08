@@ -203,7 +203,7 @@ export default function PostDetail() {
           <>
             <h1 className="text-2xl font-semibold text-brown-900 mb-3">{post.title}</h1>
             <div className="flex items-center gap-2.5 mb-6 text-sm text-gray-400 flex-wrap">
-              <Avatar name={post.author.nickname} src={post.author.avatarUrl} className="w-8 h-8" textClassName="text-xs" />
+              <Avatar name={post.author.nickname} src={post.author.avatarUrl} userId={post.author.id} className="w-8 h-8" textClassName="text-xs" />
               <span className="text-gray-600 font-medium">{post.author.nickname}</span>
               <span>·</span>
               <span>{new Date(post.createdAt).toLocaleString('zh-CN')}</span>

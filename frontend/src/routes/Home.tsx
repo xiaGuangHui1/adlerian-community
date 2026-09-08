@@ -203,7 +203,7 @@ export default function Home() {
                 className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-orange-50 no-underline block"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <Avatar name={post.author.nickname} src={post.author.avatarUrl} className="w-10 h-10" textClassName="text-xs" />
+                  <Avatar name={post.author.nickname} src={post.author.avatarUrl} userId={post.author.id} className="w-10 h-10" textClassName="text-xs" />
                   <div>
                     <p className="font-bold text-sm text-gray-800">{post.author.nickname}</p>
                     <p className="text-xs text-gray-400">

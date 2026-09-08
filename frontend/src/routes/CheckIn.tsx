@@ -328,7 +328,7 @@ export default function CheckInPage() {
                 <div className="space-y-6">
                   {feed.map((item) => (
                     <div key={item.id} className="flex gap-3">
-                      <Avatar name={item.author.nickname} src={item.author.avatarUrl} className="w-8 h-8" textClassName="text-xs" />
+                      <Avatar name={item.author.nickname} src={item.author.avatarUrl} userId={item.author.id} className="w-8 h-8" textClassName="text-xs" />
                       <div className="flex-grow">
                         <p className="text-xs">
                           <span className="font-bold">{item.author.nickname}</span>

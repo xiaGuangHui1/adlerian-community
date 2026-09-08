@@ -191,6 +191,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
                   <Avatar
                     name={c.author.nickname}
                     src={c.author.avatarUrl}
+                    userId={c.author.id}
                     className="w-6 h-6"
                     textClassName="text-[10px]"
                   />
@@ -230,6 +231,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
                           <Avatar
                             name={r.comment.author.nickname}
                             src={r.comment.author.avatarUrl}
+                            userId={r.comment.author.id}
                             className="w-5 h-5 flex-shrink-0"
                             textClassName="text-[9px]"
                           />

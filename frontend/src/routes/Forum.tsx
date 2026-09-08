@@ -157,7 +157,7 @@ export default function Forum() {
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
-                          <Avatar name={post.author.nickname} src={post.author.avatarUrl} className="w-12 h-12 border-2 border-orange-100" textClassName="text-sm" />
+                          <Avatar name={post.author.nickname} src={post.author.avatarUrl} userId={post.author.id} className="w-12 h-12 border-2 border-orange-100" textClassName="text-sm" />
                           <div>
                             <h4 className="font-bold text-gray-800">{post.author.nickname}</h4>
                             <p className="text-xs text-gray-400 flex items-center gap-1.5 flex-wrap">
