@@ -1,0 +1,20 @@
+name: Keep Alive
+
+# 保活：定时 ping 后端健康检查接口，防止 Railway 空闲休眠 / 冷启动。
+# 无需本机常开，GitHub 服务器自动执行。
+# 注意：schedule 使用 UTC 时间；GitHub 高负载时可能延迟几分钟。
+on:
+  schedule:
+    # 每 15 分钟一次（GitHub Actions 最小间隔 5 分钟）
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {}   # 允许在 Actions 页面手动触发
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health endpoint
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 https://www.adlerian.com.cn/api/health || echo "000")
+          echo "HTTP $code"
+          [ "$code" = "200" ] || exit 1
