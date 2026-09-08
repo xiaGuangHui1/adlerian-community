@@ -124,6 +124,7 @@ export interface Resource {
   type: string;
   content?: string;
   coverUrl?: string;
+  viewCount: number;
   createdAt: string;
 }
 
