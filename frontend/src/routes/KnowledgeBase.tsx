@@ -277,7 +277,10 @@ export default function KnowledgeBase() {
                     </div>
                   ))}
                 </div>
-                <button className="w-full mt-6 py-2 text-xs font-bold text-gray-400 border border-dashed border-gray-200 rounded-xl hover:border-peach-500 hover:text-peach-500 transition-all cursor-pointer bg-transparent">
+                <button
+                  onClick={() => setActiveTab('book')}
+                  className="w-full mt-6 py-2 text-xs font-bold text-gray-400 border border-dashed border-gray-200 rounded-xl hover:border-peach-500 hover:text-peach-500 transition-all cursor-pointer bg-transparent"
+                >
                   查看完整书单
                 </button>
               </div>
