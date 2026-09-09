@@ -4,6 +4,7 @@ import api from '../lib/api';
 import { CATEGORIES, type Post, type Resource, type HomeStats, type Author, type PageResponse } from '../types';
 import { getResourceCover } from '../lib/covers';
 import Avatar from '../components/Avatar';
+import { Icon } from '@iconify-icon/react';
 
 function timeAgo(time: string) {
   const diff = Date.now() - new Date(time).getTime();
@@ -151,7 +152,7 @@ export default function Home() {
             {/* 卡片 1: 共同体感觉 */}
             <div className="p-8 rounded-3xl bg-warm-50 border border-orange-50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
               <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-peach-500 mb-6 shadow-sm group-hover:scale-110 transition-transform">
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 256 256"><path d="M117.18,157.17a60,60,0,1,0-66-19.47A60,60,0,0,0,117.18,157.17ZM28,106a36,36,0,1,1,36,36A36,36,0,0,1,28,106Zm153.82,51.17a60,60,0,1,0-66-19.47A60,60,0,0,0,181.82,157.17ZM124,106a36,36,0,1,1,36,36A36,36,0,0,1,124,106Zm33.13,76.27A96.36,96.36,0,0,0,98.87,160H76.82a120.13,120.13,0,0,1,150.36,22.27A8,8,0,0,1,221,193.34,104.1,104.1,0,0,0,157.13,182.27Z"/></svg>
+                <Icon icon="ph:users-three" width="32" height="32" />
               </div>
               <h3 className="text-xl font-bold mb-4">共同体感觉</h3>
               <p className="text-gray-600 leading-relaxed">
@@ -161,7 +162,7 @@ export default function Home() {
             {/* 卡片 2: 课题分离 */}
             <div className="p-8 rounded-3xl bg-warm-50 border border-orange-50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
               <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-teal-500 mb-6 shadow-sm group-hover:scale-110 transition-transform">
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 256 256"><path d="M224,96a16,16,0,0,1-16,16H136v48a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V96A16,16,0,0,1,56,80h64a16,16,0,0,1,16,16v48h56V136H176a8,8,0,0,1,0-16h16a8,8,0,0,1,0,16H176v-8h32A16,16,0,0,1,224,96ZM56,96v64h64V96Zm184,0H224v64h16a8,8,0,0,0,0-16Z" opacity="0.2"/><path d="M240,144H176V136h16a8,8,0,0,0,0-16H176V112h16a8,8,0,0,0,0-16H176V80h56v40h-16a8,8,0,0,0,0,16h16v40h-16a8,8,0,0,0,0,16h16a8,8,0,0,0,8-8V88a8,8,0,0,0-8-8H168a8,8,0,0,0-8,8v8H136V40a16,16,0,0,0-16-16H56A16,16,0,0,0,40,40v64a16,16,0,0,0,16,16h64a16,16,0,0,0,16-16V80H152v96a8,8,0,0,0,8,8h8v16a8,8,0,0,0,16,0V192h8a16,16,0,0,0,16-16h32a16,16,0,0,0,16-16V144A16,16,0,0,0,240,144ZM120,104H56V40h64Z"/></svg>
+                <Icon icon="ph:split-horizontal" width="32" height="32" />
               </div>
               <h3 className="text-xl font-bold mb-4">课题分离</h3>
               <p className="text-gray-600 leading-relaxed">

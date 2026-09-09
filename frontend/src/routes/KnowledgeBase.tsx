@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import Skeleton from '../components/Skeleton';
 import { getResourceCover } from '../lib/covers';
+import { Icon } from '@iconify-icon/react';
 import type { Quote, Resource } from '../types';
 
 const COVER_STYLES: Record<string, { gradient: string; emoji: string }> = {
@@ -75,7 +76,7 @@ export default function KnowledgeBase() {
               className="flex flex-col items-center gap-2 group cursor-pointer border-0 bg-transparent"
             >
               <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-peach-500 group-hover:bg-peach-500 group-hover:text-white transition-all shadow-sm">
-                <svg className="w-8 h-8" viewBox="0 0 256 256" fill="currentColor"><path d="M248,132a56,56,0,0,0-32-51.35V72a8,8,0,0,0-8-8H146.92l31.24-45.66a8,8,0,0,0-2.16-11.18,8.19,8.19,0,0,0-11.18,2.16l-35,51.18A56,56,0,0,0,72,108v17.5a35.42,35.42,0,0,0-24,46.75A35.78,35.78,0,0,0,56,200v24a8,8,0,0,0,8,8h48a8,8,0,0,0,8-8V200a36.33,36.33,0,0,0-2.79-14.17A36.6,36.6,0,0,0,120,184a36,36,0,0,0,71.93-7.32A36.41,36.41,0,0,0,184,162.46V152a8,8,0,0,0-8-8H134.4l-28.52,23a8,8,0,0,1-11.18-1.33,8.19,8.19,0,0,1,1.33-11.18L129.75,128H176v14.48A52,52,0,0,0,248,132Z"/></svg>
+                <Icon icon="ph:brain" width="32" height="32" />
               </div>
               <span className="text-sm font-medium">核心概念</span>
             </button>
@@ -290,7 +291,7 @@ export default function KnowledgeBase() {
                   ))}
                 </div>
                 <button
-                  onClick={() => setActiveTab('book')}
+                  onClick={() => { setActiveTab('book'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                   className="w-full mt-6 py-2 text-xs font-bold text-gray-400 border border-dashed border-gray-200 rounded-xl hover:border-peach-500 hover:text-peach-500 transition-all cursor-pointer bg-transparent"
                 >
                   查看完整书单
