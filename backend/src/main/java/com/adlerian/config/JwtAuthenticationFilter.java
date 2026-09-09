@@ -61,13 +61,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     UUID authId = UUID.fromString(sub);
 
                     userRepository.findByAuthId(authId).ifPresent(user -> {
+                        boolean changed = false;
                         // 同步 Supabase 头像到本地（缺失时补一次）
                         if (user.getAvatarUrl() == null || user.getAvatarUrl().isBlank()) {
                             String avatarUrl = extractAvatarFromClaims(claims);
                             if (avatarUrl != null && !avatarUrl.isBlank()) {
                                 user.setAvatarUrl(avatarUrl);
-                                userRepository.save(user);
+                                changed = true;
                             }
+                        }
+                        // 同步邮箱（用于管理员识别）
+                        String email = claims.get("email", String.class);
+                        if (email != null && !email.isBlank() && !email.equals(user.getEmail())) {
+                            user.setEmail(email);
+                            changed = true;
+                        }
+                        if (changed) {
+                            userRepository.save(user);
                         }
                         var auth = new UsernamePasswordAuthenticationToken(
                                 user, null, Collections.emptyList());

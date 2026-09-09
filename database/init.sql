@@ -10,8 +10,10 @@ CREATE TABLE IF NOT EXISTS users (
     nickname VARCHAR(50) NOT NULL,
     avatar_url TEXT,
     bio TEXT,
+    email VARCHAR(320),
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(320);
 
 -- 帖子表
 CREATE TABLE IF NOT EXISTS posts (

@@ -25,6 +25,9 @@ public class User {
 
     private String bio;
 
+    @Column(length = 320)
+    private String email;
+
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 

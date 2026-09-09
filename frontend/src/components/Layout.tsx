@@ -194,6 +194,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <li><Link to="/knowledge-base" className="hover:text-peach-500 transition-colors no-underline">理论探索</Link></li>
                 <li><Link to="/forum" className="hover:text-peach-500 transition-colors no-underline">交流广场</Link></li>
                 <li><Link to="/circles" className="hover:text-peach-500 transition-colors no-underline">社会兴趣</Link></li>
+                <li><Link to="/admin" className="hover:text-peach-500 transition-colors no-underline">发布后台</Link></li>
               </ul>
             </div>
 
