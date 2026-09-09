@@ -6,11 +6,11 @@ import FeedbackButton from './FeedbackButton';
 import JoinGroupButton from './JoinGroupButton';
 
 const NAV_ITEMS = [
-  { path: '/', label: '社区首页' },
-  { path: '/checkin', label: '实践打卡' },
-  { path: '/knowledge-base', label: '理论探索' },
-  { path: '/forum', label: '交流广场' },
-  { path: '/circles', label: '社会兴趣' },
+  { path: '/', label: 'Home' },
+  { path: '/checkin', label: 'Daily Practice' },
+  { path: '/knowledge-base', label: 'Theory' },
+  { path: '/forum', label: 'Community' },
+  { path: '/circles', label: 'Circles' },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -23,8 +23,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       ? userMetadata.picture
       : undefined;
   const avatarUrl = profile?.avatarUrl || userAvatarUrl;
-  const displayName = profile?.nickname || user?.email?.split('@')[0] || '社区成员';
-  const profileInitial = displayName.trim().charAt(0) || '勇';
+  const displayName = profile?.nickname || user?.email?.split('@')[0] || 'Member';
+  const profileInitial = displayName.trim().charAt(0) || 'A';
   const profilePath = profile ? `/profile/${profile.id}` : '/profile/me';
 
   const [unreadCount, setUnreadCount] = useState(0);
@@ -72,7 +72,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </g>
                 </svg>
               </span>
-              阿德勒心理学社区
+              Adlerian Community
             </Link>
             <div className="hidden md:flex gap-1">
               {NAV_ITEMS.map((item) => {
@@ -102,7 +102,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link
               to="/messages"
               className="relative w-9 h-9 flex items-center justify-center rounded-full text-gray-500 hover:text-peach-700 hover:bg-peach-50 transition-colors no-underline"
-              aria-label="消息"
+              aria-label="Messages"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
               {unreadCount > 0 && (
@@ -115,7 +115,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Link
                 to={profilePath}
                 className="w-9 h-9 rounded-full border-2 border-peach-100 overflow-hidden bg-gradient-to-br from-peach-300 to-teal-300 text-white flex items-center justify-center text-sm font-bold hover:border-peach-300 transition-colors no-underline"
-                aria-label={`${displayName}的个人主页`}
+                aria-label={`${displayName}'s profile`}
                 title={displayName}
               >
                 {avatarUrl ? (
@@ -133,7 +133,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 to="/login"
                 className="px-4 py-2 bg-peach-500 text-white rounded-lg text-sm no-underline hover:bg-peach-600 transition-colors"
               >
-                登录
+                Sign in
               </Link>
             )}
           </div>
@@ -178,40 +178,40 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <div className="w-8 h-8 bg-peach-500 rounded-full flex items-center justify-center text-white">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 256 256"><path d="M128,72a8,8,0,0,1,8,8v24h16a8,8,0,0,1,0,16H136v56a8,8,0,0,1-16,0V120H104a8,8,0,0,1,0-16h16V80A8,8,0,0,1,128,72ZM80,24H176a8,8,0,0,0,0-16H80a8,8,0,0,0,0,16ZM240,88V200a24,24,0,0,1-24,24H40a24,24,0,0,1-24-24V88A24,24,0,0,1,40,64H72A8,8,0,0,1,80,72v8h96V72a8,8,0,0,1,8-8h32A24,24,0,0,1,240,88ZM216,88a8,8,0,0,0-8-8H184v8a8,8,0,0,1-8,8H80a8,8,0,0,1-8-8V80H48a8,8,0,0,0-8,8V200a8,8,0,0,0,8,8H216a8,8,0,0,0,8-8Z"/></svg>
                 </div>
-                <span className="text-xl font-bold tracking-tight">阿德勒心理学社区</span>
+                <span className="text-xl font-bold tracking-tight">Adlerian Community</span>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed">
-                一个面向大众的阿德勒心理学实践社区。我们致力于帮助每个人找回勇气，建立共同体感觉，过上幸福自由的人生。
+                A practical Adlerian psychology community for everyone. We help people reclaim courage, build a sense of belonging, and live a free and happy life.
               </p>
             </div>
 
             {/* 快速链接 */}
             <div>
-              <h4 className="font-bold mb-6">快速链接</h4>
+              <h4 className="font-bold mb-6">Quick Links</h4>
               <ul className="space-y-4 text-gray-400 text-sm list-none p-0">
-                <li><Link to="/" className="hover:text-peach-500 transition-colors no-underline">社区首页</Link></li>
-                <li><Link to="/checkin" className="hover:text-peach-500 transition-colors no-underline">实践打卡</Link></li>
-                <li><Link to="/knowledge-base" className="hover:text-peach-500 transition-colors no-underline">理论探索</Link></li>
-                <li><Link to="/forum" className="hover:text-peach-500 transition-colors no-underline">交流广场</Link></li>
-                <li><Link to="/circles" className="hover:text-peach-500 transition-colors no-underline">社会兴趣</Link></li>
-                <li><Link to="/admin" className="hover:text-peach-500 transition-colors no-underline">发布后台</Link></li>
+                <li><Link to="/" className="hover:text-peach-500 transition-colors no-underline">Home</Link></li>
+                <li><Link to="/checkin" className="hover:text-peach-500 transition-colors no-underline">Daily Practice</Link></li>
+                <li><Link to="/knowledge-base" className="hover:text-peach-500 transition-colors no-underline">Theory</Link></li>
+                <li><Link to="/forum" className="hover:text-peach-500 transition-colors no-underline">Community</Link></li>
+                <li><Link to="/circles" className="hover:text-peach-500 transition-colors no-underline">Circles</Link></li>
+                <li><Link to="/admin" className="hover:text-peach-500 transition-colors no-underline">Admin</Link></li>
               </ul>
             </div>
 
             {/* 关于我们 */}
             <div>
-              <h4 className="font-bold mb-6">关于我们</h4>
+              <h4 className="font-bold mb-6">About Us</h4>
               <ul className="space-y-4 text-gray-400 text-sm list-none p-0">
-                <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">关于社区</a></li>
-                <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">加入我们</a></li>
-                <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">联系合作</a></li>
-                <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">版权声明</a></li>
+                <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">About</a></li>
+                <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">Join Us</a></li>
+                <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">Contact</a></li>
+                <li><a href="#" className="hover:text-peach-500 transition-colors no-underline">Copyright</a></li>
               </ul>
             </div>
 
             {/* 关注我们 */}
             <div>
-              <h4 className="font-bold mb-6">关注我们</h4>
+              <h4 className="font-bold mb-6">Follow Us</h4>
               <div className="flex gap-4 mb-6">
                 <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-peach-500 transition-colors no-underline">
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 256 256"><path d="M216,48V88H40V48a8,8,0,0,1,8-8H208A8,8,0,0,1,216,48ZM40,168V104H216v64a16,16,0,0,1-16,16H56A16,16,0,0,1,40,168Z"/></svg>
@@ -220,15 +220,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 256 256"><path d="M232,64V224a8,8,0,0,1-8,8H32a8,8,0,0,1-8-8V64a8,8,0,0,1,8-8H80V48a8,8,0,0,1,8-8h80a8,8,0,0,1,8,8v8h48A8,8,0,0,1,232,64ZM96,56h64V48H96ZM216,72H40v52.69L70.19,122a16,16,0,0,1,18.12.84l54.41,40.81L192.19,98.14A16,16,0,0,1,216,98.86V72Z"/></svg>
                 </a>
               </div>
-              <p className="text-xs text-gray-500">© 2026 阿德勒心理学社区. All Rights Reserved.</p>
+              <p className="text-xs text-gray-500">© 2026 Adlerian Community. All Rights Reserved.</p>
             </div>
           </div>
 
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-xs">鼓励而非表扬 · 课题分离 · 共同体感觉 · 横向关系</p>
+            <p className="text-gray-500 text-xs">Encourage, not praise · Separation of tasks · Social interest · Horizontal relationships</p>
             <div className="flex gap-6 text-gray-500 text-xs">
-              <a href="#" className="hover:text-peach-500 no-underline transition-colors">隐私政策</a>
-              <a href="#" className="hover:text-peach-500 no-underline transition-colors">服务条款</a>
+              <a href="#" className="hover:text-peach-500 no-underline transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-peach-500 no-underline transition-colors">Terms of Service</a>
             </div>
           </div>
         </div>
