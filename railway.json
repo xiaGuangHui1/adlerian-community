@@ -2,7 +2,7 @@
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
     "builder": "RAILPACK",
-    "buildCommand": "cd backend && ./mvnw clean package -DskipTests"
+    "buildCommand": "cd backend && mvn clean package -DskipTests"
   },
   "deploy": {
     "startCommand": "java -Xms128m -Xmx320m -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=64m -XX:MaxDirectMemorySize=32m -jar backend/target/*.jar",

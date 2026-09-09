@@ -2,7 +2,7 @@
 FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /build
 COPY backend/ ./backend/
-RUN cd backend && ./mvnw clean package -DskipTests
+RUN cd backend && mvn clean package -DskipTests
 
 # ---- 运行阶段 ----
 FROM eclipse-temurin:17-jre
