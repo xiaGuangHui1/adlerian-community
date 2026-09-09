@@ -17,7 +17,7 @@ export default function NewPost() {
       await api.post('/posts', { title, content, category });
       navigate('/forum?justPosted=1');
     } catch {
-      alert('发帖失败，请确认已登录');
+      alert('Failed to post. Please sign in.');
     } finally {
       setSubmitting(false);
     }
@@ -25,11 +25,11 @@ export default function NewPost() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-2xl font-semibold text-brown-900 mb-6">发起讨论</h1>
+      <h1 className="text-2xl font-semibold text-brown-900 mb-6">Start a Discussion</h1>
 
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl border border-peach-100 space-y-4">
         <div>
-          <label className="block text-sm text-gray-600 mb-1">话题分类</label>
+          <label className="block text-sm text-gray-600 mb-1">Category</label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
@@ -42,26 +42,26 @@ export default function NewPost() {
         </div>
 
         <div>
-          <label className="block text-sm text-gray-600 mb-1">标题</label>
+          <label className="block text-sm text-gray-600 mb-1">Title</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
             maxLength={200}
-            placeholder="用一句话概括你想讨论的内容"
+            placeholder="Summarize your topic in one sentence"
             className="w-full px-3 py-2 border border-peach-100 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-peach-400"
           />
         </div>
 
         <div>
-          <label className="block text-sm text-gray-600 mb-1">内容（支持Markdown）</label>
+          <label className="block text-sm text-gray-600 mb-1">Content (Markdown supported)</label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
             rows={12}
-            placeholder="分享你的想法、困惑、感悟..."
+            placeholder="Share your thoughts, questions, and reflections..."
             className="w-full px-3 py-2 border border-peach-100 rounded-lg text-sm resize-y focus:outline-none focus:ring-1 focus:ring-peach-400 font-mono"
           />
         </div>
@@ -72,14 +72,14 @@ export default function NewPost() {
             onClick={() => navigate('/forum')}
             className="px-4 py-2 text-gray-600 bg-transparent border border-peach-100 rounded-lg text-sm cursor-pointer hover:bg-warm-50"
           >
-            取消
+            Cancel
           </button>
           <button
             type="submit"
             disabled={submitting}
             className="px-4 py-2 bg-peach-500 text-white rounded-lg text-sm cursor-pointer border-0 hover:bg-peach-600 disabled:opacity-50"
           >
-            {submitting ? '发布中...' : '发布'}
+            {submitting ? 'Publishing...' : 'Publish'}
           </button>
         </div>
       </form>

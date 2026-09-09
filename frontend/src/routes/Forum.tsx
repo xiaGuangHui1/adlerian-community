@@ -8,10 +8,10 @@ import { Post, CATEGORIES, PageResponse, HomeStats } from '../types';
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 60) return `${mins}分钟前`;
+  if (mins < 60) return `${mins}m ago`;
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}小时前`;
-  return `${Math.floor(hours / 24)}天前`;
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
 }
 
 export default function Forum() {
@@ -70,14 +70,14 @@ export default function Forum() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
-              <h1 className="text-3xl font-bold mb-2">交流广场</h1>
-              <p className="text-gray-500">在这里，每一个声音都值得被聆听，每一份勇气都值得被鼓励。</p>
+              <h1 className="text-3xl font-bold mb-2">Community</h1>
+              <p className="text-gray-500">Every voice deserves to be heard, every act of courage deserves encouragement.</p>
             </div>
             <div className="flex items-center gap-4 w-full md:w-auto">
               <div className="relative flex-grow md:w-64">
                 <input
                   className="w-full bg-warm-50 border-none rounded-2xl px-10 py-3 text-sm focus:ring-2 focus:ring-peach-500/20 outline-none"
-                  placeholder="搜索帖子或话题..."
+                  placeholder="Search posts or topics..."
                   type="text"
                 />
                 <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -87,7 +87,7 @@ export default function Forum() {
                 className="bg-peach-500 text-white p-3 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-100 flex items-center gap-2 px-6 no-underline"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                <span className="font-bold">发帖</span>
+                <span className="font-bold">New Post</span>
               </Link>
             </div>
           </div>
@@ -99,7 +99,7 @@ export default function Forum() {
                 !category ? 'bg-peach-500 text-white shadow-sm' : 'bg-warm-50 text-gray-600 hover:bg-orange-100'
               }`}
             >
-              全部
+              All
             </button>
             {CATEGORIES.map((c) => (
               <button
@@ -121,7 +121,7 @@ export default function Forum() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
           <div className="bg-teal-50 border border-teal-200 text-teal-700 rounded-2xl px-4 py-3 flex items-center gap-2">
             <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 256 256"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Z"/></svg>
-            <span className="text-sm font-medium">发布成功！你的帖子已出现在交流广场</span>
+            <span className="text-sm font-medium">Published! Your post is now in the community</span>
           </div>
         </div>
       )}
@@ -163,13 +163,13 @@ export default function Forum() {
                             <p className="text-xs text-gray-400 flex items-center gap-1.5 flex-wrap">
                               <span>{timeAgo(post.createdAt)} · <span className="text-teal-500 font-medium">{getCategoryLabel(post.category)}</span></span>
                               {post.source === 'checkin' && (
-                                <span className="text-[10px] bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full font-medium">实践打卡</span>
+                                <span className="text-[10px] bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full font-medium">Practice Check-in</span>
                               )}
                             </p>
                           </div>
                         </div>
                         {post.pinned && (
-                          <span className="text-xs bg-peach-100 text-peach-700 px-2 py-1 rounded">置顶</span>
+                          <span className="text-xs bg-peach-100 text-peach-700 px-2 py-1 rounded">Pinned</span>
                         )}
                       </div>
                       <h2 className="text-xl font-bold mb-3 text-brown-900 group-hover:text-peach-500 transition-colors">
@@ -181,7 +181,7 @@ export default function Forum() {
                       <div className="flex items-center justify-between pt-4 border-t border-gray-50">
                         <div className="flex items-center gap-6">
                           <div className="flex items-center gap-1.5 text-gray-400 text-sm">
-                            <span>{post.encouragementCount} 谢谢</span>
+                            <span>{post.encouragementCount} thanks</span>
                           </div>
                           <div className="flex items-center gap-1.5 text-gray-400 text-sm">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
@@ -193,14 +193,14 @@ export default function Forum() {
                           </div>
                         </div>
                         {post.encouragementCount > 100 && (
-                          <span className="text-xs text-orange-400">热门讨论中</span>
+                          <span className="text-xs text-orange-400">Hot discussion</span>
                         )}
                       </div>
                     </Link>
                   ))}
                   {posts.length === 0 && (
                     <div className="text-center py-12 text-gray-400">
-                      暂无帖子，来发起第一个讨论吧
+                      No posts yet — start the first discussion
                     </div>
                   )}
                 </>
@@ -248,24 +248,24 @@ export default function Forum() {
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-orange-50">
                 <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
                   <svg className="w-5 h-5 text-peach-500" fill="currentColor" viewBox="0 0 256 256"><path d="M216,216H40a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H72V56a8,8,0,0,1,8-8h32V40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8h32a8,8,0,0,1,8,8v32h8a8,8,0,0,1,8,8v72A56,56,0,0,1,168,216Zm0-16a40,40,0,0,0,40-40V88h-40ZM128,48H88v8h40Zm-56,16v8h40V80h8V64h40v56h-8V80H120v24H88V80H72Zm80,72h-64v16h64Zm-64,16v16h64V152Z"/></svg>
-                  社区动态
+                  Community Stats
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-warm-50 p-4 rounded-2xl text-center">
                     <p className="text-2xl font-bold text-peach-500">{stats?.totalUsers ?? 0}</p>
-                    <p className="text-xs text-gray-500 mt-1">成员</p>
+                    <p className="text-xs text-gray-500 mt-1">Members</p>
                   </div>
                   <div className="bg-warm-50 p-4 rounded-2xl text-center">
                     <p className="text-2xl font-bold text-teal-500">{stats?.totalPosts ?? 0}</p>
-                    <p className="text-xs text-gray-500 mt-1">帖子</p>
+                    <p className="text-xs text-gray-500 mt-1">Posts</p>
                   </div>
                   <div className="bg-warm-50 p-4 rounded-2xl text-center">
                     <p className="text-2xl font-bold text-orange-400">{stats?.totalEncouragements ?? 0}</p>
-                    <p className="text-xs text-gray-500 mt-1">谢谢</p>
+                    <p className="text-xs text-gray-500 mt-1">Thanks</p>
                   </div>
                   <div className="bg-warm-50 p-4 rounded-2xl text-center">
                     <p className="text-2xl font-bold text-blue-400">{stats?.todayCheckIns ?? 0}</p>
-                    <p className="text-xs text-gray-500 mt-1">今日打卡</p>
+                    <p className="text-xs text-gray-500 mt-1">Today's Check-ins</p>
                   </div>
                 </div>
               </div>
@@ -274,12 +274,12 @@ export default function Forum() {
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-orange-50">
                 <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
                   <svg className="w-5 h-5 text-peach-500" fill="currentColor" viewBox="0 0 256 256"><path d="M224,88H175.73L194,57.55A8,8,0,0,0,187.73,46.39l-80,72A8,8,0,0,0,112,132h48.27L142,162.45a8,8,0,0,0,6.27,11.16l80,72A8,8,0,0,0,240,240V96A8,8,0,0,0,224,88Z"/></svg>
-                  热门话题
+                  Hot Topics
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {[
-                    '# 课题分离实践', '# 被讨厌的勇气', '# 共同体感觉',
-                    '# 目的论', '# 自我接纳', '# 幸福的勇气',
+                    '# Separation of Tasks', '# Courage to be Disliked', '# Sense of Belonging',
+                    '# Teleology', '# Self-Acceptance', '# Courage to be Happy',
                   ].map((tag) => (
                     <button
                       key={tag}
@@ -295,13 +295,13 @@ export default function Forum() {
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-orange-50">
                 <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
                   <svg className="w-5 h-5 text-orange-400" fill="currentColor" viewBox="0 0 256 256"><path d="M243.84,76.19a12,12,0,0,0-13.47-2.1l-50.63,23-50-40.71a12,12,0,0,0-15-.24l-52,40a12,12,0,0,0-1.29,17.63l14.7,18.87L24.23,170.9a12,12,0,0,0,2.93,17.48l28.68,19.1a12,12,0,0,0,17-3.44l30.16-47.25,13.27,10.84a12,12,0,0,0,17.16-1.47l24-28A12,12,0,0,0,160,120c-0.12,0-.24,0-0.36,0L116.81,115,95,151.75,60,121.72l65.33-49.73,39.19,31.91L114.76,127c-4.11,2-7.67,5.09-10.27,8.83l-15,17.5L108,130.78l23.4-10.63a12,12,0,0,0,6.83-14.34L127.48,72.47l56.83,26.71a12,12,0,0,0,15-2.45L243.12,51.8A12,12,0,0,0,243.84,76.19Z"/></svg>
-                  大家之友
+                  Top Contributors
                 </h3>
                 <div className="space-y-4">
                   {[
-                    { name: '自由之翼', score: '12,450' },
-                    { name: '阿德勒学徒', score: '10,230' },
-                    { name: '林间漫步', score: '9,840' },
+                    { name: 'Wings of Freedom', score: '12,450' },
+                    { name: 'Adler Apprentice', score: '10,230' },
+                    { name: 'Forest Walker', score: '9,840' },
                   ].map((user, i) => (
                     <div key={user.name} className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -317,10 +317,10 @@ export default function Forum() {
                         </div>
                         <div>
                           <p className="text-sm font-bold">{user.name}</p>
-                          <p className="text-[10px] text-gray-400">贡献值 {user.score}</p>
+                          <p className="text-[10px] text-gray-400">Contribution {user.score}</p>
                         </div>
                       </div>
-                      <button className="text-xs text-peach-500 font-bold hover:underline bg-transparent border-0 cursor-pointer">关注</button>
+                      <button className="text-xs text-peach-500 font-bold hover:underline bg-transparent border-0 cursor-pointer">Follow</button>
                     </div>
                   ))}
                 </div>
@@ -329,12 +329,12 @@ export default function Forum() {
               {/* 社区公约 */}
               <div className="bg-gradient-to-br from-peach-500 to-orange-300 p-6 rounded-3xl text-white shadow-lg shadow-orange-100 relative overflow-hidden group">
                 <svg className="absolute -right-4 -bottom-4 text-white/20 group-hover:scale-110 transition-transform w-[120px] h-[120px]" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></svg>
-                <h4 className="font-bold text-lg mb-2 relative z-10">社区公约</h4>
+                <h4 className="font-bold text-lg mb-2 relative z-10">Community Guidelines</h4>
                 <p className="text-sm text-white/90 mb-4 relative z-10">
-                  这里是一个安全、包容的互助空间。请遵守"不批评、不建议、不评判"的原则，用同理心去倾听。
+                  This is a safe, inclusive space for mutual support. Please follow the principles of "no criticism, no advice, no judgment" and listen with empathy.
                 </p>
                 <button className="inline-block bg-white text-peach-500 px-4 py-2 rounded-xl text-xs font-bold hover:bg-warm-50 transition-colors relative z-10 border-0 cursor-pointer">
-                  了解更多
+                  Learn More
                 </button>
               </div>
             </aside>
