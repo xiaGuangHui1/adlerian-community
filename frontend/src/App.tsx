@@ -19,6 +19,7 @@ const Invite = lazy(() => import('./routes/Invite'));
 const Profile = lazy(() => import('./routes/Profile'));
 const Messages = lazy(() => import('./routes/Messages'));
 const Chat = lazy(() => import('./routes/Chat'));
+const AdminPage = lazy(() => import('./routes/AdminPage'));
 
 function PageLoading() {
   return (
@@ -52,6 +53,7 @@ export default function App() {
               <Route path="/profile/:id" element={<Profile />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/messages/dm/:conversationId" element={<Chat />} />
+              <Route path="/admin" element={<AdminPage />} />
             </Routes>
           </Suspense>
         </Layout>

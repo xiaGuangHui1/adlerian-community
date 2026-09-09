@@ -26,7 +26,7 @@ export default function KnowledgeBase() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [hotResources, setHotResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sortMode, setSortMode] = useState<'latest' | 'hot'>('latest');
+  const [sortMode, setSortMode] = useState<'curated' | 'latest' | 'hot'>('curated');
 
   useEffect(() => {
     api.get<Quote>('/quotes/daily')
@@ -38,13 +38,18 @@ export default function KnowledgeBase() {
   }, []);
 
   useEffect(() => {
-    api.get<Resource[] | { content: Resource[] }>('/resources', { params: { ...(activeTab ? { type: activeTab } : {}) } })
+    let url = '/resources';
+    const params: Record<string, string> = {};
+    if (sortMode === 'latest') url = '/resources/latest';
+    else if (sortMode === 'hot') url = '/resources/hot';
+    if (sortMode === 'curated' && activeTab) params.type = activeTab;
+    api.get<Resource[] | { content: Resource[] }>(url, { params })
       .then(r => setResources(Array.isArray(r.data) ? r.data : r.data.content || []))
       .catch(() => setResources([]))
       .finally(() => setLoading(false));
-  }, [activeTab]);
+  }, [sortMode, activeTab]);
 
-  const displayedResources = sortMode === 'hot' ? hotResources : resources;
+  const displayedResources = resources;
 
   return (
     <div className="-mx-4 sm:-mx-6 lg:-mx-8">
@@ -124,8 +129,15 @@ export default function KnowledgeBase() {
                 <h2 className="text-2xl font-bold">精选文章</h2>
                 <div className="flex gap-2">
                   <button
+                    onClick={() => setSortMode('curated')}
+                    className={`text-sm font-bold cursor-pointer border-0 bg-transparent ${sortMode === 'curated' ? 'text-peach-500' : 'text-gray-400 hover:text-peach-500'}`}
+                  >
+                    精选
+                  </button>
+                  <span className="text-gray-300">|</span>
+                  <button
                     onClick={() => setSortMode('latest')}
-                    className={`text-sm font-bold cursor-pointer border-0 bg-transparent ${sortMode === 'latest' ? 'text-peach-500' : 'text-gray-400 hover:text-peach-500'}`}
+                    className={`text-sm cursor-pointer border-0 bg-transparent ${sortMode === 'latest' ? 'text-peach-500 font-bold' : 'text-gray-400 hover:text-peach-500'}`}
                   >
                     最新
                   </button>

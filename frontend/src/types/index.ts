@@ -125,6 +125,7 @@ export interface Resource {
   content?: string;
   coverUrl?: string;
   viewCount: number;
+  sortOrder: number;
   createdAt: string;
 }
 

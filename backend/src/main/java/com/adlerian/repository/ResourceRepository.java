@@ -11,4 +11,5 @@ public interface ResourceRepository extends JpaRepository<Resource, Long> {
     Page<Resource> findByTypeOrderBySortOrderAsc(String type, Pageable pageable);
     Page<Resource> findAllByOrderByCreatedAtDesc(Pageable pageable);
     Page<Resource> findAllByOrderByViewCountDescCreatedAtDesc(Pageable pageable);
+    List<Resource> findAllByOrderBySortOrderAscIdAsc();
 }

@@ -12,5 +12,6 @@ public class ResourceDTO {
     private String content;
     private String coverUrl;
     private int viewCount;
+    private int sortOrder;
     private Instant createdAt;
 }
