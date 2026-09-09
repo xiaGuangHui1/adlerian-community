@@ -9,10 +9,10 @@ import { Icon } from '@iconify-icon/react';
 function timeAgo(time: string) {
   const diff = Date.now() - new Date(time).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 60) return `${mins}分钟前`;
+  if (mins < 60) return `${mins}m ago`;
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}小时前`;
-  return `${Math.floor(hours / 24)}天前`;
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
 }
 
 function PostSkeleton() {
@@ -95,23 +95,23 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 text-center md:text-left">
             <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
-              被讨厌的勇气，<br /><span className="text-peach-500">从这里开始</span>
+              The courage to be disliked,<br /><span className="text-peach-500">starts here</span>
             </h1>
             <p className="text-lg text-gray-600 mb-8 max-w-lg">
-              世界极其简单，人们随时可以获得幸福。这里是阿德勒心理学的社区，让我们一起练习课题分离，找回属于自己的共同体感觉。
+              The world is simple, and happiness is within everyone's reach. This is an Adlerian psychology community — let's practice separation of tasks and reclaim our sense of belonging.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link
                 to="/knowledge-base"
                 className="bg-peach-500 text-white px-8 py-4 rounded-2xl text-lg font-bold hover:scale-105 transition-transform shadow-lg shadow-orange-200 flex items-center justify-center gap-2 no-underline"
               >
-                探索阿德勒哲学
+                Explore Adler's Philosophy
               </Link>
               <Link
                 to="/checkin"
                 className="bg-white text-teal-500 border-2 border-teal-500 px-8 py-4 rounded-2xl text-lg font-bold hover:bg-teal-500 hover:text-white transition-all flex items-center justify-center gap-2 no-underline"
               >
-                开启实践之旅
+                Start Your Practice
               </Link>
             </div>
             <div className="mt-10 flex items-center justify-center md:justify-start gap-4">
@@ -122,14 +122,14 @@ export default function Home() {
                   ))
                 ) : (
                   <>
-                    <img alt="同路人" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-1.jpg" />
-                    <img alt="同路人" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-2.jpg" />
-                    <img alt="同路人" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-3.jpg" />
+                    <img alt="fellow member" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-1.jpg" />
+                    <img alt="fellow member" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-2.jpg" />
+                    <img alt="fellow member" className="w-10 h-10 rounded-full border-2 border-white object-cover" src="/covers/avatar-3.jpg" />
                   </>
                 )}
               </div>
               <p className="text-sm text-gray-500 font-medium">
-                <span className="text-teal-500">{displayUsers}+</span> 位同路人正在这里成长
+                <span className="text-teal-500">{displayUsers}+</span> members growing here
               </p>
             </div>
           </div>
@@ -145,8 +145,8 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">为什么选择阿德勒心理学社区？</h2>
-            <p className="text-gray-500">我们不只是学习理论，更是在生活中实践勇气</p>
+            <h2 className="text-3xl font-bold mb-4">Why Adlerian Community?</h2>
+            <p className="text-gray-500">We don't just learn theory — we practice courage in daily life</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* 卡片 1: 共同体感觉 */}
@@ -154,9 +154,9 @@ export default function Home() {
               <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-peach-500 mb-6 shadow-sm group-hover:scale-110 transition-transform">
                 <Icon icon="ph:users-three" width="32" height="32" />
               </div>
-              <h3 className="text-xl font-bold mb-4">共同体感觉</h3>
+              <h3 className="text-xl font-bold mb-4">Sense of Belonging</h3>
               <p className="text-gray-600 leading-relaxed">
-                摆脱孤独感，在真诚的互助中建立与他人的深层联结。这里没有评判，只有接纳与理解。
+                Escape loneliness and build deep connections through genuine mutual support. No judgment here — only acceptance and understanding.
               </p>
             </div>
             {/* 卡片 2: 课题分离 */}
@@ -164,9 +164,9 @@ export default function Home() {
               <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-teal-500 mb-6 shadow-sm group-hover:scale-110 transition-transform">
                 <Icon icon="ph:split-horizontal" width="32" height="32" />
               </div>
-              <h3 className="text-xl font-bold mb-4">课题分离</h3>
+              <h3 className="text-xl font-bold mb-4">Separation of Tasks</h3>
               <p className="text-gray-600 leading-relaxed">
-                学会区分"谁的课题"，把沉重的人际包袱放下。专注于自己能改变的事，获得真正的自由。
+                Learn to separate "whose task is whose", and set down heavy relationship baggage. Focus on what you can change and find true freedom.
               </p>
             </div>
             {/* 卡片 3: 勇气训练 */}
@@ -174,9 +174,9 @@ export default function Home() {
               <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-orange-400 mb-6 shadow-sm group-hover:scale-110 transition-transform">
                 <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 256 256"><path d="M240,102c0,70-103.79,126.66-108.21,129a8,8,0,0,1-7.58,0C119.79,228.66,16,172,16,102A62.07,62.07,0,0,1,78,40c20.65,0,38.73,8.88,50,23.89C139.27,48.88,157.35,40,178,40A62.07,62.07,0,0,1,240,102Z"/></svg>
               </div>
-              <h3 className="text-xl font-bold mb-4">勇气训练</h3>
+              <h3 className="text-xl font-bold mb-4">Courage Practice</h3>
               <p className="text-gray-600 leading-relaxed">
-                通过每日微小的实践，培养面对困难和被讨厌的勇气。改变人生，从当下的行动开始。
+                Build the courage to face difficulty and being disliked through small daily actions. Change your life — start with the next step you take.
               </p>
             </div>
           </div>
@@ -188,11 +188,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 className="text-3xl font-bold mb-2">热门讨论</h2>
-              <p className="text-gray-500">听听大家在生活中是如何运用阿德勒哲学的</p>
+              <h2 className="text-3xl font-bold mb-2">Popular Discussions</h2>
+              <p className="text-gray-500">See how people apply Adler's philosophy in daily life</p>
             </div>
             <Link to="/forum" className="text-peach-500 font-bold flex items-center gap-1 hover:underline no-underline">
-              查看全部广场
+              View All
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 256 256"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
             </Link>
           </div>
@@ -221,17 +221,17 @@ export default function Home() {
                 <div className="flex items-center gap-4 text-gray-400 text-xs">
                   <span className="flex items-center gap-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                    {post.commentCount} 回复
+                    {post.commentCount} replies
                   </span>
                   <span className="flex items-center gap-1">
-                    {post.encouragementCount} 谢谢
+                    {post.encouragementCount} thanks
                   </span>
                 </div>
               </Link>
             ))}
             {!loading && hotPosts.length === 0 && (
               <div className="text-center py-12 text-gray-400 col-span-2">
-                暂无讨论，去发表第一个话题吧
+                No discussions yet — start the first one
               </div>
             )}
           </div>
@@ -242,8 +242,8 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">知识精选</h2>
-            <p className="text-gray-500">深入浅出，系统掌握阿德勒心理学核心概念</p>
+            <h2 className="text-3xl font-bold mb-4">Featured Knowledge</h2>
+            <p className="text-gray-500">Master Adlerian psychology concepts, simply and systematically</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 fade-in-list">
             {loading ? Array.from({ length: 3 }).map((_, i) => <ResourceSkeleton key={i} />) : hotResources.slice(0, 3).map((r) => (
@@ -265,7 +265,7 @@ export default function Home() {
                       r.type === 'article' ? 'bg-pink-400' :
                       'bg-orange-400'
                     }`}>
-                      {r.type === 'concept' ? '核心概念' : r.type === 'book' ? '推荐阅读' : r.type === 'article' ? '实践指南' : '学习路径'}
+                      {r.type === 'concept' ? 'Core Concept' : r.type === 'book' ? 'Books' : r.type === 'article' ? 'Practice Guide' : 'Learning Path'}
                     </span>
                   </div>
                 </div>
@@ -276,7 +276,7 @@ export default function Home() {
               </Link>
             ))}
             {!loading && hotResources.length === 0 && (
-              <div className="text-center py-12 text-gray-400 col-span-3">知识库建设中</div>
+              <div className="text-center py-12 text-gray-400 col-span-3">Knowledge base coming soon</div>
             )}
           </div>
         </div>
@@ -286,24 +286,24 @@ export default function Home() {
       <section className="py-12 bg-teal-500/5 overflow-hidden">
         <div className="flex items-center gap-8 whitespace-nowrap animate-marquee">
           <div className="flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-sm border border-teal-500/10">
-            <div className="w-8 h-8 rounded-full bg-peach-300 flex items-center justify-center text-white text-xs">小</div>
-            <span className="text-sm font-medium"><span className="text-teal-500 font-bold">小张</span> 完成了"接纳不完美的自己" Day 7</span>
+            <div className="w-8 h-8 rounded-full bg-peach-300 flex items-center justify-center text-white text-xs">Z</div>
+            <span className="text-sm font-medium"><span className="text-teal-500 font-bold">Zhang</span> completed "Accepting My Imperfect Self" Day 7</span>
           </div>
           <div className="flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-sm border border-teal-500/10">
-            <div className="w-8 h-8 rounded-full bg-teal-400 flex items-center justify-center text-white text-xs">阿</div>
-            <span className="text-sm font-medium"><span className="text-teal-500 font-bold">阿木</span> 实践了"课题分离"：拒绝了无理加班</span>
+            <div className="w-8 h-8 rounded-full bg-teal-400 flex items-center justify-center text-white text-xs">M</div>
+            <span className="text-sm font-medium"><span className="text-teal-500 font-bold">Mu</span> practiced "Separation of Tasks" — said no to overtime</span>
           </div>
           <div className="flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-sm border border-teal-500/10">
-            <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white text-xs">静</div>
-            <span className="text-sm font-medium"><span className="text-teal-500 font-bold">静静</span> 完成了"对陌生人微笑"挑战</span>
+            <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white text-xs">J</div>
+            <span className="text-sm font-medium"><span className="text-teal-500 font-bold">Jing</span> completed the "Smile at a Stranger" challenge</span>
           </div>
           <div className="flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-sm border border-teal-500/10">
-            <div className="w-8 h-8 rounded-full bg-peach-400 flex items-center justify-center text-white text-xs">勇</div>
-            <span className="text-sm font-medium"><span className="text-teal-500 font-bold">勇者</span> 连续打卡 30 天：获得"勇气先锋"勋章</span>
+            <div className="w-8 h-8 rounded-full bg-peach-400 flex items-center justify-center text-white text-xs">Y</div>
+            <span className="text-sm font-medium"><span className="text-teal-500 font-bold">Yong</span> checked in 30 days in a row and earned the "Courage Pioneer" badge</span>
           </div>
           <div className="flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-sm border border-teal-500/10">
             <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-white text-xs">L</div>
-            <span className="text-sm font-medium"><span className="text-teal-500 font-bold">Lily</span> 分享了：今天我对自己说了一句谢谢</span>
+            <span className="text-sm font-medium"><span className="text-teal-500 font-bold">Lily</span> shared: Today I said thank you to myself</span>
           </div>
         </div>
       </section>
