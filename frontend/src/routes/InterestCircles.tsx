@@ -44,7 +44,7 @@ export default function InterestCircles() {
       await api.post(`/circles/${circleId}/join`);
       await fetchCircles();
     } catch (error: unknown) {
-      alert('加入失败：' + getErrorMessage(error, '请确认已登录'));
+      alert('Failed to join: ' + getErrorMessage(error, 'Please sign in'));
     }
   };
 
@@ -53,7 +53,7 @@ export default function InterestCircles() {
       await api.post(`/circles/${circleId}/leave`);
       await fetchCircles();
     } catch (error: unknown) {
-      alert('退出失败：' + getErrorMessage(error, '请稍后重试'));
+      alert('Failed to leave: ' + getErrorMessage(error, 'Please try again later'));
     }
   };
 
@@ -63,18 +63,18 @@ export default function InterestCircles() {
       <div className="mb-6 bg-amber-50 border border-amber-200 text-amber-700 rounded-2xl px-4 py-3 flex items-center gap-3">
         <span className="text-xl">🚧</span>
         <div>
-          <p className="font-bold text-sm">社会兴趣功能正在开发中</p>
-          <p className="text-xs opacity-80">当前仅作预览，暂不可参与，敬请期待后续迭代上线</p>
+          <p className="font-bold text-sm">Social Interest is under development</p>
+          <p className="text-xs opacity-80">This is a preview only — participation is coming soon</p>
         </div>
       </div>
 
       <div className="pointer-events-none select-none opacity-90">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-semibold text-stone-800">社会兴趣</h1>
+          <h1 className="text-2xl font-semibold text-stone-800">Interest Circles</h1>
         </div>
 
       <p className="text-sm text-stone-500 mb-6">
-        加入你感兴趣的话题圈子，与志同道合的朋友分享交流。每个人都可以在多个圈子中自由参与。
+        Join circles on topics you care about and share with like-minded friends. Everyone can freely take part in multiple circles.
       </p>
 
       {loading ? (
@@ -102,9 +102,9 @@ export default function InterestCircles() {
                 <div>
                   <h3 className="text-base font-medium text-stone-800">{circle.name}</h3>
                   <div className="text-xs text-stone-400 mt-0.5">
-                    <span>{circle.memberCount} 成员</span>
+                    <span>{circle.memberCount} members</span>
                     <span className="mx-1.5">·</span>
-                    <span>{circle.postCount} 帖子</span>
+                    <span>{circle.postCount} posts</span>
                   </div>
                 </div>
               </div>
@@ -121,7 +121,7 @@ export default function InterestCircles() {
                       }}
                       className="text-xs text-stone-500 border border-stone-200 bg-white px-3 py-1 rounded cursor-pointer hover:bg-stone-50"
                     >
-                      退出圈子
+                      Leave
                     </button>
                   ) : (
                     <button
@@ -131,7 +131,7 @@ export default function InterestCircles() {
                       }}
                       className="text-xs text-white bg-amber-700 border-0 px-3 py-1 rounded cursor-pointer hover:bg-amber-800"
                     >
-                      加入圈子
+                      Join
                     </button>
                   )}
                 </div>
@@ -140,7 +140,7 @@ export default function InterestCircles() {
           ))}
           {circles.length === 0 && (
             <div className="col-span-full text-center py-12 text-stone-400">
-              暂无圈子
+              No circles yet
             </div>
           )}
         </div>

@@ -67,7 +67,7 @@ public class ResourceController {
         String email = principal instanceof User u ? u.getEmail() : null;
         if (adminEmail != null && !adminEmail.isBlank()
                 && !adminEmail.equalsIgnoreCase(email)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "仅管理员可操作");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin only");
         }
     }
 }

@@ -265,14 +265,14 @@ public class TeamService {
                         long hoursAgo = java.time.temporal.ChronoUnit.HOURS.between(
                             c.getCreatedAt(), Instant.now());
                         if (hoursAgo < 1) {
-                            relativeTime = "刚刚";
+                            relativeTime = "just now";
                         } else {
-                            relativeTime = hoursAgo + "小时前";
+                            relativeTime = hoursAgo + "h ago";
                         }
                     } else if (daysAgo == 1) {
-                        relativeTime = "昨天";
+                        relativeTime = "yesterday";
                     } else {
-                        relativeTime = daysAgo + "天前";
+                        relativeTime = daysAgo + "d ago";
                     }
 
                     String content = c.getContent();

@@ -26,11 +26,11 @@ function formatTime(dateStr: string) {
   const d = new Date(dateStr);
   const now = new Date();
   const diff = now.getTime() - d.getTime();
-  if (diff < 60000) return '刚刚';
-  if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`;
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`;
-  if (diff < 604800000) return `${Math.floor(diff / 86400000)}天前`;
-  return d.toLocaleDateString('zh-CN');
+  if (diff < 60000) return 'just now';
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+  if (diff < 604800000) return `${Math.floor(diff / 86400000)}d ago`;
+  return d.toLocaleDateString('en-US');
 }
 
 function CommentItem({ comment, onReply, selectedId, onCancelReply, onSubmitReply, replyContent, onReplyContentChange, submitting }: {
@@ -56,7 +56,7 @@ function CommentItem({ comment, onReply, selectedId, onCancelReply, onSubmitRepl
           onClick={() => onReply(comment.id)}
           className="text-xs text-stone-400 hover:text-amber-700 transition-colors bg-transparent border-0 cursor-pointer"
         >
-          回复
+          Reply
         </button>
       )}
       {selectedId === comment.id && (
@@ -65,7 +65,7 @@ function CommentItem({ comment, onReply, selectedId, onCancelReply, onSubmitRepl
             type="text"
             value={replyContent}
             onChange={(e) => onReplyContentChange(e.target.value)}
-            placeholder="写下你的回复..."
+            placeholder="Write your reply..."
             className="flex-1 px-2 py-1 border border-stone-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-amber-400"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
@@ -75,20 +75,20 @@ function CommentItem({ comment, onReply, selectedId, onCancelReply, onSubmitRepl
             }}
           />
           {submitting ? (
-            <span className="text-xs text-stone-400 px-2 py-1">发送中...</span>
+            <span className="text-xs text-stone-400 px-2 py-1">Sending...</span>
           ) : (
             <>
               <button
                 onClick={() => onSubmitReply(comment.id)}
                 className="text-xs text-white bg-amber-700 border-0 px-2 py-1 rounded cursor-pointer"
               >
-                发送
+                Send
               </button>
               <button
                 onClick={onCancelReply}
                 className="text-xs text-stone-400 bg-transparent border-0 px-2 py-1 rounded cursor-pointer"
               >
-                取消
+                Cancel
               </button>
             </>
           )}
@@ -204,7 +204,7 @@ export default function CircleDetail() {
       await fetchPosts();
       await fetchCircle();
     } catch (error: unknown) {
-      alert('发帖失败：' + getErrorMessage(error, '请确认已登录'));
+      alert('Failed to post: ' + getErrorMessage(error, 'Please sign in'));
     } finally {
       setSubmitting(false);
     }
@@ -215,7 +215,7 @@ export default function CircleDetail() {
       await api.post(`/circles/${id}/join`);
       await fetchCircle();
     } catch (error: unknown) {
-      alert('加入失败：' + getErrorMessage(error, '请确认已登录'));
+      alert('Failed to join: ' + getErrorMessage(error, 'Please sign in'));
     }
   };
 
@@ -224,7 +224,7 @@ export default function CircleDetail() {
       await api.post(`/circles/${id}/leave`);
       await fetchCircle();
     } catch (error: unknown) {
-      alert('退出失败：' + getErrorMessage(error, '请稍后重试'));
+      alert('Failed to leave: ' + getErrorMessage(error, 'Please try again later'));
     }
   };
 
@@ -237,7 +237,7 @@ export default function CircleDetail() {
       await fetchComments(postId);
       await fetchPosts();
     } catch (error: unknown) {
-      alert('分享失败：' + getErrorMessage(error, '请确认已登录'));
+      alert('Failed to share: ' + getErrorMessage(error, 'Please sign in'));
     } finally {
       setTopCommentSubmitting(false);
     }
@@ -255,7 +255,7 @@ export default function CircleDetail() {
       setReplyTo(null);
       await fetchComments(postId);
     } catch (error: unknown) {
-      alert('回复失败：' + getErrorMessage(error, '请确认已登录'));
+      alert('Failed to reply: ' + getErrorMessage(error, 'Please sign in'));
     } finally {
       setReplySubmitting(false);
     }
@@ -276,7 +276,7 @@ export default function CircleDetail() {
   }
 
   if (!circle) {
-    return <div className="text-center py-12 text-stone-400">圈子不存在</div>;
+    return <div className="text-center py-12 text-stone-400">Circle not found</div>;
   }
 
   return (
@@ -286,7 +286,7 @@ export default function CircleDetail() {
         onClick={() => navigate('/circles')}
         className="text-sm text-stone-500 hover:text-amber-700 transition-colors bg-transparent border-0 cursor-pointer mb-4"
       >
-        ← 返回圈子列表
+        ← Back to circles
       </button>
 
       {/* 圈子头部 */}
@@ -299,8 +299,8 @@ export default function CircleDetail() {
               <p className="text-sm text-stone-500 mt-1">{circle.description}</p>
             )}
             <div className="flex items-center gap-3 mt-2">
-              <span className="text-sm text-stone-400">{circle.memberCount} 成员</span>
-              <span className="text-sm text-stone-400">{circle.postCount} 帖子</span>
+              <span className="text-sm text-stone-400">{circle.memberCount} members</span>
+              <span className="text-sm text-stone-400">{circle.postCount} posts</span>
             </div>
           </div>
           {user && (
@@ -309,14 +309,14 @@ export default function CircleDetail() {
                 onClick={handleLeave}
                 className="px-4 py-2 text-sm text-stone-500 border border-stone-200 bg-white rounded-lg cursor-pointer hover:bg-stone-50"
               >
-                退出圈子
+                Leave
               </button>
             ) : (
               <button
                 onClick={handleJoin}
                 className="px-4 py-2 text-sm text-white bg-amber-700 border-0 rounded-lg cursor-pointer hover:bg-amber-800"
               >
-                加入圈子
+                Join
               </button>
             )
           )}
@@ -331,7 +331,7 @@ export default function CircleDetail() {
               onClick={() => setShowForm(true)}
               className="w-full px-4 py-3 bg-white border border-dashed border-stone-300 rounded-xl text-sm text-stone-500 hover:border-amber-300 hover:text-amber-700 transition-colors cursor-pointer"
             >
-              + 发布新帖
+              + New post
             </button>
           ) : (
             <form onSubmit={handleCreatePost} className="bg-white p-6 rounded-xl border border-stone-200 space-y-3">
@@ -340,14 +340,14 @@ export default function CircleDetail() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
-                placeholder="帖子标题"
+                placeholder="Post title"
                 className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-amber-400"
               />
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 required
-                placeholder="分享你的想法..."
+                placeholder="Share your thoughts..."
                 rows={4}
                 className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-1 focus:ring-amber-400"
               />
@@ -357,14 +357,14 @@ export default function CircleDetail() {
                   onClick={() => setShowForm(false)}
                   className="px-3 py-2 text-stone-600 bg-transparent border border-stone-200 rounded-lg text-sm cursor-pointer"
                 >
-                  取消
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
                   className="px-4 py-2 bg-amber-700 text-white rounded-lg text-sm cursor-pointer border-0 disabled:opacity-50"
                 >
-                  发布
+                  Publish
                 </button>
               </div>
             </form>
@@ -375,7 +375,7 @@ export default function CircleDetail() {
       {/* 帖子列表 */}
       {posts.length === 0 ? (
         <div className="text-center py-12 text-stone-400">
-          暂无帖子，加入圈子来发布第一个帖子吧
+          No posts yet — join the circle to post the first one
         </div>
       ) : (
         <div className="space-y-4">
@@ -394,8 +394,8 @@ export default function CircleDetail() {
                   <p className="text-sm text-stone-500 line-clamp-3 whitespace-pre-wrap">{post.content}</p>
                 )}
                 <div className="flex items-center gap-3 mt-3">
-                  <span className="text-xs text-stone-400">{post.viewCount} 阅读</span>
-                  <span className="text-xs text-stone-400">{post.commentCount} 分享</span>
+                  <span className="text-xs text-stone-400">{post.viewCount} views</span>
+                  <span className="text-xs text-stone-400">{post.commentCount} shares</span>
                 </div>
               </div>
 
@@ -408,7 +408,7 @@ export default function CircleDetail() {
 
                   {/* 分享区域 */}
                   <div className="border-t border-stone-100 px-5 py-4">
-                    <h4 className="text-sm font-medium text-stone-700 mb-3">分享</h4>
+                    <h4 className="text-sm font-medium text-stone-700 mb-3">Shares</h4>
 
                     {/* 顶级分享输入框 */}
                     {user && (
@@ -417,7 +417,7 @@ export default function CircleDetail() {
                           type="text"
                           value={topComment}
                           onChange={(e) => setTopComment(e.target.value)}
-                          placeholder="写下你的分享..."
+                          placeholder="Write your share..."
                           className="flex-1 px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-amber-400"
                           ref={commentInputRef}
                           onKeyDown={(e) => {
@@ -428,14 +428,14 @@ export default function CircleDetail() {
                           }}
                         />
                         {topCommentSubmitting ? (
-                          <span className="text-xs text-stone-400 px-3 py-2">发送中...</span>
+                          <span className="text-xs text-stone-400 px-3 py-2">Sending...</span>
                         ) : (
                           <button
                             onClick={() => handleTopComment(post.id)}
                             disabled={!topComment.trim()}
                             className="px-4 py-2 bg-amber-700 text-white rounded-lg text-sm cursor-pointer border-0 disabled:opacity-50"
                           >
-                            发送
+                            Send
                           </button>
                         )}
                       </div>
@@ -443,9 +443,9 @@ export default function CircleDetail() {
 
                     {/* 分享列表 */}
                     {commentsLoading ? (
-                      <div className="text-center py-4 text-stone-400 text-sm">加载分享中...</div>
+                      <div className="text-center py-4 text-stone-400 text-sm">Loading shares...</div>
                     ) : comments.length === 0 ? (
-                      <div className="text-center py-4 text-stone-400 text-sm">暂无分享，来发表第一条分享吧</div>
+                      <div className="text-center py-4 text-stone-400 text-sm">No shares yet — post the first one</div>
                     ) : (
                       <div className="space-y-3">
                         {comments.map((comment) => (

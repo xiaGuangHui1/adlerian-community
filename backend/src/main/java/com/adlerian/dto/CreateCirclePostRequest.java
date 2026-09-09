@@ -6,10 +6,10 @@ import lombok.*;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class CreateCirclePostRequest {
-    @NotBlank(message = "标题不能为空")
-    @Size(max = 200, message = "标题最多200字")
+    @NotBlank(message = "Title is required")
+    @Size(max = 200, message = "Title must be at most 200 characters")
     private String title;
 
-    @NotBlank(message = "内容不能为空")
+    @NotBlank(message = "Content is required")
     private String content;
 }

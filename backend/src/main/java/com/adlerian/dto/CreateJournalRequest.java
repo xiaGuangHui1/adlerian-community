@@ -6,10 +6,10 @@ import lombok.*;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class CreateJournalRequest {
-    @Size(max = 200, message = "标题最多200字")
+    @Size(max = 200, message = "Title must be at most 200 characters")
     private String title;
 
-    @NotBlank(message = "日记内容不能为空")
+    @NotBlank(message = "Journal content is required")
     private String content;
 
     private String templateType;

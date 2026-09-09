@@ -4,10 +4,10 @@ import ReactMarkdown from 'react-markdown';
 import { Resource } from '../types';
 
 const TABS = [
-  { key: 'concept', label: '核心概念' },
-  { key: 'book', label: '推荐书籍' },
-  { key: 'path', label: '学习路径' },
-  { key: 'article', label: '文章专栏' },
+  { key: 'concept', label: 'Core Concepts' },
+  { key: 'book', label: 'Books' },
+  { key: 'path', label: 'Learning Paths' },
+  { key: 'article', label: 'Articles' },
 ];
 
 export default function Learn() {
@@ -35,7 +35,7 @@ export default function Learn() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-stone-800 mb-6">学习资源</h1>
+      <h1 className="text-2xl font-semibold text-stone-800 mb-6">Learning Resources</h1>
 
       {/* Tab切换 */}
       <div className="flex gap-1 mb-6 bg-stone-100 p-1 rounded-lg w-fit">
@@ -53,7 +53,7 @@ export default function Learn() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-stone-400">加载中...</div>
+        <div className="text-center py-12 text-stone-400">Loading...</div>
       ) : (
         <div className="grid md:grid-cols-3 gap-6">
           {/* 列表 */}
@@ -75,7 +75,7 @@ export default function Learn() {
               </button>
             ))}
             {resources.length === 0 && (
-              <p className="text-sm text-stone-400 text-center py-8">暂无内容</p>
+              <p className="text-sm text-stone-400 text-center py-8">No content yet</p>
             )}
           </div>
 
@@ -90,7 +90,7 @@ export default function Learn() {
               </div>
             ) : (
               <div className="bg-white p-12 rounded-xl border border-stone-200 text-center text-stone-400">
-                <p>选择左侧的内容查看详情</p>
+                <p>Select an item on the left to view details</p>
               </div>
             )}
           </div>

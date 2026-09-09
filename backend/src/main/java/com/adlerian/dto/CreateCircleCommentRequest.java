@@ -5,7 +5,7 @@ import lombok.*;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class CreateCircleCommentRequest {
-    @NotBlank(message = "分享内容不能为空")
+    @NotBlank(message = "Content is required")
     private String content;
 
     private Long parentId;

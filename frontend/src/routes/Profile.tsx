@@ -11,16 +11,15 @@ function formatDate(dateStr: string): string {
   const now = new Date();
   const diff = now.getTime() - d.getTime();
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  if (days === 0) return '今天';
-  if (days === 1) return '昨天';
-  if (days < 7) return `${days}天前`;
-  if (days < 30) return `${Math.floor(days / 7)}周前`;
-  return d.toLocaleDateString('zh-CN');
+  if (days === 0) return 'Today';
+  if (days === 1) return 'Yesterday';
+  if (days < 7) return `${days}d ago`;
+  if (days < 30) return `${Math.floor(days / 7)}w ago`;
+  return d.toLocaleDateString('en-US');
 }
 
 function formatCheckinDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+  return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 function cleanPostContent(content: string): string {
@@ -29,18 +28,18 @@ function cleanPostContent(content: string): string {
 
 function getCheckinTheme(content: string): string {
   if (content.includes('课题') || content.includes('阿德勒') || content.includes('共同体')) {
-    return '阿德勒实践';
+    return 'Adler Practice';
   }
   if (content.includes('运动') || content.includes('跑') || content.includes('瑜伽')) {
-    return '身体行动';
+    return 'Body & Movement';
   }
   if (content.includes('阅读') || content.includes('书')) {
-    return '阅读反思';
+    return 'Reading & Reflection';
   }
   if (content.includes('早起') || content.includes('清晨')) {
-    return '生活节律';
+    return 'Life Rhythm';
   }
-  return '勇气打卡';
+  return 'Courage Check-in';
 }
 
 export default function Profile() {
@@ -79,7 +78,7 @@ export default function Profile() {
       const { data } = await api.post<Conversation>('/conversations', { userId: profile.id });
       navigate(`/messages/dm/${data.id}`);
     } catch {
-      alert('发起私信失败');
+      alert('Failed to start conversation');
     }
   };
 
@@ -107,7 +106,7 @@ export default function Profile() {
           return;
         }
 
-        const fallbackName = authUser.email?.split('@')[0] || '社区成员';
+        const fallbackName = authUser.email?.split('@')[0] || 'Community member';
         const created = await registerProfile(fallbackName);
         if (active) {
           navigate(`/profile/${created.id}`, { replace: true });
@@ -145,7 +144,7 @@ export default function Profile() {
         setProfile(data);
         setEditing(false);
         setSaveError('');
-        document.title = `${data.nickname}的个人主页 - 阿德勒心理学社区`;
+        document.title = `${data.nickname}'s profile - Adlerian Community`;
 
         const [postsResult, checkinsResult] = await Promise.allSettled([
           api.get<{ content?: Post[] }>(`/posts/user/${id}`, { params: { size: 20 } }),
@@ -203,7 +202,7 @@ export default function Profile() {
     e.preventDefault();
     const trimmedNickname = nickname.trim();
     if (!trimmedNickname) {
-      setSaveError('昵称不能为空');
+      setSaveError('Nickname is required');
       return;
     }
 
@@ -218,7 +217,7 @@ export default function Profile() {
       setProfile(updated);
       setEditing(false);
     } catch {
-      setSaveError('保存失败，请稍后重试');
+      setSaveError('Failed to save. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -229,13 +228,13 @@ export default function Profile() {
     return (
       <div className="text-center py-24">
         <Icon icon="ph:user-sound-fill" width="64" className="text-gray-300 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-400 mb-2">该伙伴尚未加入阿德勒心理学社区</h2>
-        <p className="text-gray-400 mb-6">也许Ta正在寻找自己的勇气之路，期待与Ta相遇。</p>
+        <h2 className="text-2xl font-bold text-gray-400 mb-2">This member hasn't joined the Adlerian Community yet</h2>
+        <p className="text-gray-400 mb-6">Maybe they're on their own journey of courage. We look forward to meeting them.</p>
         <Link
           to="/forum"
           className="inline-block bg-peach-500 text-white px-6 py-3 rounded-2xl font-bold hover:bg-peach-600 transition-all no-underline"
         >
-          前往交流广场
+          Go to Community
         </Link>
       </div>
     );
@@ -270,23 +269,23 @@ export default function Profile() {
     return cat && 'icon' in cat ? cat.icon : '';
   };
 
-  const profileInitial = profile.nickname.trim().charAt(0) || '勇';
+  const profileInitial = profile.nickname.trim().charAt(0) || 'A';
   const joinTime = profile.createdAt
-    ? `${new Date(profile.createdAt).getFullYear()}年加入阿德勒心理学社区`
-    : '加入时间未知';
+    ? `Joined the Adlerian Community in ${new Date(profile.createdAt).getFullYear()}`
+    : 'Join date unknown';
   const aboutParagraphs = profile.bio
     ? profile.bio.split(/\n+/).map(item => item.trim()).filter(Boolean)
     : [];
   const interestTags = Array.from(new Set([
     ...posts.map(post => categoryLabel(post.category)).filter(Boolean),
     ...checkins.map(checkin => getCheckinTheme(checkin.content)),
-    '课题分离',
-    '共同体感觉',
+    'Separation of Tasks',
+    'Sense of Belonging',
   ])).slice(0, 8);
   const tabs = [
-    { index: 0, label: '我的帖子', count: posts.length },
-    { index: 1, label: '我的打卡', count: checkinStats.totalDays || checkins.length },
-    { index: 2, label: '关于我' },
+    { index: 0, label: 'My Posts', count: posts.length },
+    { index: 1, label: 'My Check-ins', count: checkinStats.totalDays || checkins.length },
+    { index: 2, label: 'About Me' },
   ];
 
   return (
@@ -296,7 +295,7 @@ export default function Profile() {
         <div className="bg-gradient-to-r from-peach-500/12 via-warm-50 to-teal-500/12 h-32 relative">
           <div className="absolute inset-x-8 top-6 flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-peach-500">
-              阿德勒心理学社区 · 个人主页
+              Adlerian Community · Profile
             </span>
             {isOwnProfile ? (
               <div className="flex items-center gap-2">
@@ -306,7 +305,7 @@ export default function Profile() {
                   className="inline-flex items-center gap-1.5 px-3 py-2 bg-white/85 text-peach-600 rounded-xl text-xs font-bold hover:bg-white transition-colors no-underline shadow-sm"
                 >
                   <Icon icon={editing ? 'ph:x' : 'ph:pencil-simple'} width="15" />
-                  {editing ? '取消编辑' : '编辑资料'}
+                  {editing ? 'Cancel editing' : 'Edit profile'}
                 </button>
                 <button
                   type="button"
@@ -314,7 +313,7 @@ export default function Profile() {
                   className="inline-flex items-center gap-1.5 px-3 py-2 bg-white/85 text-gray-500 rounded-xl text-xs font-bold hover:bg-white transition-colors no-underline shadow-sm"
                 >
                   <Icon icon="ph:sign-out" width="15" />
-                  退出登录
+                  Sign out
                 </button>
               </div>
             ) : (
@@ -324,7 +323,7 @@ export default function Profile() {
                 className="inline-flex items-center gap-1.5 px-3 py-2 bg-white/85 text-peach-600 rounded-xl text-xs font-bold hover:bg-white transition-colors no-underline shadow-sm"
               >
                 <Icon icon="ph:chat-circle-dots-fill" width="15" />
-                发私信
+                Message
               </button>
             )}
           </div>
@@ -348,7 +347,7 @@ export default function Profile() {
               <div>
               <h1 className="text-3xl font-bold text-brown-900">{profile.nickname}</h1>
                 <p className="text-gray-500 mt-2 text-lg leading-relaxed">
-                  {profile.bio || '在阿德勒心理学社区慢慢寻找自己的节奏'}
+                  {profile.bio || 'Finding my own rhythm in the Adlerian Community'}
                 </p>
                 {isOwnProfile && authUser?.email && (
                   <p className="text-gray-400 mt-1 text-sm flex items-center gap-1.5">
@@ -366,15 +365,15 @@ export default function Profile() {
             <div className="grid grid-cols-3 gap-3">
               <div className="rounded-2xl bg-warm-50 border border-peach-100/60 px-4 py-3">
                 <p className="text-2xl font-black text-brown-900">{posts.length}</p>
-                <p className="text-xs text-gray-400 mt-0.5">发布帖子</p>
+                <p className="text-xs text-gray-400 mt-0.5">Posts</p>
               </div>
               <div className="rounded-2xl bg-warm-50 border border-peach-100/60 px-4 py-3">
                 <p className="text-2xl font-black text-peach-500">{checkinStats.totalDays}</p>
-                <p className="text-xs text-gray-400 mt-0.5">累计打卡</p>
+                <p className="text-xs text-gray-400 mt-0.5">Total check-ins</p>
               </div>
               <div className="rounded-2xl bg-warm-50 border border-peach-100/60 px-4 py-3">
                 <p className="text-2xl font-black text-teal-500">{checkinStats.streak}</p>
-                <p className="text-xs text-gray-400 mt-0.5">连续天数</p>
+                <p className="text-xs text-gray-400 mt-0.5">Day streak</p>
               </div>
             </div>
           </div>
@@ -390,7 +389,7 @@ export default function Profile() {
                 </div>
               )}
               <div>
-                <label className="block text-sm text-gray-600 mb-1">昵称</label>
+                <label className="block text-sm text-gray-600 mb-1">Nickname</label>
                 <input
                   type="text"
                   value={nickname}
@@ -401,7 +400,7 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-600 mb-1">头像 URL</label>
+                <label className="block text-sm text-gray-600 mb-1">Avatar URL</label>
                 <input
                   type="url"
                   value={avatarUrl}
@@ -411,13 +410,13 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-600 mb-1">个人简介</label>
+                <label className="block text-sm text-gray-600 mb-1">Bio</label>
                 <textarea
                   value={bio}
                   onChange={e => setBio(e.target.value)}
                   rows={4}
                   maxLength={300}
-                  placeholder="写一点你想让伙伴们了解的内容"
+                  placeholder="Write a little about yourself"
                   className="w-full px-3 py-2.5 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-white resize-none"
                 />
                 <p className="text-xs text-gray-400 mt-1">{bio.length}/300</p>
@@ -428,7 +427,7 @@ export default function Profile() {
                   onClick={cancelEditing}
                   className="px-4 py-2.5 text-sm text-gray-500 hover:text-gray-700 bg-transparent border-0 cursor-pointer transition-colors"
                 >
-                  取消
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -436,7 +435,7 @@ export default function Profile() {
                   className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-peach-500 text-white rounded-lg text-sm font-medium border-0 cursor-pointer hover:bg-peach-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <Icon icon={saving ? 'ph:circle-notch' : 'ph:check'} width="16" />
-                  {saving ? '保存中...' : '保存资料'}
+                  {saving ? 'Saving...' : 'Save'}
                 </button>
               </div>
             </form>
@@ -473,11 +472,11 @@ export default function Profile() {
       {activeTab === 0 && (
         <div className="animate-[fadeIn_0.3s_ease] space-y-4">
           {postsLoading ? (
-            <div className="text-center py-12 text-gray-400">加载中...</div>
+            <div className="text-center py-12 text-gray-400">Loading...</div>
           ) : posts.length === 0 ? (
             <div className="text-center py-12 text-gray-400">
               <Icon icon="ph:note-pencil" width="40" className="text-gray-300 mx-auto mb-3" />
-              <p>还没有发布帖子</p>
+              <p>No posts yet</p>
             </div>
           ) : (
             posts.map((post) => (
@@ -501,10 +500,10 @@ export default function Profile() {
                 <div className="flex items-center gap-5 text-gray-400 text-xs">
                   <span className="inline-flex items-center gap-1.5">
                     <Icon icon="ph:chat-circle-text" width="16" />
-                    {post.commentCount} 条分享
+                    {post.commentCount} shares
                   </span>
                   <span className="inline-flex items-center gap-1.5">
-                    {post.encouragementCount} 个谢谢
+                    {post.encouragementCount} thanks
                   </span>
                 </div>
               </article>
@@ -523,21 +522,21 @@ export default function Profile() {
             </div>
             <div>
               <p className="text-2xl font-black text-peach-500">{checkinStats.streak}</p>
-              <p className="text-xs text-gray-400">连续打卡天数</p>
+              <p className="text-xs text-gray-400">Day streak</p>
             </div>
             <div className="ml-auto text-right">
               <p className="text-lg font-black text-brown-900">{checkinStats.totalDays}</p>
-              <p className="text-xs text-gray-400">累计实践</p>
+              <p className="text-xs text-gray-400">Total practice</p>
             </div>
           </div>
 
           {/* 打卡时间线 */}
           {checkinsLoading ? (
-            <div className="text-center py-12 text-gray-400">加载中...</div>
+            <div className="text-center py-12 text-gray-400">Loading...</div>
           ) : checkins.length === 0 ? (
             <div className="text-center py-12 text-gray-400">
               <Icon icon="ph:calendar-x" width="40" className="text-gray-300 mx-auto mb-3" />
-              <p>还没有打卡记录</p>
+              <p>No check-ins yet</p>
             </div>
           ) : (
             <div>
@@ -574,7 +573,7 @@ export default function Profile() {
             <div className="px-8 py-8">
               <h3 className="font-bold text-xl mb-6 flex items-center gap-2">
                 <Icon icon="ph:user-focus-fill" width="22" className="text-peach-500" />
-                <span>个人简介</span>
+                <span>Bio</span>
               </h3>
               <div className="text-gray-600 leading-relaxed space-y-4">
                 {aboutParagraphs.length > 0 ? (
@@ -583,7 +582,7 @@ export default function Profile() {
                   ))
                 ) : (
                   <p className="text-gray-400">
-                    这个人还没有写个人简介。也许正在用行动慢慢说明自己。
+                    This member hasn't written a bio yet. Maybe they're expressing themselves through actions.
                   </p>
                 )}
               </div>
@@ -595,7 +594,7 @@ export default function Profile() {
             <div className="px-8 py-8">
               <h3 className="font-bold text-xl mb-6 flex items-center gap-2">
                 <Icon icon="ph:target-fill" width="22" className="text-teal-500" />
-                <span>感兴趣的打卡主题</span>
+                <span>Interested Topics</span>
               </h3>
               <div className="flex flex-wrap gap-3">
                 {interestTags.map(tag => (
@@ -617,9 +616,9 @@ export default function Profile() {
                 <Icon icon="ph:hand-heart-fill" width="26" className="text-peach-500" />
               </div>
               <div>
-                <h4 className="font-bold text-brown-900 mb-2">横向关系 · 彼此陪伴</h4>
+                <h4 className="font-bold text-brown-900 mb-2">Horizontal relationships · mutual companionship</h4>
                 <p className="text-gray-500 text-sm leading-relaxed">
-                  在这里，我们不评价他人，只是彼此陪伴。每个人都有自己的成长节奏，没有比较，没有评判。我们以横向关系相待，互相见证勇气的绽放。
+                  Here we don't judge others — we simply keep each other company. Everyone has their own pace of growth, with no comparison and no judgment. We treat each other as equals and witness each other's courage unfold.
                 </p>
               </div>
             </div>

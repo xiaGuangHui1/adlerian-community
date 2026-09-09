@@ -52,7 +52,7 @@ export default function Groups() {
       setDescription('');
       await fetchGroups();
     } catch {
-      alert('创建失败，请确认已登录');
+      alert('Failed to create. Please sign in.');
     } finally {
       setSubmitting(false);
     }
@@ -63,7 +63,7 @@ export default function Groups() {
       await api.post(`/groups/${groupId}/join`);
       await fetchGroups();
     } catch (error: unknown) {
-      alert('加入失败：' + getErrorMessage(error, '请确认已登录'));
+      alert('Failed to join: ' + getErrorMessage(error, 'Please sign in'));
     }
   };
 
@@ -72,24 +72,24 @@ export default function Groups() {
       await api.post(`/groups/${groupId}/leave`);
       await fetchGroups();
     } catch (error: unknown) {
-      alert('退出失败：' + getErrorMessage(error, '请稍后重试'));
+      alert('Failed to leave: ' + getErrorMessage(error, 'Please try again later'));
     }
   };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-stone-800">互助小组</h1>
+        <h1 className="text-2xl font-semibold text-stone-800">Support Groups</h1>
         <button
           onClick={() => setShowCreate(!showCreate)}
           className="px-4 py-2 bg-amber-700 text-white rounded-lg text-sm cursor-pointer border-0 hover:bg-amber-800"
         >
-          创建小组
+          Create Group
         </button>
       </div>
 
       <p className="text-sm text-stone-500 mb-6">
-        加入志同道合的小组，在共同体中一起学习和成长。每个小组限制人数，保持亲密感。
+        Join like-minded groups to learn and grow together in community. Each group has a member limit to keep things intimate.
       </p>
 
       {/* 创建小组表单 */}
@@ -100,13 +100,13 @@ export default function Groups() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            placeholder="小组名称"
+            placeholder="Group name"
             className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-amber-400"
           />
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="小组简介"
+            placeholder="Group description"
             rows={3}
             className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-1 focus:ring-amber-400"
           />
@@ -116,7 +116,7 @@ export default function Groups() {
               onChange={(e) => setCategory(e.target.value)}
               className="flex-1 px-3 py-2 border border-stone-200 rounded-lg text-sm"
             >
-              <option value="">选择分类</option>
+              <option value="">Select category</option>
               {CATEGORIES.map((c) => (
                 <option key={c.value} value={c.value}>{c.label}</option>
               ))}
@@ -128,7 +128,7 @@ export default function Groups() {
               min={2}
               max={50}
               className="w-24 px-3 py-2 border border-stone-200 rounded-lg text-sm"
-              placeholder="人数上限"
+              placeholder="Max members"
             />
           </div>
           <div className="flex justify-end gap-2">
@@ -137,14 +137,14 @@ export default function Groups() {
               onClick={() => setShowCreate(false)}
               className="px-3 py-2 text-stone-600 bg-transparent border border-stone-200 rounded-lg text-sm cursor-pointer"
             >
-              取消
+              Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
               className="px-4 py-2 bg-amber-700 text-white rounded-lg text-sm cursor-pointer border-0 disabled:opacity-50"
             >
-              创建
+              Create
             </button>
           </div>
         </form>
@@ -152,7 +152,7 @@ export default function Groups() {
 
       {/* 小组列表 */}
       {loading ? (
-        <div className="text-center py-12 text-stone-400">加载中...</div>
+        <div className="text-center py-12 text-stone-400">Loading...</div>
       ) : (
         <div className="grid md:grid-cols-2 gap-4">
           {groups.map((group) => (
@@ -167,7 +167,7 @@ export default function Groups() {
                   )}
                 </div>
                 <div className="text-xs text-stone-400">
-                  {group.currentMembers}/{group.maxMembers}人
+                  {group.currentMembers}/{group.maxMembers} members
                 </div>
               </div>
               {group.description && (
@@ -175,7 +175,7 @@ export default function Groups() {
               )}
               <div className="flex items-center justify-between mt-4">
                 <span className="text-xs text-stone-400">
-                  创建者：{group.creator.nickname}
+                  Creator: {group.creator.nickname}
                 </span>
                 {user && (
                   group.joined ? (
@@ -183,14 +183,14 @@ export default function Groups() {
                       onClick={() => handleLeave(group.id)}
                       className="text-xs text-stone-500 border border-stone-200 bg-white px-3 py-1 rounded cursor-pointer hover:bg-stone-50"
                     >
-                      退出小组
+                      Leave
                     </button>
                   ) : (
                     <button
                       onClick={() => handleJoin(group.id)}
                       className="text-xs text-white bg-amber-700 border-0 px-3 py-1 rounded cursor-pointer hover:bg-amber-800"
                     >
-                      加入小组
+                      Join
                     </button>
                   )
                 )}
@@ -199,7 +199,7 @@ export default function Groups() {
           ))}
           {groups.length === 0 && (
             <div className="col-span-2 text-center py-12 text-stone-400">
-              暂无小组，创建第一个吧
+              No groups yet — create the first one
             </div>
           )}
         </div>
