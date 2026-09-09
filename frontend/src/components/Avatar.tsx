@@ -27,7 +27,7 @@ export default function Avatar({ name, src, className = 'w-10 h-10', textClassNa
       />
     );
   }
-  const initial = name.trim().charAt(0) || '勇';
+  const initial = name.trim().charAt(0) || 'A';
   return (
     <div
       onClick={(e) => {

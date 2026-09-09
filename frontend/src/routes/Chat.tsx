@@ -72,14 +72,14 @@ export default function Chat() {
       setMessages((prev) => [...prev, data]);
       setContent('');
     } catch {
-      alert('发送失败');
+      alert('Failed to send');
     } finally {
       setSending(false);
     }
   };
 
   if (loading) {
-    return <div className="text-center py-16 text-gray-400">加载中...</div>;
+    return <div className="text-center py-16 text-gray-400">Loading...</div>;
   }
 
   return (
@@ -90,7 +90,7 @@ export default function Chat() {
           onClick={() => navigate('/messages')}
           className="text-sm text-gray-400 hover:text-peach-700 bg-transparent border-0 cursor-pointer"
         >
-          &larr; 返回
+          &larr; Back
         </button>
         {otherUser && (
           <div className="flex items-center gap-2">
@@ -103,7 +103,7 @@ export default function Chat() {
       {/* 消息列表 */}
       <div className="flex-1 overflow-y-auto space-y-3 py-4">
         {messages.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">开始聊天吧</div>
+          <div className="text-center py-16 text-gray-400">Start chatting</div>
         ) : (
           messages.map((m) => {
             const mine = m.senderId === myId;
@@ -134,7 +134,7 @@ export default function Chat() {
               handleSend();
             }
           }}
-          placeholder="写点什么..."
+          placeholder="Write something..."
           maxLength={2000}
           className="flex-1 px-4 py-2.5 border border-peach-100 rounded-2xl text-sm focus:outline-none focus:border-peach-400 bg-white"
         />
@@ -143,7 +143,7 @@ export default function Chat() {
           disabled={sending || !content.trim()}
           className="px-5 py-2.5 bg-peach-500 text-white rounded-2xl text-sm font-bold hover:bg-peach-600 transition-colors cursor-pointer border-0 disabled:opacity-50"
         >
-          发送
+          Send
         </button>
       </div>
     </div>

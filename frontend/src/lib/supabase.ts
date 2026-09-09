@@ -5,7 +5,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn(
-    'Supabase 环境变量未配置，请设置 VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY',
+    'Supabase env vars not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY',
   );
 }
 

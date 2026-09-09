@@ -15,9 +15,9 @@ export function useShare() {
 
   const getShareText = () => {
     if (profile?.nickname) {
-      return `${profile.nickname}邀请你一起练习阿德勒心理学！在这里，我们找回勇气，练习课题分离，建立横向关系。一起加入阿德勒心理学社区~`;
+      return `${profile.nickname} invites you to practice Adlerian psychology! Here we reclaim courage, practice separation of tasks, and build horizontal relationships. Join the Adlerian Community!`;
     }
-    return '来陪我一起练习阿德勒心理学！在这里，我们找回勇气，练习课题分离，建立横向关系。加入阿德勒心理学社区之旅~';
+    return 'Join me in practicing Adlerian psychology! Here we reclaim courage, practice separation of tasks, and build horizontal relationships. Join the Adlerian Community!';
   };
 
   const shareOrCopy = async () => {
@@ -27,7 +27,7 @@ export function useShare() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: '和我组队打卡 | 阿德勒心理学社区',
+          title: 'Team up with me | Adlerian Community',
           text: shareText,
           url: shareUrl,
         });
@@ -43,7 +43,7 @@ export function useShare() {
       setTimeout(() => setCopied(false), 2500);
       return { method: 'copy' as const };
     } catch {
-      throw new Error('分享失败，请手动复制链接');
+      throw new Error('Share failed, please copy the link manually');
     }
   };
 
@@ -51,13 +51,13 @@ export function useShare() {
     const base = window.location.origin;
     const shareUrl = `${base}/invite?team=${inviteCode}`;
     const shareText = profile?.nickname
-      ? `${profile.nickname}邀请你加入「${teamName}」，一起组队打卡练习勇气！`
-      : `有人邀请你加入「${teamName}」，一起组队打卡练习勇气！`;
+      ? `${profile.nickname} invites you to join "${teamName}" to practice courage together!`
+      : `Someone invites you to join "${teamName}" to practice courage together!`;
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: '加入我的队伍 | 阿德勒心理学社区',
+          title: 'Join my team | Adlerian Community',
           text: shareText,
           url: shareUrl,
         });
@@ -73,7 +73,7 @@ export function useShare() {
       setTimeout(() => setCopied(false), 2500);
       return { method: 'copy' as const };
     } catch {
-      throw new Error('分享失败，请手动复制链接');
+      throw new Error('Share failed, please copy the link manually');
     }
   };
 

@@ -2,18 +2,18 @@ import { useState } from 'react';
 import api from '../lib/api';
 import { CheckIn, CATEGORIES } from '../types';
 
-const CHECKIN_TEMPLATE = `【幸福】今天让我感到幸福的事：
+const CHECKIN_TEMPLATE = `[Happiness] Something that made me happy today:
 
 
-【爱自己】今天我这样善待了自己：
+[Love myself] How I was kind to myself today:
 
 
-【爱他人】今天我这样关心了他人：
+[Love others] How I cared for someone today:
 `;
 
 function defaultForumTitle() {
   const d = new Date();
-  return `实践分享 · ${d.getMonth() + 1}月${d.getDate()}日`;
+  return `Practice · ${d.getMonth() + 1}/${d.getDate()}`;
 }
 
 interface CheckInFormProps {
@@ -43,7 +43,7 @@ export default function CheckInForm({ initialData, onSuccess, onCancel }: CheckI
       });
       onSuccess(data);
     } catch {
-      alert('打卡失败，请稍后重试');
+      alert('Failed to check in. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -53,9 +53,9 @@ export default function CheckInForm({ initialData, onSuccess, onCancel }: CheckI
     <div className="bg-white p-5 rounded-xl border border-peach-100">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-base font-semibold text-brown-900">
-          {initialData ? '修改今日打卡' : '今日打卡'}
+          {initialData ? "Edit today's check-in" : "Today's check-in"}
         </h2>
-        <span className="text-xs text-gray-400">在每个【】后面写几个字就行</span>
+        <span className="text-xs text-gray-400">Just write a few words after each bracket</span>
       </div>
 
       <textarea
@@ -74,13 +74,13 @@ export default function CheckInForm({ initialData, onSuccess, onCancel }: CheckI
           onChange={e => setSyncToForum(e.target.checked)}
           className="w-4 h-4 accent-peach-500"
         />
-        <span className="text-sm text-gray-600">同步到交流广场</span>
+        <span className="text-sm text-gray-600">Sync to Community</span>
       </label>
 
       {syncToForum && (
         <div className="mt-3 p-3 bg-warm-50 rounded-lg space-y-3">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">帖子标题（留空自动生成）</label>
+            <label className="block text-xs text-gray-500 mb-1">Post title (auto-generated if empty)</label>
             <input
               type="text"
               value={forumTitle}
@@ -91,7 +91,7 @@ export default function CheckInForm({ initialData, onSuccess, onCancel }: CheckI
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">话题分类</label>
+            <label className="block text-xs text-gray-500 mb-1">Category</label>
             <select
               value={forumCategory}
               onChange={e => setForumCategory(e.target.value)}
@@ -115,14 +115,14 @@ export default function CheckInForm({ initialData, onSuccess, onCancel }: CheckI
               : 'bg-peach-100 text-gray-400 cursor-not-allowed'
           }`}
         >
-          {submitting ? '提交中...' : initialData ? '更新打卡' : '完成打卡'}
+          {submitting ? 'Submitting...' : initialData ? 'Update' : 'Check In'}
         </button>
         {onCancel && (
           <button
             onClick={onCancel}
             className="px-4 py-2 rounded-lg text-sm border border-peach-100 text-gray-400 cursor-pointer hover:bg-peach-50 bg-white"
           >
-            取消
+            Cancel
           </button>
         )}
       </div>

@@ -17,7 +17,7 @@ export default function FeedbackButton() {
       setContent('');
       setContact('');
     } catch {
-      alert('提交失败，请稍后重试');
+      alert('Failed to submit. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -34,10 +34,10 @@ export default function FeedbackButton() {
       <button
         onClick={() => setOpen(true)}
         className="fixed bottom-[4.75rem] right-6 z-50 bg-white text-peach-600 border border-peach-200 px-4 py-2.5 rounded-full shadow-lg hover:bg-peach-50 transition-all flex items-center gap-2 cursor-pointer"
-        aria-label="反馈"
+        aria-label="Feedback"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-        <span className="text-sm font-bold">反馈</span>
+        <span className="text-sm font-bold">Feedback</span>
       </button>
 
       {/* 反馈弹窗 */}
@@ -46,15 +46,15 @@ export default function FeedbackButton() {
           <div className="absolute inset-0 bg-black/40" onClick={close} />
           <div className="relative bg-white rounded-3xl shadow-xl w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-brown-900">反馈</h3>
+              <h3 className="text-lg font-bold text-brown-900">Feedback</h3>
               <button onClick={close} className="text-gray-400 hover:text-gray-600 bg-transparent border-0 cursor-pointer text-2xl leading-none">&times;</button>
             </div>
 
             {submitted ? (
               <div className="text-center py-10">
                 <div className="text-4xl mb-3">🎉</div>
-                <p className="text-gray-600 font-medium">感谢你的反馈！</p>
-                <p className="text-xs text-gray-400 mt-2">你的声音会帮助我们做得更好</p>
+                <p className="text-gray-600 font-medium">Thanks for your feedback!</p>
+                <p className="text-xs text-gray-400 mt-2">Your voice helps us improve</p>
               </div>
             ) : (
               <>
@@ -63,14 +63,14 @@ export default function FeedbackButton() {
                   onChange={(e) => setContent(e.target.value)}
                   rows={6}
                   maxLength={1000}
-                  placeholder="写下你的建议、问题或想说的话..."
+                  placeholder="Share your suggestions, questions, or thoughts..."
                   className="w-full px-3 py-2.5 border border-peach-100 rounded-2xl text-sm resize-none focus:outline-none focus:border-peach-400 bg-white"
                 />
                 <input
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
                   maxLength={100}
-                  placeholder="联系方式（微信/邮箱，选填）"
+                  placeholder="Contact (WeChat/email, optional)"
                   className="w-full mt-3 px-3 py-2.5 border border-peach-100 rounded-2xl text-sm focus:outline-none focus:border-peach-400 bg-white"
                 />
                 <button
@@ -78,7 +78,7 @@ export default function FeedbackButton() {
                   disabled={submitting || !content.trim()}
                   className="w-full mt-4 bg-peach-500 text-white py-2.5 rounded-2xl text-sm font-bold hover:bg-peach-600 transition-colors cursor-pointer border-0 disabled:opacity-50"
                 >
-                  {submitting ? '提交中...' : '提交反馈'}
+                  {submitting ? 'Submitting...' : 'Submit Feedback'}
                 </button>
               </>
             )}

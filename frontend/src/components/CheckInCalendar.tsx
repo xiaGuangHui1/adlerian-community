@@ -1,6 +1,6 @@
 import { CheckIn } from '../types';
 
-const WEEKDAYS = ['一', '二', '三', '四', '五', '六', '日'];
+const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 interface CheckInCalendarProps {
   checkIns: CheckIn[];
@@ -41,7 +41,7 @@ export default function CheckInCalendar({ checkIns, year, month, onMonthChange, 
     <div className="w-full">
       <div className="flex items-center justify-between mb-2">
         <button onClick={prevMonth} className="w-6 h-6 flex items-center justify-center text-gray-400 cursor-pointer border-0 bg-transparent hover:text-gray-600 text-sm">&lt;</button>
-        <span className="text-sm font-semibold text-gray-700">{year}年{month}月</span>
+        <span className="text-sm font-semibold text-gray-700">{month}/{year}</span>
         <button onClick={nextMonth} className="w-6 h-6 flex items-center justify-center text-gray-400 cursor-pointer border-0 bg-transparent hover:text-gray-600 text-sm">&gt;</button>
       </div>
       <div className="grid grid-cols-7 text-center text-xs text-gray-400 leading-none mb-1">
