@@ -14,7 +14,7 @@ const NAV_ITEMS = [
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile } = useAuth();
   const location = useLocation();
   const userMetadata = user?.user_metadata as Record<string, unknown> | undefined;
   const userAvatarUrl = typeof userMetadata?.avatar_url === 'string'
@@ -135,15 +135,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               >
                 登录
               </Link>
-            )}
-            {user && (
-              <button
-                onClick={async () => { await signOut(); window.location.href = '/'; }}
-                className="text-xs text-gray-400 hover:text-peach-600 bg-transparent border-0 cursor-pointer"
-                title="退出登录"
-              >
-                退出
-              </button>
             )}
           </div>
         </div>

@@ -53,6 +53,7 @@ export default function Profile() {
     fetchProfile,
     registerProfile,
     updateProfile,
+    signOut,
   } = useAuth();
   const isOwnProfile = authProfile?.id === id;
 
@@ -80,6 +81,11 @@ export default function Profile() {
     } catch {
       alert('发起私信失败');
     }
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
   };
 
   useEffect(() => {
@@ -293,14 +299,24 @@ export default function Profile() {
               阿德勒心理学社区 · 个人主页
             </span>
             {isOwnProfile ? (
-              <button
-                type="button"
-                onClick={editing ? cancelEditing : startEditing}
-                className="inline-flex items-center gap-1.5 px-3 py-2 bg-white/85 text-peach-600 rounded-xl text-xs font-bold hover:bg-white transition-colors no-underline shadow-sm"
-              >
-                <Icon icon={editing ? 'ph:x' : 'ph:pencil-simple'} width="15" />
-                {editing ? '取消编辑' : '编辑资料'}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={editing ? cancelEditing : startEditing}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 bg-white/85 text-peach-600 rounded-xl text-xs font-bold hover:bg-white transition-colors no-underline shadow-sm"
+                >
+                  <Icon icon={editing ? 'ph:x' : 'ph:pencil-simple'} width="15" />
+                  {editing ? '取消编辑' : '编辑资料'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 bg-white/85 text-gray-500 rounded-xl text-xs font-bold hover:bg-white transition-colors no-underline shadow-sm"
+                >
+                  <Icon icon="ph:sign-out" width="15" />
+                  退出登录
+                </button>
+              </div>
             ) : (
               <button
                 type="button"
