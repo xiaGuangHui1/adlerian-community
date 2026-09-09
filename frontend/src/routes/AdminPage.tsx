@@ -4,12 +4,12 @@ import { useAuth } from '../hooks/useAuth';
 import type { Resource } from '../types';
 
 const TYPE_OPTIONS = [
-  { value: 'concept', label: '核心概念' },
-  { value: 'book', label: '推荐阅读' },
-  { value: 'quote', label: '经典引述' },
-  { value: 'bio', label: '阿德勒生平' },
-  { value: 'practice', label: '实践指南' },
-  { value: 'article', label: '实践指南（文章）' },
+  { value: 'concept', label: 'Core Concept' },
+  { value: 'book', label: 'Books' },
+  { value: 'quote', label: 'Quotes' },
+  { value: 'bio', label: "Adler's Life" },
+  { value: 'practice', label: 'Practice Guide' },
+  { value: 'article', label: 'Practice Guide (Article)' },
 ];
 
 const TYPE_LABEL: Record<string, string> = TYPE_OPTIONS.reduce(
@@ -46,7 +46,7 @@ export default function AdminPage() {
 
   const handlePublish = async () => {
     if (!title.trim() || !content.trim()) {
-      alert('标题和内容不能为空');
+      alert('Title and content are required');
       return;
     }
     setPublishing(true);
@@ -61,9 +61,9 @@ export default function AdminPage() {
       setDescription('');
       setContent('');
       await fetchResources();
-      alert('发布成功');
+      alert('Published');
     } catch {
-      alert('发布失败，请确认已登录');
+      alert('Failed to publish. Please sign in.');
     } finally {
       setPublishing(false);
     }
@@ -76,37 +76,37 @@ export default function AdminPage() {
     const [item] = next.splice(index, 1);
     next.splice(target, 0, item);
     setResources(next);
-    api.put('/resources/reorder', next.map((r) => r.id)).catch(() => alert('排序保存失败'));
+    api.put('/resources/reorder', next.map((r) => r.id)).catch(() => alert('Failed to save order'));
   };
 
   if (authLoading || loading) {
-    return <div className="max-w-3xl mx-auto py-16 text-center text-gray-400">加载中…</div>;
+    return <div className="max-w-3xl mx-auto py-16 text-center text-gray-400">Loading...</div>;
   }
 
   if (!profile) {
     return (
       <div className="max-w-3xl mx-auto py-16 text-center text-gray-500">
-        请先登录后再使用发布后台
+        Please sign in to use the admin panel
       </div>
     );
   }
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold text-brown-900 mb-6">发布文章</h1>
+      <h1 className="text-2xl font-bold text-brown-900 mb-6">Publish Article</h1>
 
       {/* 发布表单 */}
       <div className="bg-white p-6 rounded-2xl border border-orange-50 shadow-sm mb-8 space-y-4">
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="标题"
+          placeholder="Title"
           className="w-full px-3 py-2 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400"
         />
         <input
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="简介（可选）"
+          placeholder="Description (optional)"
           className="w-full px-3 py-2 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400"
         />
         <select
@@ -121,7 +121,7 @@ export default function AdminPage() {
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="正文（支持 Markdown）"
+          placeholder="Content (Markdown supported)"
           rows={12}
           className="w-full px-3 py-2 border border-peach-100 rounded-lg text-sm resize-y font-mono focus:outline-none focus:border-peach-400"
         />
@@ -130,12 +130,12 @@ export default function AdminPage() {
           disabled={publishing}
           className="w-full py-3 bg-peach-500 text-white rounded-xl font-bold hover:bg-peach-600 cursor-pointer border-0 disabled:opacity-50"
         >
-          {publishing ? '发布中…' : '发布'}
+          {publishing ? 'Publishing...' : 'Publish'}
         </button>
       </div>
 
       {/* 排序列表 */}
-      <h2 className="text-lg font-bold text-brown-900 mb-3">文章排序（点 ↑/↓ 调整，自动保存）</h2>
+      <h2 className="text-lg font-bold text-brown-900 mb-3">Article order (click ↑/↓ to reorder, auto-saved)</h2>
       <div className="space-y-2">
         {resources.map((r, i) => (
           <div key={r.id} className="flex items-center gap-3 bg-white p-3 rounded-xl border border-orange-50">
@@ -149,18 +149,18 @@ export default function AdminPage() {
               disabled={i === 0}
               className="text-xs text-gray-400 hover:text-peach-600 bg-transparent border-0 cursor-pointer disabled:opacity-30"
             >
-              ↑ 上移
+              ↑ Up
             </button>
             <button
               onClick={() => move(i, 1)}
               disabled={i === resources.length - 1}
               className="text-xs text-gray-400 hover:text-peach-600 bg-transparent border-0 cursor-pointer disabled:opacity-30"
             >
-              ↓ 下移
+              ↓ Down
             </button>
           </div>
         ))}
-        {resources.length === 0 && <p className="text-sm text-gray-400 text-center py-8">暂无文章</p>}
+        {resources.length === 0 && <p className="text-sm text-gray-400 text-center py-8">No articles yet</p>}
       </div>
     </div>
   );

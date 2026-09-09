@@ -6,12 +6,12 @@ import Skeleton from '../components/Skeleton';
 import type { Resource } from '../types';
 
 const TYPE_LABEL: Record<string, string> = {
-  concept: '核心概念',
-  book: '推荐阅读',
-  article: '实践指南',
-  practice: '实践指南',
-  quote: '经典引述',
-  bio: '阿德勒生平',
+  concept: 'Core Concept',
+  book: 'Books',
+  article: 'Practice Guide',
+  practice: 'Practice Guide',
+  quote: 'Quotes',
+  bio: "Adler's Life",
 };
 
 const TYPE_BADGE: Record<string, string> = {
@@ -65,18 +65,18 @@ export default function ResourceDetail() {
   if (error || !resource) {
     return (
       <div className="text-center py-16">
-        <p className="text-gray-500 mb-4">文章不存在或加载失败</p>
+        <p className="text-gray-500 mb-4">Article not found or failed to load</p>
         <button
           onClick={() => navigate('/knowledge-base')}
           className="px-5 py-2 bg-peach-500 text-white rounded-xl text-sm font-bold border-0 cursor-pointer hover:bg-peach-600"
         >
-          返回理论探索
+          Back to Theory
         </button>
       </div>
     );
   }
 
-  const label = TYPE_LABEL[resource.type] || '推荐阅读';
+  const label = TYPE_LABEL[resource.type] || 'Books';
   const badge = TYPE_BADGE[resource.type] || 'bg-orange-400/90';
 
   return (
@@ -85,7 +85,7 @@ export default function ResourceDetail() {
         onClick={() => navigate('/knowledge-base')}
         className="text-sm text-gray-400 hover:text-peach-700 bg-transparent border-0 cursor-pointer mb-4"
       >
-        &larr; 返回理论探索
+        &larr; Back to Theory
       </button>
 
       <article className="bg-white p-8 rounded-3xl border border-orange-50 shadow-sm">
