@@ -57,18 +57,18 @@ export default function KnowledgeBase() {
       {/* 头部搜索与分类 */}
       <header className="pt-8 pb-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl font-bold mb-4">Adlerian Psychology Knowledge Base</h1>
+          <h1 className="text-3xl font-bold mb-4">阿德勒心理学知识库</h1>
           <p className="text-gray-500 max-w-2xl mx-auto mb-8">
-            "What matters is not what is given to you, but how you make use of what you are given." Explore Adler's core theory and build a solid foundation for your journey of courage.
+            "重要的不是被给予了什么，而是如何去利用被给予的东西。" 深入探索阿德勒的核心理论，为你的勇气之旅提供坚实的知识基石。
           </p>
           <div className="max-w-xl mx-auto relative mb-12">
             <input
               className="w-full bg-warm-50 border-none rounded-2xl px-12 py-4 shadow-sm focus:ring-2 focus:ring-peach-500/20 outline-none"
-              placeholder="Search concepts, quotes, or books..."
+              placeholder="搜索核心概念、引述或书籍..."
               type="text"
             />
             <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-peach-500 text-white px-6 py-2 rounded-xl text-sm font-bold cursor-pointer border-0">Search</button>
+            <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-peach-500 text-white px-6 py-2 rounded-xl text-sm font-bold cursor-pointer border-0">搜索</button>
           </div>
           <div className="flex flex-wrap justify-center gap-4">
             <button
@@ -78,7 +78,7 @@ export default function KnowledgeBase() {
               <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-peach-500 group-hover:bg-peach-500 group-hover:text-white transition-all shadow-sm">
                 <Icon icon="ph:brain" width="32" height="32" />
               </div>
-              <span className="text-sm font-medium">Core Concepts</span>
+              <span className="text-sm font-medium">核心概念</span>
             </button>
             <button
               onClick={() => setActiveTab('bio')}
@@ -87,7 +87,7 @@ export default function KnowledgeBase() {
               <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-teal-500 group-hover:bg-teal-500 group-hover:text-white transition-all shadow-sm">
                 <svg className="w-8 h-8" viewBox="0 0 256 256" fill="currentColor"><path d="M224,48H32a8,8,0,0,0-8,8V192a8,8,0,0,0,8,8H224a8,8,0,0,0,8-8V56A8,8,0,0,0,224,48ZM132,144a32,32,0,1,1,32-32A32,32,0,0,1,132,144Zm51.43,40H80.57A24.14,24.14,0,0,1,88,166.36,64.23,64.23,0,0,1,175.53,167,24,24,0,0,1,183.43,184Z"/></svg>
               </div>
-              <span className="text-sm font-medium">Adler's Life</span>
+              <span className="text-sm font-medium">阿德勒生平</span>
             </button>
             <button
               onClick={() => setActiveTab('quote')}
@@ -96,7 +96,7 @@ export default function KnowledgeBase() {
               <div className="w-16 h-16 bg-pink-50 rounded-2xl flex items-center justify-center text-pink-400 group-hover:bg-pink-400 group-hover:text-white transition-all shadow-sm">
                 <svg className="w-8 h-8" viewBox="0 0 256 256" fill="currentColor"><path d="M100,56H40A16,16,0,0,0,24,72v64a16,16,0,0,0,16,16h60v56a8,8,0,0,0,16,0V128H56V80H100ZM216,56H156a16,16,0,0,0-16,16v64a16,16,0,0,0,16,16h60v56a8,8,0,0,0,16,0V128H172V80h44Z"/></svg>
               </div>
-              <span className="text-sm font-medium">Quotes</span>
+              <span className="text-sm font-medium">经典引述</span>
             </button>
             <button
               onClick={() => setActiveTab('book')}
@@ -105,7 +105,7 @@ export default function KnowledgeBase() {
               <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-400 group-hover:bg-blue-400 group-hover:text-white transition-all shadow-sm">
                 <svg className="w-8 h-8" viewBox="0 0 256 256" fill="currentColor"><path d="M232,48H160a24,24,0,0,0-24,24V192a8,8,0,0,0,8,8h88a8,8,0,0,0,8-8V56A8,8,0,0,0,232,48Zm-8,144H168V72a8,8,0,0,1,8-8h48ZM96,48H24A8,8,0,0,0,16,56V192a8,8,0,0,0,8,8H96a24,24,0,0,0,24-24V72A24,24,0,0,0,96,48Zm8,128a8,8,0,0,1-8,8H32V64H96a8,8,0,0,1,8,8Z"/></svg>
               </div>
-              <span className="text-sm font-medium">Books</span>
+              <span className="text-sm font-medium">推荐阅读</span>
             </button>
             <button
               onClick={() => setActiveTab('practice')}
@@ -114,7 +114,7 @@ export default function KnowledgeBase() {
               <div className="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-400 group-hover:bg-purple-400 group-hover:text-white transition-all shadow-sm">
                 <svg className="w-8 h-8" viewBox="0 0 256 256" fill="currentColor"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31l83.67-83.66,3.48,13.9-36.8,36.79a8,8,0,0,0,11.31,11.32l40-40a8,8,0,0,0,2.11-7.6l-6.9-27.61L227.31,96A16,16,0,0,0,227.31,73.37ZM192,108.68,147.31,64l24-24L216,84.68Z"/></svg>
               </div>
-              <span className="text-sm font-medium">Practice Guides</span>
+              <span className="text-sm font-medium">实践指南</span>
             </button>
           </div>
         </div>
@@ -127,27 +127,27 @@ export default function KnowledgeBase() {
             {/* 文章网格 */}
             <div className="lg:w-2/3">
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold">Featured Articles</h2>
+                <h2 className="text-2xl font-bold">精选文章</h2>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setSortMode('curated')}
                     className={`text-sm font-bold cursor-pointer border-0 bg-transparent ${sortMode === 'curated' ? 'text-peach-500' : 'text-gray-400 hover:text-peach-500'}`}
                   >
-                    Curated
+                    精选
                   </button>
                   <span className="text-gray-300">|</span>
                   <button
                     onClick={() => setSortMode('latest')}
                     className={`text-sm cursor-pointer border-0 bg-transparent ${sortMode === 'latest' ? 'text-peach-500 font-bold' : 'text-gray-400 hover:text-peach-500'}`}
                   >
-                    Latest
+                    最新
                   </button>
                   <span className="text-gray-300">|</span>
                   <button
                     onClick={() => setSortMode('hot')}
                     className={`text-sm cursor-pointer border-0 bg-transparent ${sortMode === 'hot' ? 'text-peach-500 font-bold' : 'text-gray-400 hover:text-peach-500'}`}
                   >
-                    Popular
+                    最热
                   </button>
                 </div>
               </div>
@@ -191,7 +191,7 @@ export default function KnowledgeBase() {
                             r.type === 'practice' ? 'bg-purple-400/90' :
                             'bg-orange-400/90'
                           }`}>
-                            {r.type === 'concept' ? 'Core Concept' : r.type === 'book' ? 'Books' : r.type === 'article' ? 'Practice Guide' : r.type === 'quote' ? 'Quotes' : r.type === 'practice' ? 'Practice Guide' : r.type === 'bio' ? "Adler's Life" : 'Books'}
+                            {r.type === 'concept' ? '核心概念' : r.type === 'book' ? '推荐阅读' : r.type === 'article' ? '实践指南' : r.type === 'quote' ? '经典引述' : r.type === 'practice' ? '实践指南' : r.type === 'bio' ? '阿德勒生平' : '推荐阅读'}
                           </span>
                         </div>
                       </div>
@@ -207,18 +207,18 @@ export default function KnowledgeBase() {
                         <div className="flex items-center justify-between text-[11px] text-gray-400 uppercase font-bold tracking-widest">
                           <span className="flex items-center gap-1">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm56,112H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48a8,8,0,0,1,0,16Z"/></svg>
-                            8 min read
+                            8 分钟阅读
                           </span>
                           <span className="flex items-center gap-1">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 256 256"><path d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61,158.7,48,128,48S61.43,61,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,195,97.3,208,128,208s66.57-13,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-49.85,0-79.09-33.78-89.22-48C48.91,129.78,78.15,96,128,96s79.09,33.78,89.22,48C207.09,158.22,177.85,192,128,192Zm0-80a16,16,0,1,0,16,16A16,16,0,0,0,128,112Z"/></svg>
-                            {r.viewCount || 0} views
+                            {r.viewCount || 0} 阅读
                           </span>
                         </div>
                       </div>
                     </div>
                   ))}
                   {displayedResources.length === 0 && (
-                    <p className="text-sm text-gray-400 text-center py-8 col-span-2">No content yet</p>
+                    <p className="text-sm text-gray-400 text-center py-8 col-span-2">暂无内容</p>
                   )}
                 </div>
               )}
@@ -226,7 +226,7 @@ export default function KnowledgeBase() {
               {/* 加载更多 */}
               <div className="mt-12 text-center">
                 <button className="px-8 py-3 bg-warm-50 text-peach-500 font-bold rounded-2xl border border-orange-100 hover:bg-peach-500 hover:text-white transition-all cursor-pointer">
-                  Browse more articles
+                  浏览更多知识文章
                 </button>
               </div>
             </div>
@@ -237,7 +237,7 @@ export default function KnowledgeBase() {
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-orange-50">
                 <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
                   <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 256 256"><path d="M240,94c-6.67,0-13,2.11-18.21,5.7C216.71,66.79,189.07,40,155.88,40c-16,0-31.27,7.07-41.55,17.6L128,71.6l-13.67-14C104.15,47.07,88.88,40,72.88,40,43.58,40,19.39,62.94,14.46,93.36A32,32,0,1,0,16,142a33,33,0,0,0-3.42-14.06A16.13,16.13,0,0,1,16,119.8V112h8a24,24,0,0,1,18,9.69,24,24,0,0,1,18-9.69h8v7.8a16.21,16.21,0,0,1,.14,1.55A36.14,36.14,0,0,1,68.55,136H40a16,16,0,0,0,0,32H68.55A36,36,0,1,0,132,128.74V128a8,8,0,0,0-16,0h0c0,1.65-.59,3.17-1,4.74A36,36,0,1,0,179.45,168H216a16,16,0,0,0,0-32h-14.67A36.14,36.14,0,0,1,200.89,120a32,32,0,1,0,39.27-22.16A8,8,0,0,0,240,94Z"/></svg>
-                  Popular
+                  热门排行
                 </h3>
                 <div className="space-y-6">
                   {hotResources.slice(0, 4).map((r, i) => (
@@ -252,12 +252,12 @@ export default function KnowledgeBase() {
                       </span>
                       <div>
                         <h4 className="text-sm font-bold text-brown-900 group-hover:text-peach-500 transition-colors line-clamp-2">{r.title}</h4>
-                        <p className="text-[10px] text-gray-400 mt-1">12,450 readers</p>
+                        <p className="text-[10px] text-gray-400 mt-1">12,450 人阅读</p>
                       </div>
                     </a>
                   ))}
                   {hotResources.length === 0 && (
-                    <p className="text-sm text-gray-400 text-center py-4">No ranking yet</p>
+                    <p className="text-sm text-gray-400 text-center py-4">暂无排行</p>
                   )}
                 </div>
               </div>
@@ -266,13 +266,13 @@ export default function KnowledgeBase() {
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-orange-50">
                 <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
                   <svg className="w-5 h-5 text-teal-500" fill="currentColor" viewBox="0 0 256 256"><path d="M232,48H160a24,24,0,0,0-24,24V192a8,8,0,0,0,8,8h88a8,8,0,0,0,8-8V56A8,8,0,0,0,232,48Zm-8,144H168V72a8,8,0,0,1,8-8h48ZM96,48H24A8,8,0,0,0,16,56V192a8,8,0,0,0,8,8H96a24,24,0,0,0,24-24V72A24,24,0,0,0,96,48Zm8,128a8,8,0,0,1-8,8H32V64H96a8,8,0,0,1,8,8Z"/></svg>
-                  Must-Read Books
+                  必读书单
                 </h3>
                 <div className="space-y-4">
                   {[
-                    { title: 'The Courage to Be Disliked', author: 'Ichiro Kishimi / Fumitake Koga', stars: 5 },
-                    { title: 'What Life Should Mean to You', author: 'Alfred Adler', stars: 4 },
-                    { title: 'The Courage to Be Happy', author: 'Ichiro Kishimi / Fumitake Koga', stars: 5 },
+                    { title: '《被讨厌的勇气》', author: '岸见一郎 / 古贺史健', stars: 5 },
+                    { title: '《自卑与超越》', author: '阿尔弗雷德·阿德勒', stars: 4 },
+                    { title: '《幸福的勇气》', author: '岸见一郎 / 古贺史健', stars: 5 },
                   ].map((book) => (
                     <div key={book.title} className="flex gap-3 p-3 rounded-2xl hover:bg-warm-50 transition-colors cursor-pointer group">
                       <div className="w-12 h-16 rounded-md shadow-sm bg-gradient-to-br from-peach-200 to-teal-200 flex items-center justify-center text-lg flex-shrink-0">
@@ -294,7 +294,7 @@ export default function KnowledgeBase() {
                   onClick={() => { setActiveTab('book'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                   className="w-full mt-6 py-2 text-xs font-bold text-gray-400 border border-dashed border-gray-200 rounded-xl hover:border-peach-500 hover:text-peach-500 transition-all cursor-pointer bg-transparent"
                 >
-                  View Full Book List
+                  查看完整书单
                 </button>
               </div>
 
@@ -302,14 +302,14 @@ export default function KnowledgeBase() {
               <div className="bg-teal-500 p-8 rounded-3xl text-white relative overflow-hidden">
                 <svg className="absolute -top-4 -left-4 text-white/20 w-20 h-20" fill="currentColor" viewBox="0 0 256 256"><path d="M100,56H40A16,16,0,0,0,24,72v64a16,16,0,0,0,16,16h60V128H40V80H100ZM216,56H156a16,16,0,0,0-16,16v64a16,16,0,0,0,16,16h60V128H156V80h60Z"/></svg>
                 <p className="text-lg italic leading-relaxed mb-6 relative z-10">
-                  {quote ? `"${quote.content}"` : '"Even if you are disliked or spoken ill of, it doesn\'t matter — how others see you is their own task."'}
+                  {quote ? `"${quote.content}"` : '"纵使被说坏话、被讨厌，也没什么好在意的，因为对方如何看你，那是对方的课题。"'}
                 </p>
                 <div className="flex items-center gap-3 relative z-10">
                   <div className="w-8 h-8 rounded-full border border-white/30 bg-teal-400 flex items-center justify-center text-white text-xs font-bold">
                     A
                   </div>
                   <span className="text-sm font-bold">
-                    —— {quote?.author || 'Alfred Adler'}
+                    —— {quote?.author || '阿尔弗雷德·阿德勒'}
                   </span>
                 </div>
               </div>

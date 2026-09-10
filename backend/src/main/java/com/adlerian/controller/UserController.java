@@ -40,19 +40,19 @@ public class UserController {
 
         UUID authId = extractAuthId(authHeader);
         if (authId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Not signed in"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "未登录"));
         }
 
         return userService.findByAuthId(authId)
                 .<ResponseEntity<?>>map(existing -> ResponseEntity.ok(toProfileMap(existing)))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not registered")));
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "用户未注册")));
     }
 
     @PutMapping("/me")
     public ResponseEntity<?> updateProfile(@RequestBody UpdateUserRequest request) {
         User user = currentUserOrNull();
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Not signed in"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "未登录"));
         }
         User updated = userService.updateUser(user.getId(), request);
         return ResponseEntity.ok(toProfileMap(updated));
@@ -80,7 +80,7 @@ public class UserController {
             UUID authId = extractAuthId(authHeader);
             log.info("Extracted authId: {}", authId);
             if (authId == null) {
-                return ResponseEntity.status(401).body(Map.of("error", "Not signed in"));
+                return ResponseEntity.status(401).body(Map.of("error", "未登录"));
             }
 
             // 检查是否已注册
@@ -89,16 +89,16 @@ public class UserController {
                 return ResponseEntity.ok(toProfileMap(existing));
             }
 
-            String nickname = body.getOrDefault("nickname", "Community member");
+            String nickname = body.getOrDefault("nickname", "社区成员");
             String avatarUrl = extractAvatarUrl(authHeader);
             User user = userService.createUser(authId, nickname, avatarUrl);
-            notificationService.notifySystem(user.getId(), "system", "Welcome to the Adlerian Community — start your journey of courage");
+            notificationService.notifySystem(user.getId(), "system", "欢迎加入阿德勒心理学社区，开始你的勇气之旅吧");
             return ResponseEntity.ok(toProfileMap(user));
         } catch (Exception e) {
             log.error("Failed to register user: {} ({})", e.getMessage(), e.getClass().getSimpleName(), e);
             String msg = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
             return ResponseEntity.status(500).body(Map.of(
-                    "error", "Registration failed: " + msg,
+                    "error", "注册失败: " + msg,
                     "type", e.getClass().getSimpleName()
             ));
         }

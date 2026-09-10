@@ -1,32 +1,32 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 
-/** Translate Supabase common errors into friendly messages */
+/** 翻译 Supabase 常见错误为中文 */
 function translateError(message: string): string {
   if (message.includes('rate limit')) {
-    return 'Too many emails sent, please try again later';
+    return '邮件发送太频繁，请稍后再试';
   }
   if (message.includes('already registered') || message.includes('already exists')) {
-    return 'This email is already registered, please sign in';
+    return '该邮箱已注册，请直接登录';
   }
   if (message.includes('Invalid login credentials')) {
-    return 'Incorrect email or password';
+    return '邮箱或密码错误';
   }
   if (message.includes('token has expired') || message.includes('expired')) {
-    return 'Code expired, please request a new one';
+    return '验证码已过期，请重新获取';
   }
   if (message.includes('token is invalid')) {
-    return 'Incorrect code, please check and try again';
+    return '验证码错误，请检查后重试';
   }
   if (message.includes('only request this after') || message.includes('security purposes')) {
-    return 'Too many attempts, please try again later';
+    return '操作太频繁，请稍后再试';
   }
   return message;
 }
 
-/** Extract a readable message from a Supabase error */
+/** 从 Supabase 错误中提取可读信息 */
 function extractError(err: unknown): string {
-  if (!err) return 'Unknown error';
+  if (!err) return '未知错误';
   if (err instanceof Error) return translateError(err.message);
   if (typeof err === 'object') {
     const obj = err as Record<string, unknown>;
@@ -60,7 +60,7 @@ export function useLogin() {
       return true;
     } catch (err) {
       console.error('[sendOTP] error:', err);
-      setError(extractError(err) || 'Failed to send');
+      setError(extractError(err) || '发送失败');
       setLoading(false);
       return false;
     }
@@ -83,14 +83,14 @@ export function useLogin() {
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) {
-        throw new Error('Failed to establish session, please re-enter the code');
+        throw new Error('登录状态建立失败，请重新输入验证码');
       }
 
       setLoading(false);
       return true;
     } catch (err) {
       console.error('[verifyOTP] error:', err);
-      setError(extractError(err) || 'Verification failed');
+      setError(extractError(err) || '验证失败');
       setLoading(false);
       return false;
     }
@@ -107,7 +107,7 @@ export function useLogin() {
       return true;
     } catch (err) {
       console.error('[signInWithPassword] error:', err);
-      setError(extractError(err) || 'Sign in failed');
+      setError(extractError(err) || '登录失败');
       setLoading(false);
       return false;
     }
@@ -139,7 +139,7 @@ export function useLogin() {
         setLoading(false);
         return 'already_registered';
       }
-      setError(extractError(err) || 'Registration failed');
+      setError(extractError(err) || '注册失败');
       setLoading(false);
       return 'failed';
     }

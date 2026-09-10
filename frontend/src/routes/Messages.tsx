@@ -8,20 +8,20 @@ import type { Notification, Conversation, PageResponse } from '../types';
 function timeAgo(time: string) {
   const diff = Date.now() - new Date(time).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'just now';
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 1) return '刚刚';
+  if (mins < 60) return `${mins}分钟前`;
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
+  if (hours < 24) return `${hours}小时前`;
+  return `${Math.floor(hours / 24)}天前`;
 }
 
 function notificationText(n: Notification): string {
   switch (n.type) {
-    case 'comment': return 'shared your post';
-    case 'reply': return 'replied to your share';
-    case 'encouragement': return 'said thanks to you';
-    case 'team': return 'joined your team';
-    default: return 'interacted with you';
+    case 'comment': return '分享了你的帖子';
+    case 'reply': return '回复了你的分享';
+    case 'encouragement': return '对你说了一声谢谢';
+    case 'team': return '加入了你的队伍';
+    default: return '与你互动';
   }
 }
 
@@ -83,13 +83,13 @@ export default function Messages() {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-brown-900">Messages</h1>
+        <h1 className="text-2xl font-semibold text-brown-900">消息中心</h1>
         {tab === 'notifications' && (
           <button
             onClick={handleReadAll}
             className="text-sm text-peach-500 hover:text-peach-700 bg-transparent border-0 cursor-pointer font-medium"
           >
-            Mark all read
+            全部已读
           </button>
         )}
       </div>
@@ -102,7 +102,7 @@ export default function Messages() {
             tab === 'notifications' ? 'bg-peach-500 text-white' : 'bg-warm-50 text-gray-600 hover:bg-orange-100'
           }`}
         >
-          Notifications
+          互动通知
         </button>
         <button
           onClick={() => setTab('conversations')}
@@ -110,7 +110,7 @@ export default function Messages() {
             tab === 'conversations' ? 'bg-peach-500 text-white' : 'bg-warm-50 text-gray-600 hover:bg-orange-100'
           }`}
         >
-          Messages
+          私信
         </button>
       </div>
 
@@ -130,7 +130,7 @@ export default function Messages() {
         ) : notifications.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
             <div className="text-4xl mb-3">🔔</div>
-            <p>No notifications yet</p>
+            <p>还没有互动通知</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -147,7 +147,7 @@ export default function Messages() {
                     <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-lg flex-shrink-0">📢</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">System notification</span>
+                        <span className="text-xs text-gray-400">系统通知</span>
                         {!n.read && <span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />}
                       </div>
                       {n.content && <p className="text-sm text-gray-700 mt-1">{n.content}</p>}
@@ -164,10 +164,10 @@ export default function Messages() {
                     n.read ? 'border-orange-50' : 'border-peach-200'
                   }`}
                 >
-                  <Avatar name={n.actorNickname || 'U'} src={n.actorAvatarUrl} className="w-10 h-10 flex-shrink-0" textClassName="text-xs" />
+                  <Avatar name={n.actorNickname || '勇'} src={n.actorAvatarUrl} className="w-10 h-10 flex-shrink-0" textClassName="text-xs" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-bold text-sm text-gray-800">{n.actorNickname || 'Community member'}</span>
+                      <span className="font-bold text-sm text-gray-800">{n.actorNickname || '社区伙伴'}</span>
                       <span className="text-sm text-gray-600">{notificationText(n)}</span>
                       {!n.read && <span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />}
                     </div>
@@ -182,7 +182,7 @@ export default function Messages() {
       ) : conversations.length === 0 ? (
         <div className="text-center py-20 text-gray-400">
           <div className="text-4xl mb-3">💬</div>
-          <p>No messages yet — send one from someone's profile</p>
+          <p>还没有私信，去别人主页发条私信吧</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -199,7 +199,7 @@ export default function Messages() {
                   {c.lastMessageAt && <span className="text-xs text-gray-400">{timeAgo(c.lastMessageAt)}</span>}
                 </div>
                 <div className="flex items-center justify-between mt-1">
-                  <p className="text-sm text-gray-500 truncate">{c.lastMessage || 'Start chatting'}</p>
+                  <p className="text-sm text-gray-500 truncate">{c.lastMessage || '开始聊天吧'}</p>
                   {c.unreadCount > 0 && (
                     <span className="min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0 ml-2">
                       {c.unreadCount > 99 ? '99+' : c.unreadCount}

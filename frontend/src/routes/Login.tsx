@@ -24,8 +24,8 @@ export default function Login() {
 
   const handleAfterLogin = () => {
     navigate('/', { replace: true });
-    void registerProfile('Community member').catch(() => {
-      setLocalError('Signed in, but profile sync failed. Please refresh.');
+    void registerProfile('社区成员').catch(() => {
+      setLocalError('已登录，但社区资料同步失败，请刷新后重试');
     });
   };
 
@@ -89,8 +89,8 @@ export default function Login() {
               </g>
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-brown-900">Welcome back</h1>
-          <p className="text-sm text-gray-400 mt-1">Grow together in horizontal relationships</p>
+          <h1 className="text-2xl font-bold text-brown-900">欢迎回来</h1>
+          <p className="text-sm text-gray-400 mt-1">在横向关系中共同成长</p>
         </div>
 
         {/* Tab 切换 */}
@@ -104,7 +104,7 @@ export default function Login() {
                 : 'border-transparent text-gray-400 hover:text-gray-600'
             }`}
           >
-            Email code
+            验证码登录
           </button>
           <button
             type="button"
@@ -115,7 +115,7 @@ export default function Login() {
                 : 'border-transparent text-gray-400 hover:text-gray-600'
             }`}
           >
-            Password
+            密码登录
           </button>
         </div>
 
@@ -128,7 +128,7 @@ export default function Login() {
         {activeTab === 'otp' && (
           <form onSubmit={handleVerifyOtp} className="space-y-4">
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Email</label>
+              <label className="block text-sm text-gray-600 mb-1">邮箱</label>
               <input
                 type="email"
                 value={otpEmail}
@@ -140,13 +140,13 @@ export default function Login() {
             </div>
 
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Code</label>
+              <label className="block text-sm text-gray-600 mb-1">验证码</label>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={otp}
                   onChange={e => setOtp(e.target.value)}
-                  placeholder="6-digit code"
+                  placeholder="6 位验证码"
                   maxLength={6}
                   className="flex-1 px-3 py-2.5 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-warm-50"
                 />
@@ -156,11 +156,11 @@ export default function Login() {
                   disabled={loading || countdown > 0}
                   className="px-4 py-2.5 rounded-lg text-sm border border-peach-100 text-gray-600 cursor-pointer bg-white hover:bg-peach-50 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap transition-colors"
                 >
-                  {countdown > 0 ? `${countdown}s` : otpSent ? 'Resend' : 'Send code'}
+                  {countdown > 0 ? `${countdown}s` : otpSent ? '重新发送' : '发送验证码'}
                 </button>
               </div>
               {otpSent && !displayError && (
-                <p className="text-xs text-green-600 mt-1">Code sent — check your inbox</p>
+                <p className="text-xs text-green-600 mt-1">验证码已发送，请查收邮箱</p>
               )}
             </div>
 
@@ -169,11 +169,11 @@ export default function Login() {
               disabled={loading || !otp}
               className="w-full py-2.5 bg-peach-500 text-white rounded-lg text-sm font-medium cursor-pointer border-0 hover:bg-peach-600 disabled:opacity-50 transition-colors"
             >
-              {loading ? 'Verifying...' : 'Sign in / Sign up'}
+              {loading ? '验证中...' : '登录 / 注册'}
             </button>
 
             <p className="text-xs text-stone-400 text-center">
-              No registration needed — new users get an account automatically
+              验证码登录无需注册，新用户自动创建账号
             </p>
           </form>
         )}
@@ -182,7 +182,7 @@ export default function Login() {
         {activeTab === 'password' && (
           <form onSubmit={handlePasswordLogin} className="space-y-4">
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Email</label>
+              <label className="block text-sm text-gray-600 mb-1">邮箱</label>
               <input
                 type="email"
                 value={pwdEmail}
@@ -193,12 +193,12 @@ export default function Login() {
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Password</label>
+              <label className="block text-sm text-gray-600 mb-1">密码</label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="Enter password"
+                placeholder="输入密码"
                 required
                 className="w-full px-3 py-2.5 border border-peach-100 rounded-lg text-sm focus:outline-none focus:border-peach-400 bg-warm-50"
               />
@@ -208,16 +208,16 @@ export default function Login() {
               disabled={loading}
               className="w-full py-2.5 bg-peach-500 text-white rounded-lg text-sm font-medium cursor-pointer border-0 hover:bg-peach-600 disabled:opacity-50 transition-colors"
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? '登录中...' : '登录'}
             </button>
           </form>
         )}
 
         {/* 底部链接 */}
         <p className="text-sm text-gray-400 text-center mt-6">
-          No account yet?{' '}
+          还没有账号？{' '}
           <Link to="/register" className="text-peach-700 no-underline hover:underline font-medium">
-            Sign up
+            注册
           </Link>
         </p>
       </div>

@@ -40,7 +40,7 @@ export default function TeamSection() {
       setTeamName('');
       await fetchData();
     } catch {
-      alert('Failed to create');
+      alert('创建失败');
     } finally {
       setCreating(false);
     }
@@ -52,7 +52,7 @@ export default function TeamSection() {
       await api.post(`/teams/${id}/join`);
       await fetchData();
     } catch {
-      alert('Failed to join — the team may be full or you are already in one');
+      alert('加入失败，可能已满员或已在其他队伍');
     } finally {
       setJoiningId(null);
     }
@@ -80,13 +80,13 @@ export default function TeamSection() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-bold text-brown-900">{myTeam.name}</h2>
-            <p className="text-xs text-gray-400 mt-1">Team check-in · In progress today</p>
+            <p className="text-xs text-gray-400 mt-1">组队打卡 · 今日进行中</p>
           </div>
           <button
             onClick={() => myTeam.inviteCode && shareTeam(myTeam.inviteCode, myTeam.name)}
             className="text-sm text-peach-500 border border-peach-300 rounded-full px-4 py-1.5 bg-white hover:bg-peach-50 transition-colors cursor-pointer"
           >
-            {copied ? 'Link copied' : 'Invite'}
+            {copied ? '已复制链接' : '邀请伙伴'}
           </button>
         </div>
 
@@ -105,7 +105,7 @@ export default function TeamSection() {
               </div>
               <span className="text-xs text-gray-600">{member.nickname}</span>
               <span className={`text-xs ${member.todayCheckedIn ? 'text-teal-500' : 'text-gray-400'}`}>
-                {member.todayCheckedIn ? 'Checked in ✓' : 'Not yet'}
+                {member.todayCheckedIn ? '已打卡 ✓' : '未打卡'}
               </span>
             </div>
           ))}
@@ -114,17 +114,17 @@ export default function TeamSection() {
         <div className="bg-warm-50 rounded-2xl p-4 flex items-center justify-center gap-8 text-center">
           <div>
             <p className="text-2xl font-bold text-peach-500">{myTeam.togetherDays || 1}</p>
-            <p className="text-xs text-gray-500 mt-0.5">Days together</p>
+            <p className="text-xs text-gray-500 mt-0.5">已组队天数</p>
           </div>
           <div className="w-px h-10 bg-orange-100" />
           <div>
             <p className="text-2xl font-bold text-teal-500">{checkedCount}/{myTeam.members.length}</p>
-            <p className="text-xs text-gray-500 mt-0.5">Today's rate</p>
+            <p className="text-xs text-gray-500 mt-0.5">今日打卡率</p>
           </div>
           <div className="w-px h-10 bg-orange-100" />
           <div>
             <p className="text-2xl font-bold text-brown-900">{myTeam.totalCheckIns || 0}</p>
-            <p className="text-xs text-gray-500 mt-0.5">Total check-ins</p>
+            <p className="text-xs text-gray-500 mt-0.5">累计打卡数</p>
           </div>
         </div>
       </div>
@@ -135,13 +135,13 @@ export default function TeamSection() {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-3xl p-6 border border-orange-50">
-        <h2 className="text-lg font-bold text-brown-900 mb-3">Create a Team</h2>
+        <h2 className="text-lg font-bold text-brown-900 mb-3">创建队伍</h2>
         <div className="flex gap-2">
           <input
             value={teamName}
             onChange={(e) => setTeamName(e.target.value)}
             maxLength={20}
-            placeholder="Name your team (optional)"
+            placeholder="给队伍起个名字（可选）"
             className="flex-1 px-4 py-2.5 border border-peach-100 rounded-2xl text-sm focus:outline-none focus:border-peach-400 bg-white"
           />
           <button
@@ -149,16 +149,16 @@ export default function TeamSection() {
             disabled={creating}
             className="px-5 py-2.5 bg-peach-500 text-white rounded-2xl text-sm font-bold hover:bg-peach-600 transition-colors cursor-pointer border-0 disabled:opacity-50"
           >
-            {creating ? 'Creating...' : 'Create'}
+            {creating ? '创建中...' : '创建'}
           </button>
         </div>
       </div>
 
       <div>
-        <h2 className="text-lg font-bold text-brown-900 mb-3">Team Lobby</h2>
+        <h2 className="text-lg font-bold text-brown-900 mb-3">组队大厅</h2>
         {openTeams.length === 0 ? (
           <div className="bg-white rounded-3xl p-8 text-center text-gray-400 border border-orange-50">
-            No teams to join yet — create one
+            还没有可加入的队伍，创建一支吧
           </div>
         ) : (
           <div className="space-y-3">
@@ -169,8 +169,8 @@ export default function TeamSection() {
                   <div>
                     <p className="font-bold text-sm text-gray-800">{t.name}</p>
                     <p className="text-xs text-gray-400">
-                      {t.creatorNickname} · {t.memberCount}/{t.maxMembers} members
-                      {t.status === 'PENDING' ? ' · Waiting for members' : ' · In progress'}
+                      {t.creatorNickname} · {t.memberCount}/{t.maxMembers} 人
+                      {t.status === 'PENDING' ? ' · 等待伙伴' : ' · 进行中'}
                     </p>
                   </div>
                 </div>
@@ -179,7 +179,7 @@ export default function TeamSection() {
                   disabled={joiningId === t.id}
                   className="px-4 py-1.5 bg-teal-500 text-white rounded-full text-sm font-bold hover:bg-teal-600 transition-colors cursor-pointer border-0 disabled:opacity-50"
                 >
-                  {joiningId === t.id ? 'Joining...' : 'Join'}
+                  {joiningId === t.id ? '加入中...' : '加入'}
                 </button>
               </div>
             ))}

@@ -20,7 +20,7 @@ export default function EncourageButton({
   onNewEncouragement,
 }: Props) {
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('Thank you');
+  const [message, setMessage] = useState('谢谢');
   const [anonymous, setAnonymous] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showList, setShowList] = useState(false);
@@ -59,10 +59,10 @@ export default function EncourageButton({
       setCount((c) => c + 1);
       setLoaded(true);
       onNewEncouragement?.(data);
-      setMessage('Thank you');
+      setMessage('谢谢');
       setOpen(false);
     } catch {
-      alert('Failed to send. Please sign in.');
+      alert('发送失败，请确认已登录');
     } finally {
       setSubmitting(false);
     }
@@ -75,14 +75,14 @@ export default function EncourageButton({
           onClick={() => setOpen(!open)}
           className="text-sm text-peach-700 hover:text-peach-800 bg-peach-50 hover:bg-peach-100 border border-peach-200 rounded-full px-3 py-1 cursor-pointer transition-colors"
         >
-          Thanks
+          谢谢
         </button>
         {count > 0 && (
           <button
             onClick={toggleList}
             className="text-xs text-gray-400 hover:text-peach-700 bg-transparent border-0 cursor-pointer"
           >
-            {count} thanks
+            {count}个谢谢
           </button>
         )}
       </div>
@@ -91,12 +91,12 @@ export default function EncourageButton({
       {open && (
         <div className="mt-2 p-3 bg-peach-50 rounded-lg border border-peach-200">
           <p className="text-xs text-peach-700 mb-2">
-            Say thanks for their sharing and company
+            说声谢谢，感谢 TA 的分享与陪伴
           </p>
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="e.g. Thanks for sharing — it really inspired me..."
+            placeholder="例如：谢谢你的分享，让我很有启发…"
             className="w-full p-2 border border-peach-200 rounded text-sm resize-none focus:outline-none focus:ring-1 focus:ring-peach-400"
             rows={3}
           />
@@ -108,21 +108,21 @@ export default function EncourageButton({
                 onChange={(e) => setAnonymous(e.target.checked)}
                 className="rounded"
               />
-              Anonymous
+              匿名
             </label>
             <div className="flex gap-2">
               <button
                 onClick={() => setOpen(false)}
                 className="text-xs text-gray-400 bg-transparent border-0 cursor-pointer"
               >
-                Cancel
+                取消
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={!message.trim() || submitting}
                 className="text-xs text-white bg-peach-500 hover:bg-peach-600 px-3 py-1 rounded cursor-pointer disabled:opacity-50 border-0"
               >
-                Send
+                发送
               </button>
             </div>
           </div>
@@ -136,7 +136,7 @@ export default function EncourageButton({
             <div key={e.id} className="p-2 bg-peach-50 rounded text-sm">
               <p className="text-brown-900">{e.message}</p>
               <p className="text-xs text-gray-400 mt-1">
-                — {e.anonymous ? 'Anonymous' : e.sender?.nickname}
+                — {e.anonymous ? '匿名' : e.sender?.nickname}
               </p>
             </div>
           ))}

@@ -5,14 +5,14 @@ import lombok.*;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class CreateResourceRequest {
-    @NotBlank(message = "Title is required")
+    @NotBlank(message = "标题不能为空")
     private String title;
 
     private String description;
 
-    @NotBlank(message = "Type is required")
+    @NotBlank(message = "类型不能为空")
     private String type;
 
-    @NotBlank(message = "Content is required")
+    @NotBlank(message = "内容不能为空")
     private String content;
 }

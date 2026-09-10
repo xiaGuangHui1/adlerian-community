@@ -91,20 +91,20 @@ export default function PostDetail() {
       setPost(data);
       setEditing(false);
     } catch {
-      alert('Failed to save');
+      alert('保存失败');
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm('Delete this post? This cannot be undone.')) return;
+    if (!window.confirm('确定删除这篇帖子吗？此操作不可撤销。')) return;
     setDeleting(true);
     try {
       await api.delete(`/posts/${id}`);
       navigate('/forum');
     } catch {
-      alert('Failed to delete');
+      alert('删除失败');
     } finally {
       setDeleting(false);
     }
@@ -116,7 +116,7 @@ export default function PostDetail() {
         onClick={() => navigate('/forum')}
         className="text-sm text-gray-400 hover:text-peach-700 bg-transparent border-0 cursor-pointer mb-4"
       >
-        &larr; Back to Community
+        &larr; 返回社区
       </button>
 
       {/* 帖子内容 */}
@@ -127,7 +127,7 @@ export default function PostDetail() {
               {getCategoryLabel(post.category)}
             </span>
             {post.source === 'checkin' && (
-              <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">Practice Check-in</span>
+              <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">实践打卡</span>
             )}
           </div>
           {isAuthor && !editing && (
@@ -136,14 +136,14 @@ export default function PostDetail() {
                 onClick={startEditing}
                 className="text-xs text-peach-600 bg-transparent border border-peach-200 px-3 py-1 rounded cursor-pointer hover:bg-peach-50"
               >
-                Edit
+                编辑
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
                 className="text-xs text-gray-400 bg-transparent border border-gray-200 px-3 py-1 rounded cursor-pointer hover:text-red-500 hover:border-red-200 disabled:opacity-50"
               >
-                {deleting ? 'Deleting...' : 'Delete'}
+                {deleting ? '删除中...' : '删除'}
               </button>
             </div>
           )}
@@ -152,7 +152,7 @@ export default function PostDetail() {
         {editing ? (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Title</label>
+              <label className="block text-sm text-gray-600 mb-1">标题</label>
               <input
                 type="text"
                 value={editTitle}
@@ -162,7 +162,7 @@ export default function PostDetail() {
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Category</label>
+              <label className="block text-sm text-gray-600 mb-1">话题分类</label>
               <select
                 value={editCategory}
                 onChange={(e) => setEditCategory(e.target.value)}
@@ -174,7 +174,7 @@ export default function PostDetail() {
               </select>
             </div>
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Content (Markdown supported)</label>
+              <label className="block text-sm text-gray-600 mb-1">内容（支持 Markdown）</label>
               <textarea
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
@@ -188,14 +188,14 @@ export default function PostDetail() {
                 onClick={() => setEditing(false)}
                 className="px-4 py-2 text-gray-600 bg-transparent border border-peach-100 rounded-lg text-sm cursor-pointer hover:bg-warm-50"
               >
-                Cancel
+                取消
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving || !editTitle.trim() || !editContent.trim()}
                 className="px-4 py-2 bg-peach-500 text-white rounded-lg text-sm cursor-pointer border-0 hover:bg-peach-600 disabled:opacity-50"
               >
-                {saving ? 'Saving...' : 'Save Changes'}
+                {saving ? '保存中...' : '保存修改'}
               </button>
             </div>
           </div>
@@ -206,11 +206,11 @@ export default function PostDetail() {
               <Avatar name={post.author.nickname} src={post.author.avatarUrl} userId={post.author.id} className="w-8 h-8" textClassName="text-xs" />
               <span className="text-gray-600 font-medium">{post.author.nickname}</span>
               <span>·</span>
-              <span>{new Date(post.createdAt).toLocaleString('en-US')}</span>
+              <span>{new Date(post.createdAt).toLocaleString('zh-CN')}</span>
               <span>·</span>
-              <span>{post.viewCount} views</span>
+              <span>{post.viewCount} 阅读</span>
               {post.updatedAt && post.updatedAt !== post.createdAt && (
-                <span>(edited)</span>
+                <span>（已编辑）</span>
               )}
             </div>
 
@@ -243,7 +243,7 @@ export default function PostDetail() {
       {/* 分享区 */}
       <div className="mt-6 bg-white p-6 rounded-xl border border-peach-100">
         <h2 className="text-lg font-medium text-brown-900 mb-4">
-          Shares ({comments.reduce((acc, c) => acc + 1 + (c.replies?.length || 0), 0)})
+          分享 ({comments.reduce((acc, c) => acc + 1 + (c.replies?.length || 0), 0)})
         </h2>
         <CommentTree comments={comments} postId={post.id} onCommentAdded={fetchData} />
       </div>

@@ -44,11 +44,11 @@ export interface Comment {
 }
 
 export const COMMENT_TAGS = [
-  { value: 'i-experienced-too', label: 'I experienced this too' },
-  { value: 'helped-me', label: 'This helped me' },
-  { value: 'with-you', label: "I'm with you" },
-  { value: 'inspires-me', label: 'Your courage inspires me' },
-  { value: 'i-understand', label: 'I understand' },
+  { value: 'i-experienced-too', label: '我也经历过' },
+  { value: 'helped-me', label: '这对我有帮助' },
+  { value: 'with-you', label: '与你同在' },
+  { value: 'inspires-me', label: '你的勇气激励了我' },
+  { value: 'i-understand', label: '我理解你' },
 ] as const;
 
 export interface Encouragement {
@@ -138,19 +138,19 @@ export interface PageResponse<T> {
 }
 
 export const CATEGORIES = [
-  { value: 'practice-checkin', label: 'Practice Check-in', icon: '📝', desc: 'Record daily practice, share courage and growth' },
-  { value: 'parent-child-conflict', label: 'Parent-Child Conflict', desc: 'Improve parent-child communication and resolve family conflict' },
-  { value: 'reduce-internal-friction', label: 'Reduce Overthinking', desc: 'Stop self-sabotage and spend energy on what matters' },
-  { value: 'enhance-connection', label: 'Build Connection', desc: 'Cultivate belonging and deeper connections' },
-  { value: 'life-courage', label: 'Daily Courage', icon: '💪', desc: 'Find courage in everyday life' },
-  { value: 'relationships', label: 'Relationships', icon: '🤝', desc: 'Reshape relationships with separation of tasks and horizontal relationships' },
-  { value: 'self-acceptance', label: 'Self-Acceptance', icon: '💝', desc: 'Accept your imperfect self and move from inferiority to growth' },
-  { value: 'work-meaning', label: 'Meaning in Work', icon: '💼', desc: 'Find a sense of contribution in everyday work' },
-  { value: 'emotional-confusion', label: 'Emotional Confusion', icon: '💭', desc: 'Explore true trust and love in relationships' },
-  { value: 'work-task', label: 'Work Task', icon: '💼', desc: "One of Adler's three life tasks: realize value through contribution" },
-  { value: 'friendship-task', label: 'Friendship Task', icon: '👥', desc: "One of Adler's three life tasks: build horizontal relationships" },
-  { value: 'love-task', label: 'Love Task', icon: '❤️', desc: "One of Adler's three life tasks: cooperation and contribution in love" },
-  { value: 'other', label: 'Other', icon: '💬', desc: 'Any topic — free discussion and practice sharing' },
+  { value: 'practice-checkin', label: '实践打卡', icon: '📝', desc: '记录每日实践，分享勇气与成长' },
+  { value: 'parent-child-conflict', label: '改善亲子冲突', desc: '用阿德勒心理学改善亲子沟通，化解家庭冲突' },
+  { value: 'reduce-internal-friction', label: '减少内耗', desc: '停止自我消耗，将能量用在真正重要的事情上' },
+  { value: 'enhance-connection', label: '提升关系感', desc: '培养共同体感觉，建立更深层的人际连接' },
+  { value: 'life-courage', label: '生活勇气', icon: '💪', desc: '在日常中寻找勇气，面对生活的小挑战' },
+  { value: 'relationships', label: '人际关系', icon: '🤝', desc: '用课题分离和横向关系重塑人际交往' },
+  { value: 'self-acceptance', label: '自我接纳', icon: '💝', desc: '接纳不完美的自己，从自卑走向超越' },
+  { value: 'work-meaning', label: '工作意义', icon: '💼', desc: '在平凡工作中寻找对他人的贡献感' },
+  { value: 'emotional-confusion', label: '情感困惑', icon: '💭', desc: '在亲密关系中探索真正的信赖与爱' },
+  { value: 'work-task', label: '工作课题', icon: '💼', desc: '阿德勒三大人生课题之一：在贡献中实现价值' },
+  { value: 'friendship-task', label: '交友课题', icon: '👥', desc: '阿德勒三大人生课题之一：建立横向关系' },
+  { value: 'love-task', label: '爱的课题', icon: '❤️', desc: '阿德勒三大人生课题之一：在爱中学会合作与贡献' },
+  { value: 'other', label: '其他', icon: '💬', desc: '不限主题，自由讨论与实践分享' },
 ] as const;
 
 export interface Quote {

@@ -6,8 +6,8 @@ import lombok.*;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class CreateCheckInRequest {
 
-    @NotBlank(message = "Check-in content is required")
-    @Size(max = 2000, message = "Check-in content must be at most 2000 characters")
+    @NotBlank(message = "打卡内容不能为空")
+    @Size(max = 2000, message = "打卡内容最多2000字")
     private String content;
 
     private boolean syncToForum;

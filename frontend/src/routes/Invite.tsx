@@ -72,7 +72,7 @@ export default function Invite() {
       setShareTarget('team');
       setShowSharePanel(true);
     } catch (error: unknown) {
-      alert(getErrorMessage(error, 'Failed to create'));
+      alert(getErrorMessage(error, '创建失败'));
     } finally {
       setCreatingTeam(false);
     }
@@ -93,7 +93,7 @@ export default function Invite() {
       await api.post('/teams/join-by-code', { code: teamCode });
       await fetchPageData();
     } catch (error: unknown) {
-      setJoinError(getErrorMessage(error, 'Failed to join'));
+      setJoinError(getErrorMessage(error, '加入失败'));
     } finally {
       setJoiningTeam(false);
     }
@@ -134,8 +134,8 @@ export default function Invite() {
       <div className="absolute inset-0 bg-black/40" onClick={() => setShowSharePanel(false)} />
       <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl px-6 pt-6 pb-10 max-w-lg mx-auto animate-slide-up">
         <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-6" />
-        <h3 className="text-lg font-bold text-center mb-2">Invite teammates</h3>
-        <p className="text-xs text-gray-400 text-center mb-6">Choose a way to share your invitation</p>
+        <h3 className="text-lg font-bold text-center mb-2">邀请组队伙伴</h3>
+        <p className="text-xs text-gray-400 text-center mb-6">选择一种方式分享邀请</p>
 
         <div className="flex justify-center gap-8 mb-8">
           <button
@@ -145,7 +145,7 @@ export default function Invite() {
             <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center text-green-500 shadow-sm hover:scale-105 transition-transform">
               <Icon icon="ph:wechat-logo-fill" width="32" />
             </div>
-            <span className="text-xs text-gray-600 font-medium">WeChat friends</span>
+            <span className="text-xs text-gray-600 font-medium">微信好友</span>
           </button>
           <button
             onClick={handleShare}
@@ -154,7 +154,7 @@ export default function Invite() {
             <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center text-green-500 shadow-sm hover:scale-105 transition-transform">
               <Icon icon="ph:wechat-logo-fill" width="32" />
             </div>
-            <span className="text-xs text-gray-600 font-medium">Moments</span>
+            <span className="text-xs text-gray-600 font-medium">朋友圈</span>
           </button>
           <button
             onClick={handleShare}
@@ -163,7 +163,7 @@ export default function Invite() {
             <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-peach-500 shadow-sm hover:scale-105 transition-transform">
               <Icon icon="ph:link-fill" width="32" />
             </div>
-            <span className="text-xs text-gray-600 font-medium">Copy link</span>
+            <span className="text-xs text-gray-600 font-medium">复制链接</span>
           </button>
         </div>
 
@@ -173,11 +173,11 @@ export default function Invite() {
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 256 256"><path d="M128,72a56,56,0,1,0-56,56A56,56,0,0,0,128,72Z"/></svg>
             </div>
             <div>
-              <p className="text-sm font-bold text-brown-900">Adlerian Community</p>
-              <p className="text-xs text-gray-400">invites you to join a team check-in</p>
+              <p className="text-sm font-bold text-brown-900">阿德勒心理学社区</p>
+              <p className="text-xs text-gray-400">邀请你加入组队打卡</p>
             </div>
           </div>
-          <p className="text-xs text-gray-500 leading-relaxed ml-11">"Team up for check-ins — encourage each other and go further"</p>
+          <p className="text-xs text-gray-500 leading-relaxed ml-11">「组队打卡，互相鼓励走得更远」</p>
         </div>
 
         <button
@@ -185,12 +185,12 @@ export default function Invite() {
           className="w-full bg-teal-500 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-teal-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer border-0"
         >
           <Icon icon="ph:check-circle-fill" width="22" />
-          Confirm share
+          确认分享
         </button>
         {copied && (
-          <p className="text-xs text-teal-500 text-center mt-3 font-medium">Link copied!</p>
+          <p className="text-xs text-teal-500 text-center mt-3 font-medium">链接已复制！</p>
         )}
-        <p className="text-xs text-gray-400 text-center mt-3">Friends can join your team via the link after sharing</p>
+        <p className="text-xs text-gray-400 text-center mt-3">分享后伙伴可凭链接加入你的队伍</p>
       </div>
     </div>
   );
@@ -210,7 +210,7 @@ export default function Invite() {
                 className="text-xs text-gray-400 hover:text-peach-500 transition-colors flex items-center gap-1 mx-auto cursor-pointer border-0 bg-transparent"
               >
                 <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></svg>
-                Back to team plaza
+                回到组队广场
               </button>
             </div>
 
@@ -224,12 +224,12 @@ export default function Invite() {
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-brown-900">{myTeam.name}</h2>
-                    <p className="text-xs text-gray-400">Check-in in progress today</p>
+                    <p className="text-xs text-gray-400">今日打卡进行中</p>
                   </div>
                 </div>
                 <span className="text-xs bg-peach-500/10 text-peach-500 font-bold px-3 py-1.5 rounded-full whitespace-nowrap flex items-center gap-1">
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 256 256"><path d="M225.9,106.65l-88-48.18a20.36,20.36,0,0,0-19.8,0l-88,48.18A20,20,0,0,0,20,122.12v19.81a8,8,0,0,0,16,0v-14L120,165.87v49.21l-17.57,7.84a8,8,0,0,0,0,14.16l24,10.72a8,8,0,0,0,7.14,0l24-10.72a8,8,0,0,0,0-14.16L140,215.08V165.87l84-37.94v14a8,8,0,0,0,16,0V122.12A20,20,0,0,0,225.9,106.65Z"/></svg>
-                  Teamed up for {myTeam.togetherDays || 1} days
+                  已组队 {myTeam.togetherDays || 1} 天
                 </span>
               </div>
 
@@ -260,10 +260,10 @@ export default function Invite() {
                     </div>
                     {member.todayCheckedIn ? (
                       <span className="text-xs flex items-center gap-0.5 text-teal-500 font-medium">
-                        Checked in <span className="text-sm leading-none">&check;</span>
+                        已打卡 <span className="text-sm leading-none">&check;</span>
                       </span>
                     ) : (
-                      <span className="text-xs text-gray-400">Not yet</span>
+                      <span className="text-xs text-gray-400">未打卡</span>
                     )}
                   </div>
                 ))}
@@ -274,17 +274,17 @@ export default function Invite() {
                 <div className="flex items-center justify-center gap-8 text-sm">
                   <div className="text-center">
                     <p className="text-2xl font-bold text-peach-500">{myTeam.togetherDays || 1}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">Days together</p>
+                    <p className="text-xs text-gray-500 mt-0.5">已组队天数</p>
                   </div>
                   <div className="w-px h-10 bg-orange-100" />
                   <div className="text-center">
                     <p className="text-2xl font-bold text-teal-500">{checkedCount}/{myTeam.members.length}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">Today's rate</p>
+                    <p className="text-xs text-gray-500 mt-0.5">今日打卡率</p>
                   </div>
                   <div className="w-px h-10 bg-orange-100" />
                   <div className="text-center">
                     <p className="text-2xl font-bold text-brown-900">{myTeam.totalCheckIns || 0}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">Total check-ins</p>
+                    <p className="text-xs text-gray-500 mt-0.5">累计打卡数</p>
                   </div>
                 </div>
               </div>
@@ -294,18 +294,18 @@ export default function Invite() {
                 <div className="mb-6">
                   <h3 className="text-sm font-bold text-brown-900 mb-4 flex items-center gap-1.5">
                     <svg className="w-4 h-4 text-peach-500" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm56,112H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48a8,8,0,0,1,0,16Z"/></svg>
-                    Recent activity
+                    最近打卡动态
                   </h3>
                   <div className="space-y-3">
                     {myTeam.recentActivities.map((activity, i) => {
-                      const isToday = activity.relativeTime === 'just now' || activity.relativeTime?.includes('h ago');
+                      const isToday = activity.relativeTime === '刚刚' || activity.relativeTime?.includes('小时前');
                       return (
                         <div key={i} className="flex items-start gap-3">
                           <div className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 ${isToday ? 'bg-teal-500' : 'bg-gray-300'}`} />
                           <div className="flex-1">
                             <p className={`text-sm ${isToday ? 'text-gray-700' : 'text-gray-500'}`}>
                               <span className="font-medium text-brown-900">{activity.nickname}</span>
-                              {isToday ? " completed today's check-in" : ' also checked in yesterday '}
+                              {isToday ? ' 完成了今日打卡' : ' 昨日也完成了打卡 '}
                               {!isToday && <span>💪</span>}
                             </p>
                             <p className="text-xs text-gray-400">{activity.relativeTime}</p>
@@ -323,13 +323,13 @@ export default function Invite() {
                 className="w-full border-2 border-dashed border-peach-500/40 text-peach-500 font-bold py-3.5 rounded-2xl hover:bg-peach-500/5 hover:border-peach-500 transition-all flex items-center justify-center gap-2 text-sm cursor-pointer bg-transparent"
               >
                 <Icon icon="ph:plus-circle-fill" width="18" />
-                Invite new members
+                邀请新伙伴加入
               </button>
             </div>
 
             {/* 底部引用 */}
             <p className="text-xs text-gray-400 text-center mt-8 leading-relaxed">
-              "Teaming up isn't a competition — it's light that illuminates each other's path"
+              「组队不是竞赛，是彼此照亮前路的光」
             </p>
           </div>
         </section>
@@ -348,28 +348,28 @@ export default function Invite() {
           <div className="max-w-lg mx-auto px-6 text-center fade-in">
             <div className="inline-flex items-center gap-2 bg-orange-50 px-4 py-2 rounded-full text-sm text-gray-500 mb-8 border border-orange-100">
               <svg className="w-5 h-5 text-peach-500" fill="currentColor" viewBox="0 0 256 256"><path d="M136,108A52,52,0,1,1,84,56,52.06,52.06,0,0,1,136,108Zm-16,0a36,36,0,1,0-36,36A36,36,0,0,0,120,108ZM200,88a44,44,0,1,1-44-44A44.05,44.05,0,0,1,200,88Z"/></svg>
-              Team invitation received
+              收到组队邀请
             </div>
 
             {isPending ? (
               <>
                 <h1 className="text-3xl font-bold text-brown-900 mb-4 leading-snug">
-                  <span className="text-peach-500">{teamInvitation.creatorNickname}</span> invites you to<br />join their team
+                  <span className="text-peach-500">{teamInvitation.creatorNickname}</span> 邀请你<br />加入队伍
                 </h1>
-                <p className="text-gray-500 text-lg mb-8">Check in before 20:00 daily and witness each other's growth.</p>
+                <p className="text-gray-500 text-lg mb-8">每天 20:00 前打卡，互相见证彼此的成长。</p>
                 <div className="flex flex-col gap-3 max-w-xs mx-auto">
                   <button
                     onClick={handleJoinTeam}
                     disabled={joiningTeam}
                     className="bg-peach-500 text-white px-8 py-4 rounded-2xl text-lg font-bold hover:scale-105 transition-transform shadow-lg shadow-orange-200 cursor-pointer border-0 disabled:opacity-60"
                   >
-                    {joiningTeam ? 'Joining...' : 'Join team'}
+                    {joiningTeam ? '加入中...' : '加入队伍'}
                   </button>
                   <Link
                     to="/login"
                     className="bg-white text-teal-500 border-2 border-teal-500 px-8 py-4 rounded-2xl text-lg font-bold hover:bg-teal-500 hover:text-white transition-all no-underline"
                   >
-                    Already have an account? Sign in
+                    已有账号？登录
                   </Link>
                 </div>
                 {joinError && (
@@ -379,25 +379,25 @@ export default function Invite() {
             ) : isExpired ? (
               <>
                 <h1 className="text-3xl font-bold text-brown-900 mb-4 leading-snug">
-                  This invitation<span className="text-gray-400"><br />has</span><span className="text-peach-500">expired</span>
+                  这个邀请<span className="text-gray-400"><br />已经</span><span className="text-peach-500">过期了</span>
                 </h1>
                 <p className="text-gray-500 text-lg mb-8">
-                  That's okay — you can still join the Adlerian Community and start your own team.
+                  但没关系，你仍然可以加入阿德勒心理学社区，发起你自己的队伍。
                 </p>
                 <Link
                   to="/register"
                   className="inline-flex bg-peach-500 text-white px-8 py-4 rounded-2xl text-lg font-bold hover:scale-105 transition-transform shadow-lg shadow-orange-200 no-underline"
                 >
-                  Join the journey of courage
+                  加入勇气之旅
                 </Link>
               </>
             ) : (
               <>
                 <h1 className="text-3xl font-bold text-brown-900 mb-4 leading-snug">
-                  <span className="text-peach-500">{teamInvitation.creatorNickname}</span>'s<br />team
+                  <span className="text-peach-500">{teamInvitation.creatorNickname}</span> 的<br />队伍
                 </h1>
                 <p className="text-gray-500 text-lg mb-8">
-                  This team already has {teamInvitation.memberCount}/{teamInvitation.maxMembers} members and is forming.
+                  该队伍已有 {teamInvitation.memberCount}/{teamInvitation.maxMembers} 人，正在组队中。
                 </p>
               </>
             )}
@@ -417,8 +417,8 @@ export default function Invite() {
           </div>
 
           {/* 邀请语 */}
-          <h1 className="text-3xl font-bold text-brown-900 mb-4 leading-snug">Team up for check-ins and encourage each other</h1>
-          <p className="text-gray-500 text-lg mb-2 leading-relaxed">Encourage each other and go further</p>
+          <h1 className="text-3xl font-bold text-brown-900 mb-4 leading-snug">组队打卡，和伙伴互相鼓励</h1>
+          <p className="text-gray-500 text-lg mb-2 leading-relaxed">互相鼓励走得更远</p>
 
           {/* 装饰分隔线 */}
           <div className="flex items-center gap-3 my-8 justify-center">
@@ -435,7 +435,7 @@ export default function Invite() {
                 value={teamName}
                 onChange={(e) => setTeamName(e.target.value)}
                 maxLength={20}
-                placeholder="Name your team (optional)"
+                placeholder="给队伍起个名字（可选）"
                 className="w-full px-4 py-3 border border-peach-100 rounded-2xl text-sm text-center focus:outline-none focus:border-peach-400 bg-white"
               />
             </div>
@@ -449,7 +449,7 @@ export default function Invite() {
               className="bg-peach-500 text-white px-12 py-5 rounded-2xl text-lg font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-200 flex items-center justify-center gap-3 mx-auto w-full max-w-sm cursor-pointer border-0 disabled:opacity-60"
             >
               <Icon icon="ph:share-network-fill" width="24" />
-              {creatingTeam ? 'Creating...' : 'Invite teammates'}
+              {creatingTeam ? '创建中...' : '邀请组队伙伴'}
             </button>
           ) : (
             <Link
@@ -457,14 +457,14 @@ export default function Invite() {
               className="bg-peach-500 text-white px-12 py-5 rounded-2xl text-lg font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-orange-200 flex items-center justify-center gap-3 mx-auto w-full max-w-sm cursor-pointer no-underline"
             >
               <Icon icon="ph:sign-in-fill" width="24" />
-              Sign in to start a team
+              登录后发起组队
             </Link>
           )}
 
           {/* 底部小提示 */}
           <p className="text-xs text-gray-400 mt-8 flex items-center justify-center gap-1">
             <svg className="w-3.5 h-3.5 text-teal-500" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm56,112H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48a8,8,0,0,1,0,16Z"/></svg>
-            Click the button to invite friends to team up for check-ins
+            点击按钮，邀请好友一起组队打卡
           </p>
         </div>
       </section>

@@ -6,8 +6,8 @@ import lombok.*;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class CreateGroupRequest {
-    @NotBlank(message = "Group name is required")
-    @Size(max = 100, message = "Name must be at most 100 characters")
+    @NotBlank(message = "小组名称不能为空")
+    @Size(max = 100, message = "名称最多100字")
     private String name;
 
     private String description;

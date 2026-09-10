@@ -5,7 +5,7 @@ import lombok.*;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class CreateCommentRequest {
-    @NotBlank(message = "Content is required")
+    @NotBlank(message = "分享内容不能为空")
     private String content;
 
     /** 父评论ID，null表示顶级评论 */

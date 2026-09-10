@@ -39,7 +39,7 @@ function flattenReplies(replies: CommentType[] | undefined, parentName: string):
 }
 
 function formatTime(s: string) {
-  return new Date(s).toLocaleString('en-US', {
+  return new Date(s).toLocaleString('zh-CN', {
     month: '2-digit',
     day: '2-digit',
     hour: '2-digit',
@@ -89,7 +89,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
       setTag('');
       onCommentAdded?.();
     } catch {
-      alert('Failed to share. Please sign in.');
+      alert('分享失败，请确认已登录');
     } finally {
       setSubmitting(false);
     }
@@ -109,7 +109,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
       setReplyTarget(null);
       onCommentAdded?.();
     } catch {
-      alert('Failed to reply. Please sign in.');
+      alert('回复失败，请确认已登录');
     } finally {
       setReplySubmitting(false);
     }
@@ -137,7 +137,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
         <input
           value={replyContent}
           onChange={(e) => setReplyContent(e.target.value)}
-          placeholder={`Reply to @${replyTarget?.author.nickname ?? ''}...`}
+          placeholder={`回复 @${replyTarget?.author.nickname ?? ''}…`}
           className="flex-1 px-3 py-1.5 border border-peach-100 rounded text-sm focus:outline-none focus:ring-1 focus:ring-peach-400"
         />
         <button
@@ -145,7 +145,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
           disabled={!replyContent.trim() || replySubmitting}
           className="text-sm text-white bg-peach-500 px-3 py-1.5 rounded cursor-pointer border-0 disabled:opacity-50"
         >
-          Send
+          发送
         </button>
       </div>
     </div>
@@ -159,7 +159,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="Share your thoughts..."
+          placeholder="分享你的想法..."
           className="w-full p-3 mt-2 border border-peach-100 rounded-lg text-sm resize-none focus:outline-none focus:ring-1 focus:ring-peach-400"
           rows={3}
         />
@@ -169,7 +169,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
             disabled={!content.trim() || submitting}
             className="text-sm text-white bg-peach-500 hover:bg-peach-600 px-4 py-2 rounded-lg cursor-pointer border-0 disabled:opacity-50"
           >
-            Share
+            发起分享
           </button>
         </div>
       </div>
@@ -186,7 +186,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
               <div className="p-3">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-peach-600 bg-peach-50 px-1.5 py-0.5 rounded">
-                    #{i + 1}
+                    {i + 1}楼
                   </span>
                   <Avatar
                     name={c.author.nickname}
@@ -209,7 +209,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
                     onClick={() => startReply(c)}
                     className="text-xs text-gray-400 hover:text-peach-700 bg-transparent border-0 cursor-pointer"
                   >
-                    Reply
+                    回复
                   </button>
                 </div>
                 {replyTarget?.id === c.id && renderReplyBox()}
@@ -222,7 +222,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
                     onClick={() => toggleCollapsed(c.id)}
                     className="text-xs text-gray-400 hover:text-peach-600 bg-transparent border-0 cursor-pointer"
                   >
-                    {isCollapsed ? `Show ${flatReplies.length} replies` : 'Hide replies'}
+                    {isCollapsed ? `展开 ${flatReplies.length} 条回复` : '收起回复'}
                   </button>
                   {!isCollapsed && (
                     <div className="mt-2 space-y-2.5">
@@ -242,7 +242,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
                               </span>
                               {r.replyTo !== r.comment.author.nickname && (
                                 <span className="text-xs text-gray-400">
-                                  Reply to @{r.replyTo}
+                                  回复 @{r.replyTo}
                                 </span>
                               )}
                               <span className="text-xs text-gray-300">{formatTime(r.comment.createdAt)}</span>
@@ -254,7 +254,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
                               onClick={() => startReply(r.comment)}
                               className="text-xs text-gray-400 hover:text-peach-700 bg-transparent border-0 cursor-pointer mt-0.5"
                             >
-                              Reply
+                              回复
                             </button>
                             {replyTarget?.id === r.comment.id && renderReplyBox()}
                           </div>
@@ -268,7 +268,7 @@ export default function CommentTree({ comments, postId, onCommentAdded }: Props)
           );
         })}
         {comments.length === 0 && (
-          <p className="text-sm text-gray-400 py-4 text-center">No shares yet — start the first one</p>
+          <p className="text-sm text-gray-400 py-4 text-center">暂无分享，来发起第一个分享吧</p>
         )}
       </div>
     </div>
